@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Leave a Review{% endblock %}
+
+{% block body %}
+    <h1>Leave a Review</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">Submit</button>
+    {{ form_end(form) }}
+{% endblock %}

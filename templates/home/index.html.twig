@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to KocinaSpeed{% endblock %}
+
+{% block body %}
+    <h1>Welcome to KocinaSpeed!</h1>
+    <p>Présentation du site...</p>
+
+    <h2>Dernières Recettes</h2>
+    <div class="recipes">
+        {% for recipe in latest_recipes %}
+            <div class="recipe">
+                <h3><a href="{{ path('recipe_show', {id: recipe.id}) }}">{{ recipe.title }}</a></h3>
+                <img src="{{ recipe.photo }}" alt="{{ recipe.title }}">
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
