@@ -3,71 +3,60 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=RecipeRepository::class)
- * @ORM\Table(name="recipes")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: RecipeRepository::class)]
+#[ORM\Table(name: "recipes")]
+#[ORM\HasLifecycleCallbacks]
 class Recipe
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $title;
+    #[ORM\Column(type: "string", length: 100)]
+    private ?string $title = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $photo;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $photo = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $video;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $video = null;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $description;
+    #[ORM\Column(type: "text")]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $ingredients; // Nouvelle propriété
+    #[ORM\Column(type: "text")]
+    private ?string $ingredients = null;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $steps; // Nouvelle propriété
+    #[ORM\Column(type: "text")]
+    private ?string $steps = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $category_id;
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $created_at;
+    #[ORM\Column(type: "datetime")]
+    private ?\DateTimeInterface $created_at = null;
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\OneToMany(mappedBy: "recipe", targetEntity: Review::class, orphanRemoval: true)]
+    private Collection $reviews;
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
+
+    #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
         $this->created_at = new \DateTime();
     }
 
-    // Getters and setters...
+    // Getters et setters...
 
     public function getId(): ?int
     {
@@ -146,14 +135,14 @@ class Recipe
         return $this;
     }
 
-    public function getCategoryId(): ?int
+    public function getCategory(): ?Category
     {
-        return $this->category_id;
+        return $this->category;
     }
 
-    public function setCategoryId(int $category_id): self
+    public function setCategory(?Category $category): self
     {
-        $this->category_id = $category_id;
+        $this->category = $category;
 
         return $this;
     }
@@ -161,5 +150,35 @@ class Recipe
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->created_at;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getRecipe() === $this) {
+                $review->setRecipe(null);
+            }
+        }
+
+        return $this;
     }
 }
