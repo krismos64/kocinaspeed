@@ -1,17 +1,116 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Kocinaspeed{% endblock %}</title>
+  <link rel="shortcut icon" type="image/png" href="{{ asset('img/favicon.png') }}">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Leckerli+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+  <script src="{{ asset('js/uikit.js') }}"></script>
+</head>
+<body>
+  <nav class="uk-navbar-container uk-letter-spacing-small">
+    <div class="uk-container">
+      <div class="uk-position-z-index" data-uk-navbar>
+        <div class="uk-navbar-left">
+          <a class="uk-navbar-item uk-logo" href="{{ path('home') }}">Kocinaspeed</a>
+          <ul class="uk-navbar-nav uk-visible@m uk-margin-large-left">
+            <li class="uk-active"><a href="{{ path('home') }}">Accueil</a></li>
+            <li><a href="{{ path('recipe_index') }}">Recettes</a></li>
+            <li><a href="{{ path('search') }}">Rechercher</a></li>
+            <li><a href="{{ path('contact') }}">Contact</a></li>
+          </ul>
+        </div>
+        <div class="uk-navbar-right">
+          <div>
+            <a class="uk-navbar-toggle" data-uk-search-icon href="#"></a>
+            <div class="uk-drop uk-background-default" data-uk-drop="mode: click; pos: left-center; offset: 0">
+              <form class="uk-search uk-search-navbar uk-width-1-1">
+                <input class="uk-search-input uk-text-demi-bold" type="search" placeholder="Search..." autofocus>
+              </form>
+            </div>
+          </div>
+          <div class="uk-navbar-item">
+            <div><a class="uk-button uk-button-primary" href="{{ path('app_login') }}">Connexion</a></div>
+          </div>
+          <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-toggle><span
+                data-uk-navbar-toggle-icon></span></a>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+  {% block body %}{% endblock %}
+
+  <footer class="uk-section uk-section-default">
+    <div class="uk-container uk-text-secondary uk-text-500">
+      <div class="uk-child-width-1-2@s" data-uk-grid>
+        <div>
+          <a href="#" class="uk-logo">Kocinaspeed</a>
+        </div>
+        <div class="uk-flex uk-flex-middle uk-flex-right@s">
+          <div data-uk-grid class="uk-child-width-auto uk-grid-small">
+            <!-- Social media links can be added here -->
+          </div>
+        </div>
+      </div>
+      <div class="uk-child-width-1-2@s uk-child-width-1-4@m" data-uk-grid>
+        <div>
+          <ul class="uk-list uk-text-small">
+            <li><a class="uk-link-text" href="#">Presentations</a></li>
+            <li><a class="uk-link-text" href="#">Professionals</a></li>
+            <li><a class="uk-link-text" href="#">Stores</a></li>
+          </ul>
+        </div>
+        <div>
+          <ul class="uk-list uk-text-small">
+            <li><a class="uk-link-text" href="#">Webinars</a></li>
+            <li><a class="uk-link-text" href="#">Workshops</a></li>
+            <li><a class="uk-link-text" href="#">Local Meetups</a></li>
+          </ul>
+        </div>
+        <div>
+          <ul class="uk-list uk-text-small">
+            <li><a class="uk-link-text" href="#">Our Initiatives</a></li>
+            <li><a class="uk-link-text" href="#">Giving Back</a></li>
+            <li><a class="uk-link-text" href="#">Communities</a></li>
+          </ul>
+        </div>
+        <div>
+          <ul class="uk-list uk-text-small">
+            <li><a class="uk-link-text" href="#">Contact Form</a></li>
+            <li><a class="uk-link-text" href="#">Work With Us</a></li>
+            <li><a class="uk-link-text" href="#">Visit Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="uk-margin-medium-top uk-text-small uk-text-muted">
+        <div>Fait par <br><a class="uk-link-muted" href="https://krismos.fr/" target="_blank">Krismos</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar">
+      <a class="uk-logo" href="{{ path('home') }}">Kocinaspeed</a>
+      <button class="uk-offcanvas-close" type="button" data-uk-close="ratio: 1.2"></button>
+      <ul class="uk-nav uk-nav-primary uk-nav-offcanvas uk-margin-medium-top uk-text-center">
+        <li class="uk-active"><a href="{{ path('home') }}">Accueil</a></li>
+        <li><a href="{{ path('recipe_index') }}">Recettes</a></li>
+        <li><a href="{{ path('search') }}">Rechercher</a></li>
+        <li><a href="{{ path('contact') }}">Contact</a></li>
+      </ul>
+      <div class="uk-margin-medium-top">
+        <a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+      </div>
+      <div class="uk-margin-medium-top uk-text-center">
+        <div data-uk-grid class="uk-child-width-auto uk-grid-small uk-flex-center">
+          <!-- Social media links can be added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

@@ -17,4 +17,12 @@ class RecipeController extends AbstractController
             'recipe' => $recipe,
         ]);
     }
+    #[Route('/', name: 'recipe_index', methods: ['GET'])]
+    public function index(): Response
+    {
+        // Logique pour récupérer et afficher les recettes
+        return $this->render('recipe/index.html.twig', [
+            // Passer les recettes à la vue ici
+        ]);
+    }
 }
