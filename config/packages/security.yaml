@@ -27,4 +27,7 @@ security:
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/recipe, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/contact, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

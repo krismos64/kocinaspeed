@@ -97,20 +97,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?string
-    {
-        // This method is redundant as we are using getRoles() to return roles as an array
-        return $this->roles[0] ?? null;
-    }
-
-    public function setRole(string $role): static
-    {
-        // This method is redundant as we are using setRoles() to set roles as an array
-        $this->roles = [$role];
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->created_at;
@@ -153,7 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
     }
