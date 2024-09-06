@@ -17,6 +17,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -24,8 +26,10 @@ security:
             logout:
                 path: app_logout
                 target: home
+            entry_point: App\Security\LoginFormAuthenticator
 
     access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/recipe, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
