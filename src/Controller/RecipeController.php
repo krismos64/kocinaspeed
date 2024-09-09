@@ -3,26 +3,54 @@
 namespace App\Controller;
 
 use App\Entity\Recipe;
+use App\Repository\RecipeRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/recipe')]
 class RecipeController extends AbstractController
 {
-    #[Route('/{id}', name: 'recipe_show', methods: ['GET'])]
-    public function show(Recipe $recipe): Response
+    #[Route('/recipe/{slug}', name: 'app_recipe_details')]
+    public function show(recipeRepository $recipeRepository, string $slug): Response
     {
-        return $this->render('recipe/show.html.twig', [
+        $recipe = $recipeRepository->findOneBySlug($slug);
+
+        if (!$recipe) {
+            throw $this->createNotFoundException('No recipe found for slug ' . $slug);
+        }
+
+        return $this->render('recipe/details.html.twig', [
             'recipe' => $recipe,
         ]);
     }
-    #[Route('/', name: 'recipe_index', methods: ['GET'])]
-    public function index(): Response
+
+    #[Route('/recipes', name: 'app_recipe_index')]
+    public function index(RecipeRepository $recipeRepository): Response
     {
-        // Logique pour récupérer et afficher les recettes
+        $recipes = $recipeRepository->findAll();
+
         return $this->render('recipe/index.html.twig', [
-            // Passer les recettes à la vue ici
+            'recipes' => $recipes,
         ]);
+    }
+
+
+
+    #[Route('/add-recipe', name: 'create_recipe')]
+    public function createRecipe(EntityManagerInterface $entityManager): Response
+    {
+        $recipe = new Recipe();
+        $recipe->setName('');
+        $recipe->setSlug('');
+        $recipe->setSubtitle('');
+        $recipe->setDescription('');
+        $recipe->setImage('');
+        $recipe->setVideo('');
+
+        $entityManager->persist($recipe);
+        $entityManager->flush();
+
+        return new Response('Saved new recette with id ' . $recette->getId());
     }
 }

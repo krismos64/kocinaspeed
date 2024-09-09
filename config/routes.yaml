@@ -1,31 +1,5 @@
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
-home:
-    path: /
-    controller: App\Controller\HomeController::index
-
-recipe_show:
-    path: /recipe/{id}
-    controller: App\Controller\RecipeController::show
-
-recipe_index:
-    path: /recipe
-    controller: App\Controller\RecipeController::index
-
-contact:
-    path: /contact
-    controller: App\Controller\ContactController::contact
-
-search:
-    path: /search
-    controller: App\Controller\SearchController::search
-
-app_login:
-    path: /login
-    controller: App\Controller\SecurityController::login
-
-app_logout:
-    path: /logout
+  resource:
+    path: ../src/Controller/
+    namespace: App\Controller
+  type: attribute

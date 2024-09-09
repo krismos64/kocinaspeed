@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}La recette{% endblock %}
+
+
+{% block body %}
+<section class="py-5 container">
+    <div class="row py-lg-5 justify-content-center">
+        <div class="col-lg-8 col-md-10 mx-auto text-center">
+            <h1 class="fw-bold mb-4">{{ recipe.name }}</h1>
+            <div class="recipe-image mb-4">
+                <img src="/uploads/{{ recipe.image }}" alt="{{ recipe.name }} Image" class="img-fluid rounded shadow-sm hover-zoom">
+            </div>
+            <p class="card-text">{{ recipe.description | raw }}</p>
+            <h2 class="fw-light mb-3">La vidéo</h2>
+            <div class="video-responsive">
+                <iframe 
+                    src="{{ recipe.video | replace({'watch': 'embed', '?v=': '/'}) }}" 
+                    frameborder="0" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

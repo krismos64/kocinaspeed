@@ -3,98 +3,92 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
-#[ORM\Table(name: "recipes")]
 #[ORM\HasLifecycleCallbacks]
 class Recipe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 100)]
-    private ?string $title = null;
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
-    private ?string $photo = null;
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
 
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
-    private ?string $video = null;
+    #[ORM\Column(length: 255)]
+    private ?string $subtitle = null;
 
-    #[ORM\Column(type: "text")]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(type: "text")]
-    private ?string $ingredients = null;
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
 
-    #[ORM\Column(type: "text")]
-    private ?string $steps = null;
+    #[ORM\Column(length: 255)]
+    private ?string $video = null;
 
-    #[ORM\ManyToOne(targetEntity: Category::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(type: "datetime")]
-    private ?\DateTimeInterface $created_at = null;
-
-    #[ORM\OneToMany(mappedBy: "recipe", targetEntity: Review::class, orphanRemoval: true)]
-    private Collection $reviews;
-
-    public function __construct()
-    {
-        $this->reviews = new ArrayCollection();
-    }
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function onPrePersist(): void
     {
-        $this->created_at = new \DateTime();
+        $this->created_at = new \DateTimeImmutable();
+        $this->updated_at = new \DateTimeImmutable();
     }
 
-    // Getters et setters...
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updated_at = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getName(): ?string
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function setTitle(string $title): self
+    public function setName(string $name): static
     {
-        $this->title = $title;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getPhoto(): ?string
+    public function getSlug(): ?string
     {
-        return $this->photo;
+        return $this->slug;
     }
 
-    public function setPhoto(?string $photo): self
+    public function setSlug(string $slug): static
     {
-        $this->photo = $photo;
+        $this->slug = $slug;
 
         return $this;
     }
 
-    public function getVideo(): ?string
+    public function getSubtitle(): ?string
     {
-        return $this->video;
+        return $this->subtitle;
     }
 
-    public function setVideo(?string $video): self
+    public function setSubtitle(string $subtitle): static
     {
-        $this->video = $video;
+        $this->subtitle = $subtitle;
 
         return $this;
     }
@@ -104,80 +98,57 @@ class Recipe
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getIngredients(): ?string
+    public function getImage(): ?string
     {
-        return $this->ingredients;
+        return $this->image;
     }
 
-    public function setIngredients(string $ingredients): self
+    public function setImage(string $image): static
     {
-        $this->ingredients = $ingredients;
+        $this->image = $image;
 
         return $this;
     }
 
-    public function getSteps(): ?string
+    public function getVideo(): ?string
     {
-        return $this->steps;
+        return $this->video;
     }
 
-    public function setSteps(string $steps): self
+    public function setVideo(string $video): static
     {
-        $this->steps = $steps;
+        $this->video = $video;
 
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->created_at;
     }
 
-    /**
-     * @return Collection<int, Review>
-     */
-    public function getReviews(): Collection
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
-        return $this->reviews;
-    }
-
-    public function addReview(Review $review): static
-    {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setRecipe($this);
-        }
+        $this->created_at = $created_at;
 
         return $this;
     }
 
-    public function removeReview(Review $review): static
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
-            if ($review->getRecipe() === $this) {
-                $review->setRecipe(null);
-            }
-        }
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }

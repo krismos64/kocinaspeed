@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Kocinaspeed{% endblock %}</title>
-  <link rel="shortcut icon" type="image/png" href="{{ asset('img/favicon.png') }}">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Leckerli+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/main.css') }}">
@@ -15,12 +14,10 @@
     <div class="uk-container">
       <div class="uk-position-z-index" data-uk-navbar>
         <div class="uk-navbar-left">
-          <a class="uk-navbar-item uk-logo" href="{{ path('home') }}">Kocinaspeed</a>
+          <a class="uk-navbar-item uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
           <ul class="uk-navbar-nav uk-visible@m uk-margin-large-left">
-            <li class="uk-active"><a href="{{ path('home') }}">Accueil</a></li>
-            <li><a href="{{ path('recipe_index') }}">Recettes</a></li>
-            <li><a href="{{ path('search') }}">Rechercher</a></li>
-            <li><a href="{{ path('contact') }}">Contact</a></li>
+            <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
           </ul>
         </div>
         <div class="uk-navbar-right">
@@ -52,7 +49,6 @@
         </div>
         <div class="uk-flex uk-flex-middle uk-flex-right@s">
           <div data-uk-grid class="uk-child-width-auto uk-grid-small">
-            <!-- Social media links can be added here -->
           </div>
         </div>
       </div>
@@ -94,13 +90,11 @@
 
   <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
     <div class="uk-offcanvas-bar">
-      <a class="uk-logo" href="{{ path('home') }}">Kocinaspeed</a>
+      <a class="uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
       <button class="uk-offcanvas-close" type="button" data-uk-close="ratio: 1.2"></button>
       <ul class="uk-nav uk-nav-primary uk-nav-offcanvas uk-margin-medium-top uk-text-center">
-        <li class="uk-active"><a href="{{ path('home') }}">Accueil</a></li>
-        <li><a href="{{ path('recipe_index') }}">Recettes</a></li>
-        <li><a href="{{ path('search') }}">Rechercher</a></li>
-        <li><a href="{{ path('contact') }}">Contact</a></li>
+        <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
+        <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
       </ul>
       <div class="uk-margin-medium-top">
         <a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
