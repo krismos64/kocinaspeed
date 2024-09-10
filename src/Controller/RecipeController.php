@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RecipeController extends AbstractController
 {
     #[Route('/recipe/{slug}', name: 'app_recipe_details')]
-    public function show(recipeRepository $recipeRepository, string $slug): Response
+    public function show(RecipeRepository $recipeRepository, string $slug): Response
     {
         $recipe = $recipeRepository->findOneBySlug($slug);
 
@@ -35,22 +35,22 @@ class RecipeController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/add-recipe', name: 'create_recipe')]
     public function createRecipe(EntityManagerInterface $entityManager): Response
     {
         $recipe = new Recipe();
-        $recipe->setName('');
-        $recipe->setSlug('');
-        $recipe->setSubtitle('');
-        $recipe->setDescription('');
-        $recipe->setImage('');
-        $recipe->setVideo('');
-
+        $recipe->setName('New Recipe');
+        $recipe->setSlug('new-recipe');
+        $recipe->setSubtitle('This is a subtitle');
+        $recipe->setDescription('This is a description of the recipe.');
+        $recipe->setImage('https://via.placeholder.com/300x160');
+        $recipe->setVideo('https://example.com/video.mp4');
+        $recipe->setRating(4.5);
+        $recipe->setReviews(120);
+    
         $entityManager->persist($recipe);
         $entityManager->flush();
-
-        return new Response('Saved new recette with id ' . $recette->getId());
+    
+        return new Response('Saved new recipe with id ' . $recipe->getId());
     }
 }

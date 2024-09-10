@@ -7323,18 +7323,23 @@ iframe.uk-cover {
 
 /* Size
  ========================================================================== */
-.uk-background-cover,
-.uk-background-contain {
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
+.uk-header-overlay {
+  transition: opacity 1s ease;
 }
-
+.uk-header-overlay.active {
+  opacity: 0.7; 
+}
 .uk-background-cover {
   background-size: cover;
+  background-position: center;
+  transition: transform 3s ease;
+  transform: scale(1.1); 
 }
 
 .uk-background-contain {
   background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
 
 /* Position

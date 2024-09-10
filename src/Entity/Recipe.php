@@ -33,6 +33,13 @@ class Recipe
     #[ORM\Column(length: 255)]
     private ?string $video = null;
 
+    
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $rating = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $reviews = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
@@ -149,6 +156,29 @@ class Recipe
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+    public function getRating(): ?float
+    {
+        return $this->rating;
+    }
+
+    public function setRating(?float $rating): self
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    public function getReviews(): ?int
+    {
+        return $this->reviews;
+    }
+
+    public function setReviews(?int $reviews): self
+    {
+        $this->reviews = $reviews;
 
         return $this;
     }
