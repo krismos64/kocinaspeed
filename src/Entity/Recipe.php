@@ -33,18 +33,26 @@ class Recipe
     #[ORM\Column(length: 255)]
     private ?string $video = null;
 
-    
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $rating = null;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $reviews = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $reviews = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $category = null; 
+    
+    const CATEGORIES = [
+        'DESSERTS' => 'Desserts',
+        'PLATS' => 'Plats',
+        'APERITIFS' => 'Apéritifs',
+    ];
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
@@ -159,6 +167,7 @@ class Recipe
 
         return $this;
     }
+
     public function getRating(): ?float
     {
         return $this->rating;
@@ -171,14 +180,26 @@ class Recipe
         return $this;
     }
 
-    public function getReviews(): ?int
+    public function getReviews(): ?string
     {
         return $this->reviews;
     }
 
-    public function setReviews(?int $reviews): self
+    public function setReviews(?string $reviews): self
     {
         $this->reviews = $reviews;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

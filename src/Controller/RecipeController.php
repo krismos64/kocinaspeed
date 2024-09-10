@@ -6,6 +6,7 @@ use App\Entity\Recipe;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,9 +27,14 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes', name: 'app_recipe_index')]
-    public function index(RecipeRepository $recipeRepository): Response
+    public function index(RecipeRepository $recipeRepository, Request $request): Response
     {
-        $recipes = $recipeRepository->findAll();
+        $category = $request->query->get('category');
+        if ($category) {
+            $recipes = $recipeRepository->findBy(['category' => $category]);
+        } else {
+            $recipes = $recipeRepository->findAll();
+        }
 
         return $this->render('recipe/index.html.twig', [
             'recipes' => $recipes,
@@ -47,10 +53,10 @@ class RecipeController extends AbstractController
         $recipe->setVideo('https://example.com/video.mp4');
         $recipe->setRating(4.5);
         $recipe->setReviews(120);
-    
+        $recipe->setCategory('Plats'); 
         $entityManager->persist($recipe);
         $entityManager->flush();
-    
+
         return new Response('Saved new recipe with id ' . $recipe->getId());
     }
 }
