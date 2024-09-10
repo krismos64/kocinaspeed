@@ -10827,4 +10827,26 @@ iframe.uk-cover {
   h3 {
     page-break-after: avoid;
   }
+  .fixed-image-container {
+    height: 200px; 
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fixed-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fixed-card-height {
+    height: 100%; 
+}
+
+.uk-card-media-top {
+    height: 200px; 
+    overflow: hidden;
+}
 }
