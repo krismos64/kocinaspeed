@@ -24,9 +24,13 @@
           <div>
             <a class="uk-navbar-toggle" data-uk-search-icon href="#"></a>
             <div class="uk-drop uk-background-default" data-uk-drop="mode: click; pos: left-center; offset: 0">
-              <form class="uk-search uk-search-navbar uk-width-1-1">
-                <input class="uk-search-input uk-text-demi-bold" type="search" placeholder="Recherche..." autofocus>
-              </form>
+        <form class="uk-search uk-search-default uk-width-1-1" action="{{ path('app_recipe_search') }}" method="get">
+        <span data-uk-search-icon></span>
+        <input class="uk-search-input uk-text-small uk-border-rounded uk-form-large" 
+         type="search" 
+         placeholder="Recherche par nom de recette..." 
+         name="query">
+</form>
             </div>
           </div>
           <div class="uk-navbar-item">

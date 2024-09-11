@@ -59,4 +59,27 @@ class RecipeController extends AbstractController
 
         return new Response('Saved new recipe with id ' . $recipe->getId());
     }
+
+    #[Route('/search', name: 'app_recipe_search')]
+    public function search(RecipeRepository $recipeRepository, Request $request): Response
+    {
+        // Récupérer la requête de recherche depuis le formulaire
+        $query = $request->query->get('query');
+    
+        if ($query) {
+            // Rechercher les recettes par nom 
+            $recipes = $recipeRepository->createQueryBuilder('r')
+                ->where('r.name LIKE :query')
+                ->setParameter('query', '%' . $query . '%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $recipes = [];
+        }
+    
+        return $this->render('recipe/search_results.html.twig', [
+            'recipes' => $recipes,
+            'query' => $query
+        ]);
+    }
 }
