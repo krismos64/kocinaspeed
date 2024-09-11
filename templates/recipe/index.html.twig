@@ -1,16 +1,110 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CreationController!{% endblock %}
+{% block title %}Les recettes{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="uk-container">
+  <div class="uk-border-rounded-large uk-background-top-center uk-background-cover 
+  uk-background-norepeat uk-light uk-inline uk-overflow-hidden uk-width-1-1" 
+  style="background-image: url('{{ asset('img/background3.jpg') }}');">
+    <div class="uk-position-cover uk-header-overlay"></div>
+    <div class="uk-position-relative" data-uk-grid>
+      <div class="uk-width-1-2@m uk-flex uk-flex-middle">
+        <div class="uk-padding-large uk-padding-remove-right">
+          <h1 class="uk-heading-small uk-margin-remove-top"></h1>
+        </div>
+      </div>
+      <div class="uk-width-expand@m"></div>
+    </div>
+  </div>
+</div>
 
-<div class="example-wrapper">
-    <h1>La recette</h1>
-
-
+<div class="uk-section uk-section-default">
+  <div class="uk-container">
+    <div data-uk-grid>
+      <div class="uk-width-1-4@m sticky-container">
+        <div data-uk-sticky="offset: 100; bottom: true; media: @m;">
+          <h2>Recettes</h2>
+          <ul class="uk-nav-default uk-nav-parent-icon uk-nav-filter uk-margin-medium-top" data-uk-nav>
+            <!-- Catégorie Plats -->
+            <li class="uk-parent">
+              <a href="#">Plats</a>
+              <ul class="uk-nav-sub">
+                {% set plats_recipes = recipes|filter(recipe => recipe.category == 'Plats') %}
+                {% if plats_recipes|length > 0 %}
+                  {% for recipe in plats_recipes %}
+                    <li><a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}">{{ recipe.name }}</a></li>
+                  {% endfor %}
+                {% else %}
+                  <li><span>Aucune recette disponible</span></li>
+                {% endif %}
+              </ul>
+            </li>
+            <!-- Catégorie Desserts -->
+            <li class="uk-parent">
+              <a href="#">Desserts</a>
+              <ul class="uk-nav-sub">
+                {% set desserts_recipes = recipes|filter(recipe => recipe.category == 'Desserts') %}
+                {% if desserts_recipes|length > 0 %}
+                  {% for recipe in desserts_recipes %}
+                    <li><a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}">{{ recipe.name }}</a></li>
+                  {% endfor %}
+                {% else %}
+                  <li><span>Aucune recette disponible</span></li>
+                {% endif %}
+              </ul>
+            </li>
+            <!-- Catégorie Apéritifs -->
+            <li class="uk-parent">
+              <a href="#">Apéritifs</a>
+              <ul class="uk-nav-sub">
+                {% set aperitifs_recipes = recipes|filter(recipe => recipe.category == 'Apéritifs') %}
+                {% if aperitifs_recipes|length > 0 %}
+                  {% for recipe in aperitifs_recipes %}
+                    <li><a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}">{{ recipe.name }}</a></li>
+                  {% endfor %}
+                {% else %}
+                  <li><span>Aucune recette disponible</span></li>
+                {% endif %}
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="uk-width-expand@m">
+        <div data-uk-grid>
+          <div class="uk-width-expand@m">
+            <form class="uk-search uk-search-default uk-width-1-1" action="{{ path('app_recipe_search') }}" method="get">
+         <span data-uk-search-icon></span>
+         <input class="uk-search-input uk-text-small uk-border-rounded uk-form-large" 
+         type="search" 
+         placeholder="Recherche par nom de recette..." 
+         name="query">
+            </form>      
+          </div>
+        </div>      
+        <div class="uk-child-width-1-2 uk-child-width-1-3@s" data-uk-grid>
+          {% for recipe in recipes %}
+          <div>
+            <div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height">
+              <div class="uk-card-media-top">
+                {% if recipe.image %}
+                  <img class="uk-border-rounded-medium fixed-image" src="{{ asset('uploads/' ~ recipe.image) }}" alt="{{ recipe.name }}">
+                {% else %}
+                  <img class="uk-border-rounded-medium fixed-image" src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}">
+                {% endif %}
+                <div class="uk-position-cover uk-card-overlay uk-border-rounded-medium"></div>
+              </div>
+              <div>
+                <h3 class="uk-card-title uk-text-500 uk-margin-small-bottom uk-margin-top">{{ recipe.name }}</h3>
+              </div>
+              <a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}" class="uk-position-cover"></a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
