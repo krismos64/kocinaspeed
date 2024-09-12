@@ -1,93 +1,108 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Kocinaspeed{% endblock %}</title>
-  <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Leckerli+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-  <script src="{{ asset('js/uikit.js') }}" defer></script>
-</head>
-<body>
-  <nav class="uk-navbar-container uk-letter-spacing-small">
-    <div class="uk-container">
-      <div class="uk-position-z-index" data-uk-navbar>
-        <div class="uk-navbar-left">
-  <!-- Logo ajouté à gauche -->
-  <a class="uk-navbar-item uk-logo" href="{{ path('app_home') }}">
-    <img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height=80" class="uk-margin-small-right">
-    Kocinaspeed
-  </a>
-  <ul class="uk-navbar-nav uk-visible@m uk-margin-large-left">
-    <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
-    <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
-  </ul>
-</div>
-        <div class="uk-navbar-right">
-          <div>
-            <a class="uk-navbar-toggle" data-uk-search-icon href="#"></a>
-            <div class="uk-drop uk-background-default" data-uk-drop="mode: click; pos: left-center; offset: 0">
-        <form class="uk-search uk-search-default uk-width-1-1" action="{{ path('app_recipe_search') }}" method="get">
-        <span data-uk-search-icon></span>
-        <input class="uk-search-input uk-text-small uk-border-rounded uk-form-large" 
-         type="search" 
-         placeholder="Recherche par nom de recette..." 
-         name="query">
-</form>
-            </div>
-          </div>
-          <div class="uk-navbar-item">
-            <div><a class="uk-button uk-button-primary" href="{{ path('app_login') }}">Connexion</a></div>
-          </div>
-          <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-toggle><span data-uk-navbar-toggle-icon></span></a>
-        </div>
-      </div>
-    </div>
-  </nav>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			{% block title %}Kocinaspeed
+			{% endblock %}
+		</title>
+		<link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
+		<link rel="stylesheet" href="{{ asset('css/main.css') }}">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Leckerli+One&display=swap" rel="stylesheet">
+		<script src="{{ asset('js/uikit.js') }}" defer></script>
+	</head>
+	<body>
+		<nav class="uk-navbar-container uk-letter-spacing-small">
+			<div class="uk-container">
+				<div class="uk-position-z-index" data-uk-navbar>
+					<div
+						class="uk-navbar-left">
+						<!-- Logo -->
+						<a class="uk-navbar-item uk-logo" href="{{ path('app_home') }}">
+							<img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="" uk-margin-small-right">
+							Kocinaspeed
+						</a>
+						<ul class="uk-navbar-nav uk-visible@m uk-margin-large-left">
+							<li class="uk-active">
+								<a href="{{ path('app_home') }}">Accueil</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recipe_index') }}">Recettes</a>
+							</li>
+						</ul>
+					</div>
+					<div class="uk-navbar-right">
+						<div>
+							<a class="uk-navbar-toggle" data-uk-search-icon href="#"></a>
+							<div class="uk-drop uk-background-default" data-uk-drop="mode: click; pos: left-center; offset: 0">
+								<form class="uk-search uk-search-default uk-width-1-1" action="{{ path('app_recipe_search') }}" method="get">
+									<span data-uk-search-icon></span>
+									<input class="uk-search-input uk-text-small uk-border-rounded uk-form-large" type="search" placeholder="Recherche par nom de recette..." name="query">
+								</form>
+							</div>
+						</div>
+						<div class="uk-navbar-item">
+							<div>
+								<a class="uk-button uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+							</div>
+						</div>
+						<a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-toggle>
+							<span data-uk-navbar-toggle-icon></span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</nav>
 
-  {% block body %}{% endblock %}
+		{% block body %}{% endblock %}
 
-<footer class="uk-section uk-section-default">
-  <div class="uk-container uk-text-secondary uk-text-500">
-    <div class="uk-child-width-1-2@s" data-uk-grid>
-      <div>
-        <!-- Logo ajouté dans le footer -->
-        <a href="{{ path('app_home') }}" class="uk-logo">
-          <img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="uk-margin-small-right">
-          Kocinaspeed
-        </a>
-      </div>
+		<footer class="uk-section uk-section-default">
+			<div class="uk-container uk-text-secondary uk-text-500">
+				<div class="uk-child-width-1-2@s" data-uk-grid>
+					<div>
+						<!-- Logo ajouté dans le footer -->
+						<a href="{{ path('app_home') }}" class="uk-logo">
+							<img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="uk-margin-small-right">
+							Kocinaspeed
+						</a>
+					</div>
 
-      <div class="uk-margin-medium-top uk-text-small uk-text-muted">
-        <div>Site réalisé par <a class="uk-link" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024</a></div>
-      </div>
-    </div>
-  </div>
-</footer>
+					<div class="uk-margin-medium-top uk-text-small uk-text-muted">
+						<div>Site réalisé par
+							<a class="uk-link" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
 
-<div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
-  <div class="uk-offcanvas-bar">
-    <a class="uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
-    <button class="uk-offcanvas-close" type="button" data-uk-close="ratio: 1.2"></button>
-    <ul class="uk-nav uk-nav-primary uk-nav-offcanvas uk-margin-medium-top uk-text-center">
-      <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
-      <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
-    </ul>
-    
-    <div class="uk-margin-medium-top">
-      <a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
-    </div>
-    
-    <!-- Ajout du logo sous le bouton Connexion -->
-    <div class="uk-margin-medium-top uk-text-center">
-      <a href="{{ path('app_home') }}">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo" width="150" height="150" class="uk-margin-small-top">
-      </a>
-    </div>
-  </div>
-</div>
+		<div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+			<div class="uk-offcanvas-bar">
+				<a class="uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
+				<button class="uk-offcanvas-close" type="button" data-uk-close="ratio: 1.2"></button>
+				<ul class="uk-nav uk-nav-primary uk-nav-offcanvas uk-margin-medium-top uk-text-center">
+					<li class="uk-active">
+						<a href="{{ path('app_home') }}">Accueil</a>
+					</li>
+					<li>
+						<a href="{{ path('app_recipe_index') }}">Recettes</a>
+					</li>
+				</ul>
 
-</body>
+				<div class="uk-margin-medium-top">
+					<a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+				</div>
+
+				<!-- Logo  -->
+				<div class="uk-margin-medium-top uk-text-center">
+					<a href="{{ path('app_home') }}">
+						<img src="{{ asset('img/logo.png') }}" alt="Logo" width="150" height="150" class="uk-margin-small-top">
+					</a>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
