@@ -22,8 +22,7 @@ class SignInController extends AbstractController
 
         $form->handleRequest($req);
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
 
             $plaintextPassword = $form->get('plainPassword')->getData(); // Récupérer le mot de passe en clair

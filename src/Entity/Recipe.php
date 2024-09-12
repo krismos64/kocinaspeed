@@ -46,8 +46,8 @@ class Recipe
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $category = null; 
-    
+    private ?string $category = null;
+
     const CATEGORIES = [
         'DESSERTS' => 'Desserts',
         'PLATS' => 'Plats',

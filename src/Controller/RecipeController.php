@@ -53,7 +53,7 @@ class RecipeController extends AbstractController
         $recipe->setVideo('https://example.com/video.mp4');
         $recipe->setRating(4.5);
         $recipe->setReviews(120);
-        $recipe->setCategory('Plats'); 
+        $recipe->setCategory('Plats');
         $entityManager->persist($recipe);
         $entityManager->flush();
 
@@ -65,7 +65,7 @@ class RecipeController extends AbstractController
     {
         // Récupérer la requête de recherche depuis le formulaire
         $query = $request->query->get('query');
-    
+
         if ($query) {
             // Rechercher les recettes par nom 
             $recipes = $recipeRepository->createQueryBuilder('r')
@@ -76,7 +76,7 @@ class RecipeController extends AbstractController
         } else {
             $recipes = [];
         }
-    
+
         return $this->render('recipe/search_results.html.twig', [
             'recipes' => $recipes,
             'query' => $query
