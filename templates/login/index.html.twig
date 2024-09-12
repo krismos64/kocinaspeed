@@ -1,51 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Se connecter{% endblock %}
+{% block title %}Se connecter
+{% endblock %}
 
 {% block body %}
-<div class="vh-100 d-flex align-items-center" style="background-color: #f8f9fa;">
-    <div class="w-100">
-        <div class="container-fluid">
-            <h2 class="text-center mb-4">Connexion</h2>
+	<div class="uk-section uk-flex uk-flex-middle uk-flex-center uk-animation-fade" uk-height-viewport="expand: true" style="background: #f8f9fa;">
+		<div class="uk-width-1-3@m uk-width-1-2@s uk-card uk-card-default uk-card-body uk-box-shadow-large uk-border-rounded">
+			<h2 class="uk-text-center">Connexion</h2>
 
-            {% if error %}
-                <div class="alert alert-danger">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
+			{% if error %}
+				<div class="uk-alert-danger uk-text-center" uk-alert>
+					<p>Adresse e-mail ou mot de passe incorrect !</p>
+				</div>
+			{% endif %}
 
-            <form action="{{ path('app_login') }}" method="post">
-                <div class="form-group mb-3">
-                    <label for="username">E-mail :</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        </div>
-                        <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" placeholder="Votre e-mail" required>
-                    </div>
-                </div>
+			<form
+				action="{{ path('app_login') }}" method="post">
+				<!-- Champ E-mail -->
+				<div class="uk-margin">
+					<label class="uk-form-label" for="username">E-mail :</label>
+					<div class="uk-inline uk-width-1-1">
+						<span class="uk-form-icon" uk-icon="icon: mail"></span>
+						<input class="uk-input uk-form-large uk-border-rounded" type="email" id="username" name="_username" value="{{ last_username }}" placeholder="Votre e-mail" required>
+					</div>
+				</div>
 
-                <div class="form-group mb-3">
-                    <label for="password">Mot de passe :</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                        </div>
-                        <input type="password" id="password" name="_password" class="form-control" placeholder="Votre mot de passe" required>
-                    </div>
-                </div>
+				<!-- Champ Mot de passe -->
+				<div class="uk-margin">
+					<label class="uk-form-label" for="password">Mot de passe :</label>
+					<div class="uk-inline uk-width-1-1">
+						<span class="uk-form-icon" uk-icon="icon: lock"></span>
+						<input class="uk-input uk-form-large uk-border-rounded" type="password" id="password" name="_password" placeholder="Votre mot de passe" required>
+					</div>
+				</div>
 
-                <input type="hidden" name="_target_path" value="/"> 
+				<input
+				type="hidden" name="_target_path" value="/">
 
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary btn-block w-100 py-2">Se connecter</button>
-                </div>
-            </form>
+				<!-- Bouton Se connecter -->
+				<div class="uk-margin">
+					<button type="submit" class="uk-button uk-button-primary uk-button-large uk-border-rounded uk-width-1-1">Se connecter</button>
+				</div>
+			</form>
 
-            <div class="text-center mt-3">
-                <a href="#" class="text-muted">Mot de passe oublié ?</a>
-            </div>
-        </div>
-    </div>
-</div>
+			<!-- Lien Mot de passe oublié -->
+			<div class="uk-text-center">
+				<a href="#" class="uk-link-muted uk-text-small">Mot de passe oublié ?</a>
+			</div>
+		</div>
+	</div>
 {% endblock %}

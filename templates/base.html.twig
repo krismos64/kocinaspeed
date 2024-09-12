@@ -26,7 +26,7 @@
 						class="uk-navbar-left">
 						<!-- Logo -->
 						<a class="uk-navbar-item uk-logo" href="{{ path('app_home') }}">
-							<img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="" uk-margin-small-right">
+							<img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="" uk-margin-small-right>
 							Kocinaspeed
 						</a>
 						<!-- Menu principal visible sur desktop -->
@@ -39,7 +39,7 @@
 							</li>
 						</ul>
 					</div>
-					<!-- Navbar Right (Recherche et Connexion) -->
+					<!-- Navbar Right (Recherche et Connexion/Espace Admin) -->
 					<div
 						class="uk-navbar-right">
 						<!-- Barre de recherche -->
@@ -52,10 +52,18 @@
 								</form>
 							</div>
 						</div>
-						<!-- Bouton de connexion -->
+						<!-- Bouton de Connexion ou Espace Admin selon l'état de connexion -->
 						<div class="uk-navbar-item">
 							<div>
-								<a class="uk-button uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+								{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+									{% if is_granted('ROLE_ADMIN') %}
+										<a class="uk-button uk-button-secondary" href="{{ path('app_admin') }}">Admin</a>
+									{% else %}
+										<a class="uk-button uk-button-secondary" href="{{ path('app_profile') }}">Mon Profil</a>
+									{% endif %}
+								{% else %}
+									<a class="uk-button uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+								{% endif %}
 							</div>
 						</div>
 						<!-- Menu Burger pour mobile -->
@@ -106,9 +114,17 @@
 					</li>
 				</ul>
 
-				<!-- Bouton de connexion dans le Offcanvas -->
+				<!-- Bouton de Connexion ou Espace Admin dans le Offcanvas -->
 				<div class="uk-margin-medium-top">
-					<a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+						{% if is_granted('ROLE_ADMIN') %}
+							<a class="uk-button uk-width-1-1 uk-button-secondary" href="{{ path('app_admin') }}">Admin</a>
+						{% else %}
+							<a class="uk-button uk-width-1-1 uk-button-secondary" href="{{ path('app_profile') }}">Mon Profil</a>
+						{% endif %}
+					{% else %}
+						<a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+					{% endif %}
 				</div>
 
 				<!-- Logo dans le Offcanvas -->
@@ -119,5 +135,6 @@
 				</div>
 			</div>
 		</div>
+
 	</body>
 </html>
