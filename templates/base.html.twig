@@ -14,12 +14,16 @@
     <div class="uk-container">
       <div class="uk-position-z-index" data-uk-navbar>
         <div class="uk-navbar-left">
-          <a class="uk-navbar-item uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
-          <ul class="uk-navbar-nav uk-visible@m uk-margin-large-left">
-            <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
-            <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
-          </ul>
-        </div>
+  <!-- Logo ajouté à gauche -->
+  <a class="uk-navbar-item uk-logo" href="{{ path('app_home') }}">
+    <img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height=80" class="uk-margin-small-right">
+    Kocinaspeed
+  </a>
+  <ul class="uk-navbar-nav uk-visible@m uk-margin-large-left">
+    <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
+    <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
+  </ul>
+</div>
         <div class="uk-navbar-right">
           <div>
             <a class="uk-navbar-toggle" data-uk-search-icon href="#"></a>
@@ -44,31 +48,45 @@
 
   {% block body %}{% endblock %}
 
-  <footer class="uk-section uk-section-default">
-    <div class="uk-container uk-text-secondary uk-text-500">
-      <div class="uk-child-width-1-2@s" data-uk-grid>
-        <div>
-          <a href="{{ path('app_home') }}" class="uk-logo">Kocinaspeed</a>
-        </div>
- 
-      <div class="uk-margin-medium-top uk-text-small uk-text-muted">
-        <div>Site créé par <br><a class="uk-link-muted" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024</a></div>
+<footer class="uk-section uk-section-default">
+  <div class="uk-container uk-text-secondary uk-text-500">
+    <div class="uk-child-width-1-2@s" data-uk-grid>
+      <div>
+        <!-- Logo ajouté dans le footer -->
+        <a href="{{ path('app_home') }}" class="uk-logo">
+          <img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="uk-margin-small-right">
+          Kocinaspeed
+        </a>
       </div>
-    </div>
-  </footer>
 
-  <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
-    <div class="uk-offcanvas-bar">
-      <a class="uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
-      <button class="uk-offcanvas-close" type="button" data-uk-close="ratio: 1.2"></button>
-      <ul class="uk-nav uk-nav-primary uk-nav-offcanvas uk-margin-medium-top uk-text-center">
-        <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
-        <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
-      </ul>
-      <div class="uk-margin-medium-top">
-        <a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+      <div class="uk-margin-medium-top uk-text-small uk-text-muted">
+        <div>Site réalisé par <a class="uk-link" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024</a></div>
       </div>
     </div>
   </div>
+</footer>
+
+<div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+  <div class="uk-offcanvas-bar">
+    <a class="uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
+    <button class="uk-offcanvas-close" type="button" data-uk-close="ratio: 1.2"></button>
+    <ul class="uk-nav uk-nav-primary uk-nav-offcanvas uk-margin-medium-top uk-text-center">
+      <li class="uk-active"><a href="{{ path('app_home') }}">Accueil</a></li>
+      <li><a href="{{ path('app_recipe_index') }}">Recettes</a></li>
+    </ul>
+    
+    <div class="uk-margin-medium-top">
+      <a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+    </div>
+    
+    <!-- Ajout du logo sous le bouton Connexion -->
+    <div class="uk-margin-medium-top uk-text-center">
+      <a href="{{ path('app_home') }}">
+        <img src="{{ asset('img/logo.png') }}" alt="Logo" width="150" height="150" class="uk-margin-small-top">
+      </a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
