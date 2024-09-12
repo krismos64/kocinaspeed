@@ -34,18 +34,12 @@
 			</div>
 		</div>
 
-		<!-- Vidéo de la recette (si disponible) -->
-		{% if recipe.video %}
-			<!-- Titre "La recette en vidéo" avec le même style que le titre de la recette -->
-			<h2 class="uk-heading-line uk-text-center uk-margin-large-top">
-				<span style="color: #ff7043; font-size: 2rem; font-weight: 700; letter-spacing: 1px;">La recette en vidéo</span>
-			</h2>
-
+		<!-- Vidéo de la recette -->
+		{% if videoId %}
 			<div class="uk-margin-large-top uk-text-center">
 				<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-padding-remove">
 					<div class="uk-cover-container">
-						{% set videoId = recipe.video|replace({'https://www.youtube.com/watch?v=': ''}) %}
-						<iframe src="https://www.youtube.com/embed/{{ videoId }}" width="100%" height="400" frameborder="0" allowfullscreen uk-responsive uk-video></iframe>
+						<iframe src="https://www.youtube.com/embed/{{ videoId }}?autoplay=0" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
 					</div>
 				</div>
 			</div>
@@ -117,10 +111,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<!-- Script pour copier le lien dans le presse-papiers -->
-	<script>
+	</div><!-- Script pour copier le lien dans le presse-papiers --><script>
 		function copyToClipboard(text) {
 navigator.clipboard.writeText(text).then(function () {
 alert('Lien copié dans le presse-papiers');

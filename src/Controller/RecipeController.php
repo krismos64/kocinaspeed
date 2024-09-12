@@ -21,10 +21,27 @@ class RecipeController extends AbstractController
             throw $this->createNotFoundException('No recipe found for slug ' . $slug);
         }
 
+        // Extraire l'ID de la vidéo YouTube s'il y a une vidéo
+        $videoId = null;
+        if ($recipe->getVideo()) {
+            $videoId = $this->extractYoutubeId($recipe->getVideo());
+        }
+
         return $this->render('recipe/details.html.twig', [
             'recipe' => $recipe,
+            'videoId' => $videoId, // Passer l'ID de la vidéo à la vue
         ]);
     }
+
+    // Méthode privée pour extraire l'ID de la vidéo YouTube
+    private function extractYoutubeId(string $videoUrl): ?string
+    {
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $videoUrl, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    }
+
 
     #[Route('/recipes', name: 'app_recipe_index')]
     public function index(RecipeRepository $recipeRepository, Request $request): Response
