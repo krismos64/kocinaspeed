@@ -1,26 +1,132 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}La recette{% endblock %}
-
+{% block title %}
+	{{ recipe.name }}
+	- Kocinaspeed
+{% endblock %}
 
 {% block body %}
-<section class="py-5 container">
-    <div class="row py-lg-5 justify-content-center">
-        <div class="col-lg-8 col-md-10 mx-auto text-center">
-            <h1 class="fw-bold mb-4">{{ recipe.name }}</h1>
-            <div class="recipe-image mb-4">
-                <img src="/uploads/{{ recipe.image }}" alt="{{ recipe.name }} Image" class="img-fluid rounded shadow-sm hover-zoom">
-            </div>
-            <p class="card-text">{{ recipe.description | raw }}</p>
-            <h2 class="fw-light mb-3">La vidéo</h2>
-            <div class="video-responsive">
-                <iframe 
-                    src="{{ recipe.video | replace({'watch': 'embed', '?v=': '/'}) }}" 
-                    frameborder="0" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-    </div>
-</section>
+	<div
+		class="uk-container uk-margin-large-top">
+		<!-- Nom de la recette avec un style coloré et animé -->
+		<h1 class="uk-heading-line uk-text-center uk-margin-large-bottom">
+			<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">{{ recipe.name }}</span>
+		</h1>
+
+		<!-- Section Image, Vidéo et Description -->
+		<div
+			class="uk-grid-small uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>
+			<!-- Image de la recette sans animation -->
+			<div class="uk-text-center">
+				{% if recipe.image %}
+					<img src="{{ asset('uploads/' ~ recipe.image) }}" alt="{{ recipe.name }}" class="uk-border-rounded-large" style="max-width: 100%;">
+				{% else %}
+					<img src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}" class="uk-border-rounded-large" style="max-width: 100%;">
+				{% endif %}
+			</div>
+
+			<!-- Description de la recette dans une vignette avec ombre permanente et dégradé -->
+			<div>
+				<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-animation-fade" style="background: linear-gradient(135deg, #ffedd5, #ff7043); box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+					<h3 class="uk-card-title uk-text-bold" style="color: #ff7043;">Description</h3>
+					<p class="uk-text-lead">{{ recipe.description|raw }}</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Vidéo de la recette (si disponible) -->
+		{% if recipe.video %}
+			<!-- Titre "La recette en vidéo" avec le même style que le titre de la recette -->
+			<h2 class="uk-heading-line uk-text-center uk-margin-large-top">
+				<span style="color: #ff7043; font-size: 2rem; font-weight: 700; letter-spacing: 1px;">La recette en vidéo</span>
+			</h2>
+
+			<div class="uk-margin-large-top uk-text-center">
+				<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-padding-remove">
+					<div class="uk-cover-container">
+						{% set videoId = recipe.video|replace({'https://www.youtube.com/watch?v=': ''}) %}
+						<iframe src="https://www.youtube.com/embed/{{ videoId }}" width="100%" height="400" frameborder="0" allowfullscreen uk-responsive uk-video></iframe>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		<!-- Partager la recette -->
+		<div class="uk-margin-large-top uk-text-center">
+			<div class="uk-grid-small uk-child-width-1-2@s uk-child-width-1-4@m uk-grid-divider" uk-grid>
+				<div>
+					<!-- Bouton "Partager la recette" -->
+					<div class="uk-inline">
+						<button class="uk-button uk-button-primary uk-button-large uk-border-pill uk-box-shadow-hover-large" type="button" style="background-color: #ff7043; color: white;">
+							<span uk-icon="icon: social"></span>
+							Partager la recette
+						</button>
+						<div uk-dropdown="mode: click; pos: bottom-center">
+							<ul class="uk-nav uk-dropdown-nav">
+								<li>
+									<a href="#" onclick="copyToClipboard('{{ path('app_recipe_details', {slug: recipe.slug}, true) }}')">
+										<span uk-icon="icon: link"></span>
+										Copier le lien
+									</a>
+								</li>
+								<li>
+									<a href="sms:?body={{ path('app_recipe_details', {slug: recipe.slug}, true) }}">
+										<span uk-icon="icon: phone"></span>
+										Partager par SMS
+									</a>
+								</li>
+								<li>
+									<a href="mailto:?subject=Regarde cette recette&body={{ path('app_recipe_details', {slug: recipe.slug}, true) }}">
+										<span uk-icon="icon: mail"></span>
+										Partager par Email
+									</a>
+								</li>
+								<li>
+									<a href="https://www.facebook.com/sharer/sharer.php?u={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
+										<span uk-icon="icon: facebook"></span>
+										Partager sur Facebook
+									</a>
+								</li>
+								<li>
+									<a href="https://www.linkedin.com/shareArticle?mini=true&url={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
+										<span uk-icon="icon: linkedin"></span>
+										Partager sur LinkedIn
+									</a>
+								</li>
+								<li>
+									<a href="https://www.snapchat.com/share?url={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
+										<span uk-icon="icon: snapchat"></span>
+										Partager sur Snapchat
+									</a>
+								</li>
+								<li>
+									<a href="https://web.whatsapp.com/send?text={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
+										<span uk-icon="icon: whatsapp"></span>
+										Partager sur WhatsApp
+									</a>
+								</li>
+								<li>
+									<a href="https://www.messenger.com/t/?link={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
+										<span uk-icon="icon: commenting"></span>
+										Partager sur Messenger
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Script pour copier le lien dans le presse-papiers -->
+	<script>
+		function copyToClipboard(text) {
+navigator.clipboard.writeText(text).then(function () {
+alert('Lien copié dans le presse-papiers');
+}, function () {
+alert('Échec de la copie du lien');
+});
+}
+	</script>
 {% endblock %}

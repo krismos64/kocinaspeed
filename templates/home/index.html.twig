@@ -6,7 +6,7 @@
 {% block body %}
 	<div class="uk-container">
 		<div class="uk-border-rounded-large uk-background-top-center uk-background-cover
-						  uk-background-norepeat uk-light uk-inline uk-overflow-hidden uk-width-1-1" style="background-image: url('{{ asset('img/background1.jpg') }}');">
+																														  uk-background-norepeat uk-light uk-inline uk-overflow-hidden uk-width-1-1" style="background-image: url('{{ asset('img/background1.jpg') }}');">
 			<div class="uk-position-cover uk-header-overlay"></div>
 			<div class="uk-position-relative" data-uk-grid>
 				<div class="uk-width-1-2@m uk-flex uk-flex-middle">
@@ -19,31 +19,58 @@
 		</div>
 	</div>
 
-	<!-- Section de présentation avec animations -->
+	<!-- Section de présentation avec une vignette (card) et un titre personnalisé -->
 	<div class="uk-section uk-section-muted uk-padding uk-position-relative">
-		<div class="uk-container uk-text-center">
-			<h2 class="uk-heading-line uk-text-bold uk-animation-slide-top-small">
-				<span>Bienvenue sur Kocinaspeed</span>
-			</h2>
-			<p class="uk-text-lead uk-animation-fade">
-				À titre amateur, notre site a pour objectif de vous offrir des recettes rapides, faciles à préparer, et surtout délicieuses.
-								Que vous soyez pressé ou que vous cherchiez une idée pour épater vos invités, nous avons une solution adaptée à vos envies culinaires.
-								Explorez nos différentes catégories, laissez des avis, et partagez vos découvertes avec d'autres passionnés de cuisine ! Nous essayons de mettre à jour régulièrement notre base de données pour vous proposer de nouvelles recettes.
-			</p>
-			<!-- Animation d'image ajoutée -->
-			<div class="uk-animation-kenburns uk-inline-clip uk-transition-toggle" tabindex="0">
-				<img src="{{ asset('img/logo2.png') }}" alt="logo kocinaspeed" class="uk-border-rounded-large" style="max-width: 100%; height: auto;">
+		<div
+			class="uk-container uk-text-center">
+			<!-- Vignette ou carte UIkit pour encadrer la section -->
+			<div
+				class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-padding-large">
+
+				<!-- Animation d'image ajoutée sous la carte -->
+				<div class="uk-animation-kenburns uk-inline-clip uk-transition-toggle uk-margin-large-top" tabindex="0">
+					<img src="{{ asset('img/logo2.png') }}" alt="logo kocinaspeed" class="uk-border-rounded-large" style="max-width: 100%; height: auto;">
+				</div>
+
+
+				<!-- Titre personnalisé avec une couleur différente -->
+				<h2 class="uk-heading-line uk-text-bold uk-animation-slide-top-small" style="color: #ff7043;">
+					<span>Bienvenue sur
+						<strong>Kocinaspeed</strong>
+					</span>
+				</h2>
+
+				<p class="uk-text-lead uk-animation-fade uk-margin-medium-top">
+					À titre amateur, notre site a pour objectif de vous offrir des
+					<strong>recettes rapides</strong>,
+					<strong>faciles à préparer</strong>, et surtout
+					<strong>délicieuses</strong>.
+				</p>
+
+				<p class="uk-text-lead uk-animation-fade">
+					Que vous soyez pressé ou que vous cherchiez une idée pour épater vos invités,
+					<strong>Kocinaspeed</strong>
+					a une solution adaptée à vos
+					<em>envies culinaires</em>.
+				</p>
+
+				<!-- Liste des avantages avec une animation -->
+				<ul class="uk-list uk-list-large uk-list-bullet uk-text-left uk-margin-large-top uk-animation-slide-bottom-small">
+					<li>Explorez nos différentes catégories de recettes</li>
+					<li>Laissez vos avis et partagez vos découvertes avec d'autres passionnés</li>
+					<li>Des mises à jour régulières avec de nouvelles recettes pour vous inspirer</li>
+				</ul>
+
 			</div>
 		</div>
 	</div>
-	<!-- Fin de la section de présentation -->
 
 	<div class="uk-section uk-section-default">
 		<div class="uk-container">
 			<div data-uk-grid>
 				<div class="uk-width-1-4@m sticky-container">
 					<div data-uk-sticky="offset: 100; bottom: true; media: @m;">
-						<h2>Recettes</h2>
+						<h2>Nos recettes</h2>
 						<ul
 							class="uk-nav-default uk-nav-parent-icon uk-nav-filter uk-margin-medium-top" data-uk-nav>
 							<!-- Catégorie Plats -->
