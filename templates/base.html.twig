@@ -8,6 +8,7 @@
 			{% endblock %}
 		</title>
 		<link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.3/dist/css/uikit.min.css"/>
 		<link rel="stylesheet" href="{{ asset('css/main.css') }}">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap" rel="stylesheet">
@@ -15,9 +16,12 @@
 		<script src="{{ asset('js/uikit.js') }}" defer></script>
 	</head>
 	<body>
+		<!-- Section Navbar -->
 		<nav class="uk-navbar-container uk-letter-spacing-small">
 			<div class="uk-container">
-				<div class="uk-position-z-index" data-uk-navbar>
+				<div
+					class="uk-position-z-index" data-uk-navbar>
+					<!-- Navbar Left (Logo + Navigation) -->
 					<div
 						class="uk-navbar-left">
 						<!-- Logo -->
@@ -25,6 +29,7 @@
 							<img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="" uk-margin-small-right">
 							Kocinaspeed
 						</a>
+						<!-- Menu principal visible sur desktop -->
 						<ul class="uk-navbar-nav uk-visible@m uk-margin-large-left">
 							<li class="uk-active">
 								<a href="{{ path('app_home') }}">Accueil</a>
@@ -34,7 +39,10 @@
 							</li>
 						</ul>
 					</div>
-					<div class="uk-navbar-right">
+					<!-- Navbar Right (Recherche et Connexion) -->
+					<div
+						class="uk-navbar-right">
+						<!-- Barre de recherche -->
 						<div>
 							<a class="uk-navbar-toggle" data-uk-search-icon href="#"></a>
 							<div class="uk-drop uk-background-default" data-uk-drop="mode: click; pos: left-center; offset: 0">
@@ -44,11 +52,13 @@
 								</form>
 							</div>
 						</div>
+						<!-- Bouton de connexion -->
 						<div class="uk-navbar-item">
 							<div>
 								<a class="uk-button uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
 							</div>
 						</div>
+						<!-- Menu Burger pour mobile -->
 						<a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-toggle>
 							<span data-uk-navbar-toggle-icon></span>
 						</a>
@@ -57,19 +67,21 @@
 			</div>
 		</nav>
 
+		<!-- Section principale (Contenu du site) -->
 		{% block body %}{% endblock %}
 
+		<!-- Section Footer -->
 		<footer class="uk-section uk-section-default">
 			<div class="uk-container uk-text-secondary uk-text-500">
 				<div class="uk-child-width-1-2@s" data-uk-grid>
 					<div>
-						<!-- Logo ajouté dans le footer -->
+						<!-- Logo dans le footer -->
 						<a href="{{ path('app_home') }}" class="uk-logo">
 							<img src="{{ asset('img/logo.png') }}" alt="Logo" width="80" height="80" class="uk-margin-small-right">
 							Kocinaspeed
 						</a>
 					</div>
-
+					<!-- Copyright et lien vers le créateur du site -->
 					<div class="uk-margin-medium-top uk-text-small uk-text-muted">
 						<div>Site réalisé par
 							<a class="uk-link" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024</a>
@@ -79,10 +91,12 @@
 			</div>
 		</footer>
 
+		<!-- Menu Offcanvas pour mobile -->
 		<div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
 			<div class="uk-offcanvas-bar">
 				<a class="uk-logo" href="{{ path('app_home') }}">Kocinaspeed</a>
 				<button class="uk-offcanvas-close" type="button" data-uk-close="ratio: 1.2"></button>
+				<!-- Menu principal Offcanvas -->
 				<ul class="uk-nav uk-nav-primary uk-nav-offcanvas uk-margin-medium-top uk-text-center">
 					<li class="uk-active">
 						<a href="{{ path('app_home') }}">Accueil</a>
@@ -92,11 +106,12 @@
 					</li>
 				</ul>
 
+				<!-- Bouton de connexion dans le Offcanvas -->
 				<div class="uk-margin-medium-top">
 					<a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
 				</div>
 
-				<!-- Logo  -->
+				<!-- Logo dans le Offcanvas -->
 				<div class="uk-margin-medium-top uk-text-center">
 					<a href="{{ path('app_home') }}">
 						<img src="{{ asset('img/logo.png') }}" alt="Logo" width="150" height="150" class="uk-margin-small-top">
