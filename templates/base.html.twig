@@ -20,11 +20,9 @@
 		<nav class="uk-navbar-container uk-letter-spacing-small">
 			<div class="uk-container">
 				<div
-					class="uk-position-z-index" data-uk-navbar>
-					<!-- Navbar Left (Logo + Navigation) -->
-					<div
-						class="uk-navbar-left">
-						<!-- Logo -->
+					class="uk-navbar" data-uk-navbar>
+					<!-- Navbar Left (Logo et Navigation) -->
+					<div class="uk-navbar-left">
 						<a class="uk-navbar-item uk-logo" href="{{ path('app_home') }}">
 							Kocinaspeed
 						</a>
@@ -38,20 +36,16 @@
 							</li>
 						</ul>
 					</div>
-					<!-- Navbar Right (Recherche et Connexion/Espace Admin) -->
-					<div
-						class="uk-navbar-right">
-						<!-- Barre de recherche -->
-						<div>
-							<a class="uk-navbar-toggle" data-uk-search-icon href="#"></a>
-							<div class="uk-drop uk-background-default" data-uk-drop="mode: click; pos: left-center; offset: 0">
-								<form class="uk-search uk-search-default uk-width-1-1" action="{{ path('app_recipe_search') }}" method="get">
-									<span data-uk-search-icon></span>
-									<input class="uk-search-input uk-text-small uk-border-rounded uk-form-large" type="search" placeholder="Recherche par nom de recette..." name="query">
-								</form>
-							</div>
+					<!-- Navbar Center (Logo YouTube) -->
+					<div class="uk-navbar-center">
+						<div class="uk-visible@m">
+							<a href="https://www.youtube.com/@Kocinaspeed-d2w" target="_blank">
+								<img src="{{ asset('img/logo-youtube.jpg') }}" alt="YouTube Kocinaspeed" width="200" height="200">
+							</a>
 						</div>
-						<!-- Bouton de Connexion ou Espace Admin selon l'état de connexion -->
+					</div>
+					<!-- Navbar Right (Connexion/Espace Admin) -->
+					<div class="uk-navbar-right">
 						<div class="uk-navbar-item">
 							<div>
 								{% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -80,7 +74,7 @@
 		<!-- Section Footer -->
 		<footer class="uk-section uk-section-default">
 			<div class="uk-container uk-text-secondary uk-text-500">
-				<div class="uk-child-width-1-2@s" data-uk-grid>
+				<div class="uk-child-width-1-2@s uk-child-width-1-3@m" data-uk-grid>
 					<div>
 						<!-- Logo dans le footer -->
 						<a href="{{ path('app_home') }}" class="uk-logo">
@@ -88,10 +82,15 @@
 							Kocinaspeed
 						</a>
 					</div>
-					<!-- Copyright et lien vers le créateur du site -->
-					<div class="uk-margin-medium-top uk-text-small uk-text-muted">
+					<div
+						class="uk-margin-medium-top uk-text-small uk-text-muted">
+						<!-- Copyright et lien vers le créateur du site -->
 						<div>Site réalisé par
 							<a class="uk-link" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024</a>
+						</div>
+						<!-- Adresse e-mail de contact -->
+						<div>Contact :
+							<a href="mailto:support@kocinaspeed.fr">christophe.mostefaoui.dev@gmail.com</a>
 						</div>
 					</div>
 				</div>
@@ -124,6 +123,13 @@
 					{% else %}
 						<a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
 					{% endif %}
+				</div>
+
+				<!-- Logo YouTube dans le Offcanvas pour mobile -->
+				<div class="uk-margin-medium-top uk-text-center">
+					<a href="https://www.youtube.com/@Kocinaspeed-d2w" target="_blank">
+						<img src="{{ asset('img/logoyoutube.jpg') }}" alt="YouTube Kocinaspeed" width="200" height="200">
+					</a>
 				</div>
 
 				<!-- Logo dans le Offcanvas -->
