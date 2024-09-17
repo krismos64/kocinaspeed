@@ -39,7 +39,7 @@
 					<!-- Navbar Center (Logo YouTube) -->
 					<div class="uk-navbar-center">
 						<div class="uk-visible@m">
-							<a href="https://www.youtube.com/@Kocinaspeed-d2w" target="_blank">
+							<a href="https://www.youtube.com/channel/UCkMEwuAnNMG21xfh_rmjkFg" target="_blank">
 								<img src="{{ asset('img/logo-youtube.jpg') }}" alt="YouTube Kocinaspeed" width="200" height="200">
 							</a>
 						</div>
@@ -68,13 +68,12 @@
 			</div>
 		</nav>
 
-		<!-- Section principale (Contenu du site) -->
+		<!-- Section principale -->
 		{% block body %}{% endblock %}
-
 		<!-- Section Footer -->
 		<footer class="uk-section uk-section-default">
 			<div class="uk-container uk-text-secondary uk-text-500">
-				<div class="uk-child-width-1-2@s uk-child-width-1-3@m" data-uk-grid>
+				<div class="uk-child-width-1-2@s uk-grid-divider" data-uk-grid>
 					<div>
 						<!-- Logo dans le footer -->
 						<a href="{{ path('app_home') }}" class="uk-logo">
@@ -82,15 +81,15 @@
 							Kocinaspeed
 						</a>
 					</div>
-					<div
-						class="uk-margin-medium-top uk-text-small uk-text-muted">
-						<!-- Copyright et lien vers le créateur du site -->
-						<div>Site réalisé par
-							<a class="uk-link" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024</a>
-						</div>
-						<!-- Adresse e-mail de contact -->
-						<div>Contact :
-							<a href="mailto:support@kocinaspeed.fr">christophe.mostefaoui.dev@gmail.com</a>
+					<!-- Copyright et Mentions Légales -->
+					<div class="uk-margin-medium-top uk-text-small uk-text-muted">
+						<div>
+							<p>Site réalisé par
+								<a class="uk-link" href="https://krismos.fr/" target="_blank" rel="noopener noreferrer">Krismos64 Copyright 2024 (Christophe Mostefaoui)</a>
+							</p>
+							<p>
+								<a href="{{ path('app_mentions_legales') }}">Mentions Légales</a>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -127,7 +126,7 @@
 
 				<!-- Logo YouTube dans le Offcanvas pour mobile -->
 				<div class="uk-margin-medium-top uk-text-center">
-					<a href="https://www.youtube.com/@Kocinaspeed-d2w" target="_blank">
+					<a href="https://www.youtube.com/channel/UCkMEwuAnNMG21xfh_rmjkFg" target="_blank">
 						<img src="{{ asset('img/logoyoutube.jpg') }}" alt="YouTube Kocinaspeed" width="200" height="200">
 					</a>
 				</div>
