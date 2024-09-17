@@ -1,18 +1,32 @@
-{% extends 'emails/base_email.html.twig' %}
-
-{% block content %}
-	<div class="uk-container">
-		<h2>Confirmation de réception de votre message</h2>
-		<p>Bonjour,</p>
-		<p>Nous avons bien reçu votre message et vous en remercions. Notre équipe vous répondra dans les plus brefs délais.</p>
-		<h3>Récapitulatif de votre message :</h3>
-		<p>
-			<strong>Titre :</strong>
-			{{ title|e }}</p>
-		<p>
-			<strong>Message :</strong>
-		</p>
-		<p>{{ message|nl2br }}</p>
-		<p>Cordialement,<br>L'équipe de KocinaSpeed</p>
-	</div>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Confirmation de réception de votre message</title>
+	</head>
+	<body style="font-family: Arial, sans-serif; font-size: 16px; color: #333333; line-height: 1.5; margin: 0; padding: 20px;">
+		<div style="max-width: 600px; margin: 0 auto;">
+			<h2 style="color: #1e87f0;">Confirmation de réception de votre message</h2>
+			<p>Bonjour,</p>
+			<p>Nous avons bien reçu votre message et vous remercions de nous avoir contactés. Notre équipe vous répondra dans les plus brefs délais.</p>
+			<h3>Récapitulatif de votre message :</h3>
+			<p>
+				<strong>Titre :</strong>
+				{{ title|e }}</p>
+			<p>
+				<strong>Message :</strong>
+			</p>
+			<p>{{ message|nl2br }}</p>
+			<p>Cordialement,<br>L'équipe de KocinaSpeed</p>
+			<p>
+				<img src="https://www.kocinaspeed.fr/img/logo2.png" alt="Logo KocinaSpeed" style="max-width: 100%; height: auto; border-radius: 8px;">
+			</p>
+			<p style="font-size: 12px; color: #888888;">
+				--<br>
+				KocinaSpeed<br>
+				Site web :
+				<a href="https://www.kocinaspeed.fr" style="color: #1e87f0; text-decoration: none;">www.kocinaspeed.fr</a>
+			</p>
+		</div>
+	</body>
+</html>
