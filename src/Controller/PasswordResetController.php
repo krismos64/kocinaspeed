@@ -4,22 +4,31 @@ namespace App\Controller;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class PasswordResetController extends AbstractController
 {
     #[Route('/forgot-password', name: 'app_forgot_password')]
-    public function forgotPassword(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, TokenGeneratorInterface $tokenGenerator, MailerInterface $mailer): Response
-    {
+    public function forgotPassword(
+        Request $request,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager,
+        TokenGeneratorInterface $tokenGenerator,
+        MailerInterface $mailer,
+        LoggerInterface $logger
+    ): Response {
         $email = $request->request->get('email');
+
         if ($email) {
             $user = $userRepository->findOneBy(['email' => $email]);
 
@@ -30,18 +39,28 @@ class PasswordResetController extends AbstractController
                 $user->setResetTokenExpiry(new \DateTime('+1 hour'));
                 $entityManager->flush();
 
-                // Envoyer l'e-mail
-                $resetUrl = $this->generateUrl('app_reset_password', ['token' => $resetToken], UrlGeneratorInterface::ABSOLUTE_URL);
+                // Générer le contenu de l'email à partir du template Twig
+                $emailContent = $this->renderView('emails/password_reset.html.twig', [
+                    'user' => $user,
+                    'resetToken' => $resetToken,
+                ]);
+
+                // Créer l'e-mail avec le contenu rendu
                 $emailMessage = (new Email())
-                    ->from('no-reply@votresite.com')
+                    ->from('support@kocinaspeed.fr')
                     ->to($user->getEmail())
                     ->subject('Réinitialisation de votre mot de passe')
-                    ->html("<p>Pour réinitialiser votre mot de passe, cliquez sur ce lien :</p><a href=\"$resetUrl\">Réinitialiser mon mot de passe</a><p>Ce lien expirera dans 1 heure.</p>");
+                    ->html($emailContent);
 
-                // Envoi de l'email
-                $mailer->send($emailMessage);
-
-                $this->addFlash('success', 'Un e-mail de réinitialisation de mot de passe a été envoyé à votre adresse.');
+                try {
+                    // Envoi de l'email de manière synchrone
+                    $mailer->send($emailMessage);
+                    $this->addFlash('success', 'Un e-mail de réinitialisation de mot de passe a été envoyé à votre adresse.');
+                } catch (TransportExceptionInterface $e) {
+                    // Gérer l'erreur en enregistrant le message dans les logs
+                    $logger->error('Erreur lors de l\'envoi de l\'email de réinitialisation : ' . $e->getMessage());
+                    $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi de l\'e-mail. Veuillez réessayer plus tard.');
+                }
             } else {
                 $this->addFlash('error', 'Cette adresse e-mail n\'est pas enregistrée dans notre système.');
             }
@@ -51,8 +70,13 @@ class PasswordResetController extends AbstractController
     }
 
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
-    public function resetPassword(string $token, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
-    {
+    public function resetPassword(
+        string $token,
+        Request $request,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
         $user = $userRepository->findOneBy(['resetToken' => $token]);
 
         // Vérification de la validité du token
