@@ -1,0 +1,18 @@
+{% extends 'emails/base_email.html.twig' %}
+
+{% block content %}
+	<div class="uk-container">
+		<h2>Confirmation de réception de votre message</h2>
+		<p>Bonjour,</p>
+		<p>Nous avons bien reçu votre message et vous en remercions. Notre équipe vous répondra dans les plus brefs délais.</p>
+		<h3>Récapitulatif de votre message :</h3>
+		<p>
+			<strong>Titre :</strong>
+			{{ title|e }}</p>
+		<p>
+			<strong>Message :</strong>
+		</p>
+		<p>{{ message|nl2br }}</p>
+		<p>Cordialement,<br>L'équipe de KocinaSpeed</p>
+	</div>
+{% endblock %}

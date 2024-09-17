@@ -1,0 +1,17 @@
+{% extends 'emails/base_email.html.twig' %}
+
+{% block content %}
+	<div class="uk-container">
+		<h2>Nouveau message de contact</h2>
+		<p>
+			<strong>Email de l'expéditeur :</strong>
+			{{ email|e }}</p>
+		<p>
+			<strong>Titre du message :</strong>
+			{{ title|e }}</p>
+		<p>
+			<strong>Message :</strong>
+		</p>
+		<p>{{ message|nl2br }}</p>
+	</div>
+{% endblock %}

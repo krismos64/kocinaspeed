@@ -5,9 +5,11 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+
 use App\Entity\ContactMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -42,24 +44,46 @@ class ContactController extends AbstractController
             $entityManager->persist($contactMessage);
             $entityManager->flush();
 
+            // Générer le contenu des emails à partir des templates Twig
+            $supportEmailContent = $this->renderView('emails/support_email.html.twig', [
+                'email' => $email,
+                'title' => $title,
+                'message' => $message,
+            ]);
+
+            $confirmationEmailContent = $this->renderView('emails/confirmation_email.html.twig', [
+                'title' => $title,
+                'message' => $message,
+            ]);
+
             // Envoyer l'e-mail à l'équipe support
-            $emailMessage = (new Email())
-                ->from('support@kocinaspeed.fr')
+            $supportEmail = (new Email())
+                ->from('support@kocinaspeed.fr') // Votre adresse email
                 ->replyTo($email) // Permettre de répondre directement à l'expéditeur
                 ->to('support@kocinaspeed.fr')
-                ->subject($title)
-                ->html(
-                    '<p><strong>Email:</strong> ' . htmlspecialchars($email) . '</p>' .
-                        '<p>' . nl2br(htmlspecialchars($message)) . '</p>'
-                );
+                ->subject('Nouveau message de contact : ' . $title)
+                ->html($supportEmailContent);
+
+            // Envoyer l'e-mail de confirmation à l'utilisateur
+            $confirmationEmail = (new Email())
+                ->from('support@kocinaspeed.fr') // Votre adresse email
+                ->to($email) // Adresse de l'utilisateur
+                ->subject('Confirmation de réception de votre message')
+                ->html($confirmationEmailContent);
 
             try {
-                $mailer->send($emailMessage);
+                // Envoyer l'e-mail au support
+                $mailer->send($supportEmail);
+
+                // Envoyer l'e-mail de confirmation à l'utilisateur
+                $mailer->send($confirmationEmail);
+
                 // Message flash de confirmation
-                $this->addFlash('success', 'Votre message a bien été envoyé à l\'équipe support. Nous vous répondrons dans les plus brefs délais.');
+                $this->addFlash('success', 'Votre message a bien été envoyé. Un email de confirmation vous a été envoyé.');
             } catch (TransportExceptionInterface $e) {
                 // Gérer l'erreur en enregistrant le message dans les logs
-                $logger->error('Erreur lors de l\'envoi de l\'email de contact : ' . $e->getMessage());
+                $logger->error('Erreur lors de l\'envoi des emails : ' . $e->getMessage());
+
                 // Message flash d'erreur
                 $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer ultérieurement.');
             }

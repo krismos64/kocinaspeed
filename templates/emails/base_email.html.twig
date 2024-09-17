@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block subject %}{% endblock %}
+		</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.16/dist/css/uikit.min.css"/>
+		<style>
+			/* Styles spécifiques pour les emails */
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f0f0f0;
+				margin: 0;
+				padding: 20px;
+			}
+
+			.uk-container {
+				background-color: #ffffff;
+				padding: 20px;
+				border-radius: 5px;
+			}
+
+			h2 {
+				color: #1e87f0;
+			}
+
+			p {
+				font-size: 16px;
+				line-height: 1.5;
+			}
+
+			/* Adaptation pour les clients email */
+			@media only screen and(max-width: 600px) {
+				.uk-container {
+					padding: 15px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		{% block content %}{% endblock %}
+	</body>
+</html>
