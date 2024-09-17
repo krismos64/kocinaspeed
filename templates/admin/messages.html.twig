@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Messages reçus
+{% endblock %}
+
+{% block body %}
+	<div class="uk-section uk-section-default">
+		<div class="uk-container">
+			<h1 class="uk-heading-divider">Messages reçus</h1>
+			<table class="uk-table uk-table-striped">
+				<thead>
+					<tr>
+						<th>Email</th>
+						<th>Sujet</th>
+						<th>Message</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for message in messages %}
+						<tr>
+							<td>{{ message.email }}</td>
+							<td>{{ message.title }}</td>
+							<td>{{ message.message }}</td>
+							<td>{{ message.createdAt|date('d/m/Y H:i') }}</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4">Aucun message reçu.</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}

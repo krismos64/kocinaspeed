@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use App\Repository\ContactMessageRepository;
 use App\Entity\ContactMessage;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -20,13 +19,19 @@ class ContactController extends AbstractController
         if ($request->isMethod('POST')) {
             // Récupérer les données du formulaire
             $email = $request->request->get('email');
-            $subject = $request->request->get('subject');
+            $title = $request->request->get('title');
             $message = $request->request->get('message');
+
+            // Vérification des champs vides ou nuls
+            if (!$email || !$title || !$message) {
+                $this->addFlash('error', 'Tous les champs sont requis.');
+                return $this->redirectToRoute('app_contact');
+            }
 
             // Créer un message de contact pour l'enregistrer dans la base de données
             $contactMessage = new ContactMessage();
             $contactMessage->setEmail($email);
-            $contactMessage->setSubject($subject);
+            $contactMessage->setTitle($title);
             $contactMessage->setMessage($message);
             $entityManager->persist($contactMessage);
             $entityManager->flush();
@@ -35,7 +40,7 @@ class ContactController extends AbstractController
             $emailMessage = (new Email())
                 ->from($email)
                 ->to('support@kocinaspeed.fr')
-                ->subject($subject)
+                ->subject($title)
                 ->html("<p><strong>Email:</strong> $email</p><p>$message</p>");
 
             $mailer->send($emailMessage);
