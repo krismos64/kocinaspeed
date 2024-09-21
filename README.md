@@ -6,8 +6,7 @@ Table des matières
     •	Installation
     •	Configuration
     •	Technologies utilisées
-    •	Contributeurs
-    •	Licence
+    •	Contributeur
 
 Fonctionnalités
 
@@ -27,12 +26,11 @@ Pré-requis
     •	MySQL
     •	Symfony CLI (facultatif mais recommandé)
     •	Serveur web (Apache, Nginx, etc.)
-    •	Node.js & npm (pour la gestion des assets)
 
 Étapes d’installation
 
     1.	Clonez ce dépôt GitHub :
-    git clone https://github.com/votre-utilisateur/kocinaspeed.git
+    git clone https://github.com/krismos64/kocinaspeed
 
 cd kocinaspeed
 
@@ -67,8 +65,8 @@ MAILER_DSN=smtp://support@kocinaspeed.fr:password@smtp.server.com:465?encryption
 
 Technologies utilisées
 
-    •	Framework : Symfony 6
-    •	Langages : PHP 8, JavaScript (ES6), HTML5/CSS3
+    •	Framework : Symfony 7
+    •	Langages : PHP 8, JavaScript, HTML5/CSS3
     •	Base de données : MySQL
     •	ORM : Doctrine
     •	Front-end : UIkit, Twig
@@ -82,9 +80,3 @@ Contributeurs
     •	Christophe Mostefaoui - Développeur principal
 
 Si vous souhaitez contribuer, n’hésitez pas à ouvrir une issue ou une pull request. Toute suggestion est la bienvenue !
-
-Licence
-
-Ce projet est sous licence MIT. Consultez le fichier LICENSE pour plus d’informations.
-
-Tu peux bien sûr adapter ce fichier en fonction des spécificités de ton projet ou ajouter des sections supplémentaires comme des captures d’écran ou des informations sur les versions.
