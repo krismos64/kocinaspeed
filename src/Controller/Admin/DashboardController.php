@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Recipe;
+use App\Entity\Review;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -16,22 +17,28 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
+        // Rediriger vers le CRUD des recettes par défaut
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        $url = $adminUrlGenerator->setController(RecipeCrudController::class)->generateUrl();
-
-        return $this->redirect($url);
+        return $this->redirect($adminUrlGenerator->setController(RecipeCrudController::class)->generateUrl());
     }
 
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Administration Kocinaspeed');
+            ->setTitle('Kocinaspeed Administration');
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToRoute('Retour à l\'accueil', 'fas fa-home', 'app_home');
-        yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
-        yield MenuItem::linkToCrud('Créations', 'fas fa-list', Recipe::class);
+        yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
+
+        yield MenuItem::section('Gestion des recettes');
+        yield MenuItem::linkToCrud('Recettes', 'fa fa-utensils', Recipe::class);
+
+        yield MenuItem::section('Gestion des avis');
+        yield MenuItem::linkToCrud('Avis', 'fa fa-comments', Review::class);
+
+        yield MenuItem::section('Gestion des utilisateurs');
+        yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class);
     }
 }

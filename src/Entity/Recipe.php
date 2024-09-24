@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,7 +14,7 @@ class Recipe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -36,8 +38,8 @@ class Recipe
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $rating = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $reviews = null;
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Review::class, orphanRemoval: true)]
+    private Collection $reviews;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -53,6 +55,10 @@ class Recipe
         'PLATS' => 'Plats',
         'APERITIFS' => 'Apéritifs',
     ];
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
@@ -82,6 +88,10 @@ class Recipe
         $this->name = $name;
 
         return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->name ?? 'Recette sans nom';
     }
 
     public function getSlug(): ?string
@@ -180,14 +190,29 @@ class Recipe
         return $this;
     }
 
-    public function getReviews(): ?string
+    public function getReviews(): Collection
     {
         return $this->reviews;
     }
 
-    public function setReviews(?string $reviews): self
+    public function addReview(Review $review): self
     {
-        $this->reviews = $reviews;
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getRecipe() === $this) {
+                $review->setRecipe(null);
+            }
+        }
 
         return $this;
     }
@@ -202,5 +227,22 @@ class Recipe
         $this->category = $category;
 
         return $this;
+    }
+
+    public function calculateAverageRating(): void
+    {
+        $approvedReviews = $this->reviews->filter(function ($review) {
+            return $review->isApproved();
+        });
+
+        if ($approvedReviews->count() > 0) {
+            $totalRating = array_sum($approvedReviews->map(function ($review) {
+                return $review->getRating();
+            })->toArray());
+
+            $this->rating = $totalRating / $approvedReviews->count();
+        } else {
+            $this->rating = null;
+        }
     }
 }

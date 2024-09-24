@@ -3,33 +3,97 @@
 namespace App\Controller;
 
 use App\Entity\Recipe;
+use App\Entity\Review;
+use App\Form\ReviewType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class RecipeController extends AbstractController
 {
     #[Route('/recipe/{slug}', name: 'app_recipe_details')]
-    public function show(RecipeRepository $recipeRepository, string $slug): Response
-    {
+    public function show(
+        RecipeRepository $recipeRepository,
+        string $slug,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger,
+        MailerInterface $mailer
+    ): Response {
         $recipe = $recipeRepository->findOneBySlug($slug);
 
         if (!$recipe) {
-            throw $this->createNotFoundException('No recipe found for slug ' . $slug);
+            throw $this->createNotFoundException('Aucune recette trouvée pour le slug ' . $slug);
         }
 
-        // Extraire l'ID de la vidéo YouTube s'il y a une vidéo
+        // Extraction de l'ID de la vidéo YouTube s'il y a une vidéo
         $videoId = null;
         if ($recipe->getVideo()) {
             $videoId = $this->extractYoutubeId($recipe->getVideo());
         }
 
+        // Gestion du formulaire d'avis
+        $review = new Review();
+        $form = $this->createForm(ReviewType::class, $review);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $review->setRecipe($recipe);
+            $review->setUser($this->getUser());
+            $review->setCreatedAt(new \DateTimeImmutable());
+            $review->setApproved(false); // L'administrateur devra approuver l'avis
+
+            // Gestion des images uploadées
+            $images = $form->get('images')->getData();
+            $uploadedImages = [];
+
+            if ($images) {
+                foreach ($images as $image) {
+                    $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
+
+                    // Déplace le fichier dans le répertoire où sont stockées les images
+                    $image->move(
+                        $this->getParameter('review_images_directory'),
+                        $newFilename
+                    );
+
+                    $uploadedImages[] = $newFilename;
+                }
+
+                // Enregistre les noms de fichiers dans l'entité Review
+                $review->setImages($uploadedImages);
+            }
+
+            $entityManager->persist($review);
+            $entityManager->flush();
+
+            // Envoi d'une notification par email à l'administrateur
+            $email = (new Email())
+                ->from('support@kocinaspeed.fr')
+                ->to('support@kocinaspeed.fr')
+                ->subject('Nouvel avis en attente d\'approbation')
+                ->html('<p>Un nouvel avis a été soumis pour la recette "' . $recipe->getName() . '". Veuillez vous connecter à l\'administration pour l\'approuver.</p>');
+
+            $mailer->send($email);
+
+            // Message flash de confirmation
+            $this->addFlash('success', 'Merci, nous avons bien reçu votre avis, il est très constructif pour nous !');
+
+            return $this->redirectToRoute('app_recipe_details', ['slug' => $recipe->getSlug()]);
+        }
+
         return $this->render('recipe/details.html.twig', [
             'recipe' => $recipe,
-            'videoId' => $videoId, // Passer l'ID de la vidéo à la vue
+            'videoId' => $videoId,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -41,7 +105,6 @@ class RecipeController extends AbstractController
         }
         return null;
     }
-
 
     #[Route('/recipes', name: 'app_recipe_index')]
     public function index(RecipeRepository $recipeRepository, Request $request): Response
@@ -58,25 +121,6 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/add-recipe', name: 'create_recipe')]
-    public function createRecipe(EntityManagerInterface $entityManager): Response
-    {
-        $recipe = new Recipe();
-        $recipe->setName('New Recipe');
-        $recipe->setSlug('new-recipe');
-        $recipe->setSubtitle('This is a subtitle');
-        $recipe->setDescription('This is a description of the recipe.');
-        $recipe->setImage('https://via.placeholder.com/300x160');
-        $recipe->setVideo('https://example.com/video.mp4');
-        $recipe->setRating(4.5);
-        $recipe->setReviews(120);
-        $recipe->setCategory('Plats');
-        $entityManager->persist($recipe);
-        $entityManager->flush();
-
-        return new Response('Saved new recipe with id ' . $recipe->getId());
-    }
-
     #[Route('/search', name: 'app_recipe_search')]
     public function search(RecipeRepository $recipeRepository, Request $request): Response
     {
@@ -84,7 +128,7 @@ class RecipeController extends AbstractController
         $query = $request->query->get('query');
 
         if ($query) {
-            // Rechercher les recettes par nom 
+            // Rechercher les recettes par nom
             $recipes = $recipeRepository->createQueryBuilder('r')
                 ->where('r.name LIKE :query')
                 ->setParameter('query', '%' . $query . '%')
@@ -96,7 +140,7 @@ class RecipeController extends AbstractController
 
         return $this->render('recipe/search_results.html.twig', [
             'recipes' => $recipes,
-            'query' => $query
+            'query' => $query,
         ]);
     }
 }

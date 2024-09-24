@@ -8,6 +8,7 @@
 {% block body %}
 	<div
 		class="uk-container uk-margin-large-top">
+
 		<!-- Nom de la recette -->
 		<h1 class="uk-heading-line uk-text-center uk-margin-large-bottom">
 			<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">{{ recipe.name }}</span>
@@ -16,7 +17,7 @@
 		<!-- Section Image, Vidéo et Description -->
 		<div
 			class="uk-grid-small uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>
-			<!-- Image de la recette sans animation -->
+			<!-- Image de la recette -->
 			<div class="uk-text-center">
 				{% if recipe.image %}
 					<img src="{{ asset('uploads/' ~ recipe.image) }}" alt="{{ recipe.name }}" class="uk-border-rounded-large" style="max-width: 100%;">
@@ -25,7 +26,7 @@
 				{% endif %}
 			</div>
 
-			<!-- Description de la recette dans une vignette -->
+			<!-- Description de la recette -->
 			<div>
 				<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-animation-fade" style="background: linear-gradient(135deg, #ffedd5, #ff7043); box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
 					<h3 class="uk-card-title uk-text-bold" style="color: #ff7043;">Description</h3>
@@ -45,6 +46,124 @@
 			</div>
 		{% endif %}
 
+		<!-- Section des avis -->
+		<div class="uk-margin-large-top">
+			<h2 class="uk-heading-line uk-text-center">
+				<span>Les avis des utilisateurs</span>
+			</h2>
+
+			{% set approvedReviews = recipe.reviews|filter(r => r.isApproved()) %}
+
+			{% if approvedReviews|length > 0 %}
+				{% for review in approvedReviews %}
+					<div
+						class="uk-card uk-card-default uk-card-body uk-margin uk-animation-slide-bottom-small">
+						<!-- Note de l'avis -->
+						<p>
+							<strong>Note :</strong>
+							{% for i in 1..5 %}
+								{% if i <= review.rating %}
+									<span uk-icon="icon: star; ratio: 1.2" style="color: gold;"></span>
+								{% else %}
+									<span uk-icon="icon: star; ratio: 1.2" style="color: lightgrey;"></span>
+								{% endif %}
+							{% endfor %}
+						</p>
+
+						<!-- Avis -->
+						<div class="review mb-4">
+							<strong>{{ review.visitorName ?? 'Anonyme' }}</strong>
+							-
+							{{ review.rating }}/5
+							<p>{{ review.comment }}</p>
+
+							<!-- Images associées à l'avis -->
+							{% if review.images %}
+								<div class="review-images uk-margin-top uk-flex">
+									{% for image in review.images %}
+										<img src="{{ asset(image) }}" alt="Image d'avis" class="uk-border-rounded" style="max-width: 150px; margin-right: 10px;">
+									{% endfor %}
+								</div>
+							{% endif %}
+							<small>Le
+								{{ review.createdAt|date('d/m/Y H:i') }}</small>
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<p class="uk-text-center">Pas encore d'avis pour cette recette.</p>
+			{% endif %}
+		</div>
+
+		<!-- Formulaire pour laisser un avis -->
+		<div class="uk-margin-large-top">
+			<h3 class="uk-heading-line uk-text-center">
+				<span>Laissez votre avis</span>
+			</h3>
+			{{ form_start(form, {'attr': {'class': 'uk-form-stacked uk-width-1-2@m uk-align-center'}}) }}
+
+			<div class="uk-margin">
+				{{ form_label(form.visitorName) }}
+				<div class="uk-inline">
+					<span class="uk-form-icon" uk-icon="icon: user"></span>
+					{{ form_widget(form.visitorName, {'attr': {'class': 'uk-input', 'placeholder': 'Votre nom (facultatif)'}}) }}
+				</div>
+				{{ form_errors(form.visitorName) }}
+			</div>
+
+			<div class="uk-margin">
+				{{ form_label(form.visitorEmail) }}
+				<div class="uk-inline">
+					<span class="uk-form-icon" uk-icon="icon: mail"></span>
+					{{ form_widget(form.visitorEmail, {'attr': {'class': 'uk-input', 'placeholder': 'Votre email (facultatif)'}}) }}
+				</div>
+				{{ form_errors(form.visitorEmail) }}
+			</div>
+
+			<div class="uk-margin">
+				{{ form_label(form.rating) }}
+				<div class="uk-form-controls">
+					{% for choice in form.rating %}
+						<label class="uk-margin-small-right">
+							{{ form_widget(choice, {'attr': {'class': 'uk-radio'}}) }}
+							{{ choice.vars.label }}
+						</label>
+					{% endfor %}
+				</div>
+				{{ form_errors(form.rating) }}
+			</div>
+
+			<div class="uk-margin">
+				{{ form_label(form.comment) }}
+				<div class="uk-inline">
+					<span class="uk-form-icon" uk-icon="icon: comment"></span>
+					{{ form_widget(form.comment, {'attr': {'class': 'uk-textarea', 'rows': 5, 'placeholder': 'Votre avis'}}) }}
+				</div>
+				{{ form_errors(form.comment) }}
+			</div>
+
+			<div class="uk-margin">
+				{{ form_label(form.images) }}
+				<div class="uk-inline">
+					<span class="uk-form-icon" uk-icon="icon: image"></span>
+					{{ form_widget(form.images, {'attr': {'class': 'uk-input', 'multiple': 'multiple'}}) }}
+				</div>
+				{{ form_errors(form.images) }}
+
+				<!-- Prévisualisation des images -->
+				<div id="image-preview" class="uk-margin-top"></div>
+			</div>
+
+			<div class="uk-margin">
+				<button class="uk-button uk-button-primary uk-button-large uk-border-rounded uk-animation-slide-bottom" type="submit">
+					<span uk-spinner="ratio: 0.8" hidden></span>
+					Soumettre
+				</button>
+			</div>
+
+			{{ form_end(form) }}
+		</div>
+
 		<!-- Partager la recette -->
 		<div class="uk-margin-large-top uk-text-center">
 			<div class="uk-grid-small uk-child-width-1-2@s uk-child-width-1-4@m uk-grid-divider" uk-grid>
@@ -63,61 +182,58 @@
 										Copier le lien
 									</a>
 								</li>
-								<li>
-									<a href="sms:?body={{ path('app_recipe_details', {slug: recipe.slug}, true) }}">
-										<span uk-icon="icon: phone"></span>
-										Partager par SMS
-									</a>
-								</li>
-								<li>
-									<a href="mailto:?subject=Regarde cette recette&body={{ path('app_recipe_details', {slug: recipe.slug}, true) }}">
-										<span uk-icon="icon: mail"></span>
-										Partager par Email
-									</a>
-								</li>
-								<li>
-									<a href="https://www.facebook.com/sharer/sharer.php?u={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
-										<span uk-icon="icon: facebook"></span>
-										Partager sur Facebook
-									</a>
-								</li>
-								<li>
-									<a href="https://www.linkedin.com/shareArticle?mini=true&url={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
-										<span uk-icon="icon: linkedin"></span>
-										Partager sur LinkedIn
-									</a>
-								</li>
-								<li>
-									<a href="https://www.snapchat.com/share?url={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
-										<span uk-icon="icon: snapchat"></span>
-										Partager sur Snapchat
-									</a>
-								</li>
-								<li>
-									<a href="https://web.whatsapp.com/send?text={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
-										<span uk-icon="icon: whatsapp"></span>
-										Partager sur WhatsApp
-									</a>
-								</li>
-								<li>
-									<a href="https://www.messenger.com/t/?link={{ path('app_recipe_details', {slug: recipe.slug}, true) }}" target="_blank">
-										<span uk-icon="icon: commenting"></span>
-										Partager sur Messenger
-									</a>
-								</li>
+								<!-- Autres options de partage... -->
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div><!-- Script pour copier le lien dans le presse-papiers --><script>
-		function copyToClipboard(text) {
+
+	</div>
+	<!-- Fin du container -->
+
+	<!-- Script pour copier le lien dans le presse-papiers et prévisualiser les images -->
+	<script>
+		// Copie du lien dans le presse-papiers avec notification UIkit
+function copyToClipboard(text) {
 navigator.clipboard.writeText(text).then(function () {
-alert('Lien copié dans le presse-papiers');
+UIkit.notification({message: 'Lien copié dans le presse-papiers', status: 'success', pos: 'top-right', timeout: 2000});
 }, function () {
-alert('Échec de la copie du lien');
+UIkit.notification({message: 'Échec de la copie du lien', status: 'danger', pos: 'top-right', timeout: 2000});
 });
 }
+
+// Prévisualisation des images avant téléchargement
+document.addEventListener('DOMContentLoaded', function () {
+const imageInput = document.querySelector('input[type="file"][name$="[images]"]');
+const previewContainer = document.getElementById('image-preview');
+
+imageInput.addEventListener('change', function () {
+previewContainer.innerHTML = '';
+const files = imageInput.files;
+if (files) {
+Array.from(files).forEach(file => {
+const reader = new FileReader();
+reader.onload = function (e) {
+const img = document.createElement('img');
+img.src = e.target.result;
+img.style.maxWidth = '150px';
+img.classList.add('uk-border-rounded', 'uk-margin-small-right', 'uk-margin-small-bottom');
+previewContainer.appendChild(img);
+};
+reader.readAsDataURL(file);
+});
+}
+});
+});
+
+// Animation de chargement sur le bouton de soumission
+document.querySelector('form').addEventListener('submit', function (e) {
+const button = e.target.querySelector('button[type="submit"]');
+const spinner = button.querySelector('span[uk-spinner]');
+spinner.hidden = false;
+button.disabled = true;
+});
 	</script>
 {% endblock %}
