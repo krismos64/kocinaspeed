@@ -21,6 +21,7 @@
 			<h1 class="uk-heading-line uk-text-center uk-margin-large-bottom">
 				<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">Laisser un avis pour "{{ recipe.name }}"</span>
 			</h1>
+
 			<!-- Affichage des messages flash -->
 			{% for label, messages in app.flashes %}
 				{% for message in messages %}
@@ -36,6 +37,8 @@
 				<div class="uk-width-1-1 uk-width-2-3@m">
 					<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-animation-slide-bottom-medium">
 						{{ form_start(form) }}
+						{{ form_errors(form) }}
+						<!-- Affiche les erreurs globales du formulaire -->
 
 						<div class="uk-margin">
 							{{ form_label(form.visitorName, null, {'label_attr': {'class': 'uk-form-label'}}) }}
@@ -58,8 +61,12 @@
 						<!-- Champ de notation personnalisé -->
 						<div class="uk-margin">
 							{{ form_label(form.rating, null, {'label_attr': {'class': 'uk-form-label'}}) }}
-							<div class="uk-form-controls uk-flex uk-flex-middle">
-								<input type="hidden" id="{{ form.rating.vars.id }}" name="{{ form.rating.vars.full_name }}" value="{{ form.rating.vars.value }}">
+							<div
+								class="uk-form-controls uk-flex uk-flex-middle">
+								<!-- Champ caché pour stocker la valeur de la note -->
+								<input
+								type="hidden" id="{{ form.rating.vars.id }}" name="{{ form.rating.vars.full_name }}" value="{{ form.rating.vars.value }}">
+								<!-- Système d'étoiles cliquables -->
 								<div class="rating-stars">
 									{% for i in 1..5 %}
 										<span class="star" data-value="{{ i }}" uk-icon="icon: star; ratio: 1.5" style="cursor: pointer; color: {% if i <= form.rating.vars.value|default(0) %}#ff7043{% else %}#cccccc{% endif %};"></span>
@@ -85,14 +92,18 @@
 						</div>
 
 						<!-- Bouton de soumission -->
-						<div class="uk-margin uk-text-center">
+						<div
+							class="uk-margin uk-text-center">
+							<!-- Inclusion du jeton CSRF -->
+							{{ form_widget(form._token) }}
+
 							<button class="uk-button uk-button-primary uk-button-large uk-border-pill uk-box-shadow-hover-large" type="submit" style="background-color: #ff7043; color: white;">
 								<span uk-icon="icon: check; ratio: 1.2"></span>
 								Soumettre mon avis
 							</button>
 						</div>
 
-						{{ form_end(form) }}
+						{{ form_end(form, {'render_rest': false}) }}
 					</div>
 				</div>
 			</div>

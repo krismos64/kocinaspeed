@@ -9,6 +9,16 @@
 	<div
 		class="uk-container uk-margin-large-top">
 
+		<!-- Affichage des messages flash -->
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="uk-alert-{{ label }}" uk-alert>
+					<a class="uk-alert-close" uk-close></a>
+					<p>{{ message }}</p>
+				</div>
+			{% endfor %}
+		{% endfor %}
+
 		<!-- Nom de la recette -->
 		<h1 class="uk-heading-line uk-text-center uk-margin-large-bottom">
 			<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">{{ recipe.name }}</span>
