@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Review;
+use App\Entity\ReviewImage;
 use App\Form\ReviewType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,50 +32,59 @@ class ReviewController extends AbstractController
 
         $review = new Review();
         $review->setRecipe($recipe);
-        $review->setCreatedAt(new \DateTimeImmutable());
 
         $form = $this->createForm(ReviewType::class, $review);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Traitement des images téléchargées
-            $imageFiles = $form->get('images')->getData();
-            $images = [];
+            // Par défaut, l'avis n'est pas approuvé
+            $review->setApproved(false);
 
-            if ($imageFiles) {
-                foreach ($imageFiles as $imageFile) {
-                    // Générer un nom unique pour l'image
-                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                    // Sécuriser le nom de fichier
+            // Gestion des images associées à l'avis
+            $imagesData = $form->get('images');
+
+            foreach ($imagesData as $key => $imageForm) {
+                $imageFile = $imageForm->get('imageFile')->getData();
+
+                // Créer une nouvelle entité ReviewImage UNIQUEMENT si une image est uploadée
+                if ($imageFile) {
+                    $originalFilename = pathinfo(
+                        $imageFile->getClientOriginalName(),
+                        PATHINFO_FILENAME
+                    );
                     $safeFilename = $slugger->slug($originalFilename);
                     $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
-                    // Déplacer le fichier dans le dossier de destination
+                    // Déplacer le fichier dans le répertoire de destination
                     try {
                         $imageFile->move(
                             $this->getParameter('reviews_images_directory'),
                             $newFilename
                         );
-                        $images[] = 'uploads/reviews/' . $newFilename;
                     } catch (FileException $e) {
-                        $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
+                        $this->addFlash(
+                            'error',
+                            'Une erreur est survenue lors du téléchargement de l\'image.'
+                        );
+                        continue; // Passer à l'image suivante en cas d'erreur
                     }
+
+                    // Créer et associer une nouvelle entité ReviewImage
+                    $reviewImage = new ReviewImage();
+                    $reviewImage->setImagePath($newFilename);
+                    $reviewImage->setReview($review);
+
+                    // Ajouter l'image à la collection de l'avis
+                    $review->addImage($reviewImage);
                 }
             }
 
-            // Stocker les chemins des images dans l'entité
-            $review->setImages($images);
-
-            // Par défaut, l'avis n'est pas approuvé
-            $review->setApproved(false);
-
-            // Enregistrement de l'avis
+            // Enregistrement de l'avis et des images associées
             $entityManager->persist($review);
             $entityManager->flush();
 
-            // Redirection vers la page de détail de la recette
+            // Redirection après succès
             $this->addFlash('success', 'Votre avis a été soumis et sera approuvé par un administrateur.');
-
             return $this->redirectToRoute('app_recipe_details', ['slug' => $slug]);
         }
 

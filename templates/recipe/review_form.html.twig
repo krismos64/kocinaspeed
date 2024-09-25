@@ -38,6 +38,7 @@
 					<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-animation-slide-bottom-medium">
 						{{ form_start(form) }}
 						{{ form_errors(form) }}
+
 						<!-- Affiche les erreurs globales du formulaire -->
 
 						<div class="uk-margin">
@@ -82,21 +83,22 @@
 							{{ form_errors(form.comment) }}
 						</div>
 
+						<!-- Gestion des images -->
 						<div class="uk-margin">
-							{{ form_label(form.images, null, {'label_attr': {'class': 'uk-form-label'}}) }}
-							<div uk-form-custom="target: true">
-								{{ form_widget(form.images, {'attr': {'multiple': 'multiple'}}) }}
-								<input class="uk-input uk-form-width-medium" type="text" placeholder="Sélectionner des images" disabled>
+							<label for="images">Télécharger des images</label>
+							<div class="image-collection" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
+								{% for imageForm in form.images %}
+									<div class="image-entry uk-margin-small">
+										{{ form_row(imageForm.imageFile) }}
+									</div>
+								{% endfor %}
 							</div>
-							{{ form_errors(form.images) }}
+							<button type="button" class="uk-button uk-button-default add-image-button uk-margin-top">Ajouter une image</button>
 						</div>
 
 						<!-- Bouton de soumission -->
-						<div
-							class="uk-margin uk-text-center">
-							<!-- Inclusion du jeton CSRF -->
+						<div class="uk-margin uk-text-center">
 							{{ form_widget(form._token) }}
-
 							<button class="uk-button uk-button-primary uk-button-large uk-border-pill uk-box-shadow-hover-large" type="submit" style="background-color: #ff7043; color: white;">
 								<span uk-icon="icon: check; ratio: 1.2"></span>
 								Soumettre mon avis
@@ -110,11 +112,10 @@
 
 		</div>
 	</div>
-
-	<!-- Script pour gérer les étoiles cliquables -->
+	<!-- Scripts JavaScript -->
 	{% block javascripts %}
 		<script>
-			document.addEventListener('DOMContentLoaded', function () {
+			document.addEventListener('DOMContentLoaded', function () { // Script pour gérer les étoiles cliquables
 const stars = document.querySelectorAll('.star');
 const ratingInput = document.getElementById('{{ form.rating.vars.id }}');
 
@@ -132,6 +133,30 @@ s.style.color = '#cccccc';
 }
 });
 });
+});
+
+// Script pour gérer l'ajout dynamique d'images
+var collectionHolder = document.querySelector('.image-collection');
+var addImageButton = document.querySelector('.add-image-button');
+var index = collectionHolder.querySelectorAll('.image-entry').length;
+
+// Fonction pour ajouter un nouveau champ d'image
+var addImageForm = function () {
+var prototype = collectionHolder.dataset.prototype;
+var newForm = prototype.replace(/__name__/g, index);
+
+var div = document.createElement('div');
+div.classList.add('image-entry', 'uk-margin-small');
+div.innerHTML = newForm;
+collectionHolder.appendChild(div);
+
+index++;
+};
+
+// Écouteur sur le bouton d'ajout
+addImageButton.addEventListener('click', function (e) {
+e.preventDefault();
+addImageForm();
 });
 });
 		</script>
