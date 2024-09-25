@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Laisser un avis -
+	{{ recipe.name }}
+	- Kocinaspeed
+{% endblock %}
+
+{% block body %}
+	<div
+		class="uk-container uk-margin-large-top">
+
+		<!-- Bouton de retour -->
+		<a href="{{ path('app_recipe_details', {slug: recipe.slug}) }}" class="uk-button uk-button-default uk-margin-bottom">
+			<span uk-icon="icon: arrow-left"></span>
+			Retour à la recette
+		</a>
+
+		<!-- Titre de la page -->
+		<div class="uk-margin-large-top uk-margin-large-bottom">
+			<h1 class="uk-heading-line uk-text-center uk-margin-large-bottom">
+				<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">Laisser un avis pour "{{ recipe.name }}"</span>
+			</h1>
+			<!-- Affichage des messages flash -->
+			{% for label, messages in app.flashes %}
+				{% for message in messages %}
+					<div class="uk-alert-{{ label }}" uk-alert>
+						<a class="uk-alert-close" uk-close></a>
+						<p>{{ message }}</p>
+					</div>
+				{% endfor %}
+			{% endfor %}
+
+			<!-- Formulaire d'avis -->
+			<div class="uk-flex uk-flex-center">
+				<div class="uk-width-1-1 uk-width-2-3@m">
+					<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-animation-slide-bottom-medium">
+						{{ form_start(form) }}
+
+						<div class="uk-margin">
+							{{ form_label(form.visitorName, null, {'label_attr': {'class': 'uk-form-label'}}) }}
+							<div class="uk-inline uk-width-1-1">
+								<span class="uk-form-icon" uk-icon="icon: user"></span>
+								{{ form_widget(form.visitorName, {'attr': {'class': 'uk-input', 'placeholder': 'Votre nom (facultatif)'}}) }}
+							</div>
+							{{ form_errors(form.visitorName) }}
+						</div>
+
+						<div class="uk-margin">
+							{{ form_label(form.visitorEmail, null, {'label_attr': {'class': 'uk-form-label'}}) }}
+							<div class="uk-inline uk-width-1-1">
+								<span class="uk-form-icon" uk-icon="icon: mail"></span>
+								{{ form_widget(form.visitorEmail, {'attr': {'class': 'uk-input', 'placeholder': 'Votre email (facultatif)'}}) }}
+							</div>
+							{{ form_errors(form.visitorEmail) }}
+						</div>
+
+						<!-- Champ de notation personnalisé -->
+						<div class="uk-margin">
+							{{ form_label(form.rating, null, {'label_attr': {'class': 'uk-form-label'}}) }}
+							<div class="uk-form-controls uk-flex uk-flex-middle">
+								<input type="hidden" id="{{ form.rating.vars.id }}" name="{{ form.rating.vars.full_name }}" value="{{ form.rating.vars.value }}">
+								<div class="rating-stars">
+									{% for i in 1..5 %}
+										<span class="star" data-value="{{ i }}" uk-icon="icon: star; ratio: 1.5" style="cursor: pointer; color: {% if i <= form.rating.vars.value|default(0) %}#ff7043{% else %}#cccccc{% endif %};"></span>
+									{% endfor %}
+								</div>
+							</div>
+							{{ form_errors(form.rating) }}
+						</div>
+
+						<div class="uk-margin">
+							{{ form_label(form.comment, null, {'label_attr': {'class': 'uk-form-label'}}) }}
+							{{ form_widget(form.comment, {'attr': {'class': 'uk-textarea', 'placeholder': 'Votre avis'}}) }}
+							{{ form_errors(form.comment) }}
+						</div>
+
+						<div class="uk-margin">
+							{{ form_label(form.images, null, {'label_attr': {'class': 'uk-form-label'}}) }}
+							<div uk-form-custom="target: true">
+								{{ form_widget(form.images, {'attr': {'multiple': 'multiple'}}) }}
+								<input class="uk-input uk-form-width-medium" type="text" placeholder="Sélectionner des images" disabled>
+							</div>
+							{{ form_errors(form.images) }}
+						</div>
+
+						<!-- Bouton de soumission -->
+						<div class="uk-margin uk-text-center">
+							<button class="uk-button uk-button-primary uk-button-large uk-border-pill uk-box-shadow-hover-large" type="submit" style="background-color: #ff7043; color: white;">
+								<span uk-icon="icon: check; ratio: 1.2"></span>
+								Soumettre mon avis
+							</button>
+						</div>
+
+						{{ form_end(form) }}
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Script pour gérer les étoiles cliquables -->
+	{% block javascripts %}
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+const stars = document.querySelectorAll('.star');
+const ratingInput = document.getElementById('{{ form.rating.vars.id }}');
+
+stars.forEach(function (star) {
+star.addEventListener('click', function () {
+const rating = this.getAttribute('data-value');
+ratingInput.value = rating;
+
+// Mettre à jour l'affichage des étoiles
+stars.forEach(function (s) {
+if (s.getAttribute('data-value') <= rating) {
+s.style.color = '#ff7043';
+} else {
+s.style.color = '#cccccc';
+}
+});
+});
+});
+});
+		</script>
+	{% endblock %}
+{% endblock %}

@@ -14,17 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class RecipeController extends AbstractController
 {
-    #[Route('/recipe/{slug}', name: 'app_recipe_details')]
+    #[Route('/recette/{slug}', name: 'app_recipe_details')]
     public function show(
         RecipeRepository $recipeRepository,
-        string $slug,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        SluggerInterface $slugger,
-        MailerInterface $mailer
+        string $slug
     ): Response {
         $recipe = $recipeRepository->findOneBySlug($slug);
 
@@ -38,11 +35,33 @@ class RecipeController extends AbstractController
             $videoId = $this->extractYoutubeId($recipe->getVideo());
         }
 
-        // Gestion du formulaire d'avis
+        return $this->render('recipe/details.html.twig', [
+            'recipe' => $recipe,
+            'videoId' => $videoId,
+        ]);
+    }
+
+    #[Route('/recette/{slug}/laisser-un-avis', name: 'app_recipe_review')]
+    public function reviewForm(
+        string $slug,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger,
+        MailerInterface $mailer
+    ): Response {
+        // Récupérer la recette par son slug
+        $recipe = $entityManager->getRepository(Recipe::class)->findOneBy(['slug' => $slug]);
+
+        if (!$recipe) {
+            throw $this->createNotFoundException('Recette non trouvée');
+        }
+
+        // Créer un nouvel avis
         $review = new Review();
         $form = $this->createForm(ReviewType::class, $review);
-        $form->handleRequest($request);
 
+        // Gérer la soumission du formulaire
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $review->setRecipe($recipe);
             $review->setUser($this->getUser());
@@ -59,16 +78,19 @@ class RecipeController extends AbstractController
                     $safeFilename = $slugger->slug($originalFilename);
                     $newFilename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
 
-                    // Déplace le fichier dans le répertoire où sont stockées les images
-                    $image->move(
-                        $this->getParameter('review_images_directory'),
-                        $newFilename
-                    );
-
-                    $uploadedImages[] = $newFilename;
+                    // Déplacer le fichier dans le répertoire où sont stockées les images
+                    try {
+                        $image->move(
+                            $this->getParameter('review_images_directory'),
+                            $newFilename
+                        );
+                        $uploadedImages[] = $newFilename;
+                    } catch (FileException $e) {
+                        // Gérer l'exception si nécessaire
+                    }
                 }
 
-                // Enregistre les noms de fichiers dans l'entité Review
+                // Enregistrer les noms de fichiers dans l'entité Review
                 $review->setImages($uploadedImages);
             }
 
@@ -90,9 +112,8 @@ class RecipeController extends AbstractController
             return $this->redirectToRoute('app_recipe_details', ['slug' => $recipe->getSlug()]);
         }
 
-        return $this->render('recipe/details.html.twig', [
+        return $this->render('recipe/review_form.html.twig', [
             'recipe' => $recipe,
-            'videoId' => $videoId,
             'form' => $form->createView(),
         ]);
     }
@@ -106,7 +127,7 @@ class RecipeController extends AbstractController
         return null;
     }
 
-    #[Route('/recipes', name: 'app_recipe_index')]
+    #[Route('/recettes', name: 'app_recipe_index')]
     public function index(RecipeRepository $recipeRepository, Request $request): Response
     {
         $category = $request->query->get('category');
@@ -121,7 +142,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/search', name: 'app_recipe_search')]
+    #[Route('/recherche', name: 'app_recipe_search')]
     public function search(RecipeRepository $recipeRepository, Request $request): Response
     {
         // Récupérer la requête de recherche depuis le formulaire

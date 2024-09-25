@@ -4,76 +4,74 @@ namespace App\Form;
 
 use App\Entity\Review;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\{TextType, EmailType, TextareaType, ChoiceType, FileType};
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\{Email, NotBlank};
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\Range;
 
 class ReviewType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        // Champs pour les visiteurs
         $builder
-            ->add('visitorName', null, [
+            // Nom du visiteur
+            ->add('visitorName', TextType::class, [
+                'required' => false,
                 'label' => 'Votre nom',
-                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Votre nom (facultatif)',
+                ],
             ])
+            // Email du visiteur
             ->add('visitorEmail', EmailType::class, [
-                'label' => 'Votre email',
                 'required' => false,
+                'label' => 'Votre email',
+                'attr' => [
+                    'placeholder' => 'Votre email (facultatif)',
+                ],
+                'constraints' => [
+                    new Email(['message' => 'Veuillez entrer un email valide.']),
+                ],
             ])
+            // Note
             ->add('rating', ChoiceType::class, [
                 'label' => 'Note',
-                'choices'  => [
-                    '⭐' => 1,
-                    '⭐⭐' => 2,
-                    '⭐⭐⭐' => 3,
-                    '⭐⭐⭐⭐' => 4,
-                    '⭐⭐⭐⭐⭐' => 5,
+                'choices' => [
+                    '1' => 1,
+                    '2' => 2,
+                    '3' => 3,
+                    '4' => 4,
+                    '5' => 5,
                 ],
                 'expanded' => true,
                 'multiple' => false,
-                'attr' => [
-                    'class' => 'uk-rating',
-                ],
-                'constraints' => [
-                    new Range([
-                        'min' => 1,
-                        'max' => 5,
-                        'notInRangeMessage' => 'La note doit être entre {{ min }} et {{ max }}.',
-                    ]),
-                ],
             ])
+            // Commentaire
             ->add('comment', TextareaType::class, [
                 'label' => 'Votre avis',
+                'constraints' => [
+                    new NotBlank(['message' => 'Veuillez entrer votre avis.']),
+                ],
+                'attr' => [
+                    'placeholder' => 'Votre avis',
+                    'rows' => 5,
+                ],
             ])
+            // Images
             ->add('images', FileType::class, [
-                'label' => 'Ajouter des images (JPEG, PNG)',
-                'mapped' => false,
+                'label' => 'Vos images',
                 'required' => false,
                 'multiple' => true,
+                'mapped' => false,
                 'attr' => [
-                    'accept' => 'image/jpeg, image/png',
+                    'multiple' => 'multiple',
+                    'accept' => 'image/*',
                 ],
-                'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                        ],
-                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG ou PNG)',
-                    ])
-                ],
-            ]);
+            ])
+        ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Review::class,

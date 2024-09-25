@@ -28,7 +28,7 @@
 
 			<!-- Description de la recette -->
 			<div>
-				<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-animation-fade" style="background: linear-gradient(135deg, #ffedd5, #ff7043); box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+				<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-animation-fade" style="background: linear-gradient(135deg, #ffedd5, #ff7043);">
 					<h3 class="uk-card-title uk-text-bold" style="color: #ff7043;">Description</h3>
 					<p class="uk-text-lead">{{ recipe.description|raw }}</p>
 				</div>
@@ -47,193 +47,128 @@
 		{% endif %}
 
 		<!-- Section des avis -->
-		<div class="uk-margin-large-top">
-			<h2 class="uk-heading-line uk-text-center">
-				<span>Les avis des utilisateurs</span>
-			</h2>
+		<div class="uk-margin-large-top uk-margin-large-bottom">
+			<h1 class="uk-heading-line uk-text-center uk-margin-large-bottom">
+				<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">Les avis des utilisateurs</span>
+			</h1>
 
 			{% set approvedReviews = recipe.reviews|filter(r => r.isApproved()) %}
 
 			{% if approvedReviews|length > 0 %}
-				{% for review in approvedReviews %}
-					<div
-						class="uk-card uk-card-default uk-card-body uk-margin uk-animation-slide-bottom-small">
-						<!-- Note de l'avis -->
-						<p>
-							<strong>Note :</strong>
-							{% for i in 1..5 %}
-								{% if i <= review.rating %}
-									<span uk-icon="icon: star; ratio: 1.2" style="color: gold;"></span>
-								{% else %}
-									<span uk-icon="icon: star; ratio: 1.2" style="color: lightgrey;"></span>
-								{% endif %}
-							{% endfor %}
-						</p>
-
-						<!-- Avis -->
-						<div class="review mb-4">
-							<strong>{{ review.visitorName ?? 'Anonyme' }}</strong>
-							-
-							{{ review.rating }}/5
-							<p>{{ review.comment }}</p>
-
-							<!-- Images associées à l'avis -->
-							{% if review.images %}
-								<div class="review-images uk-margin-top uk-flex">
-									{% for image in review.images %}
-										<img src="{{ asset(image) }}" alt="Image d'avis" class="uk-border-rounded" style="max-width: 150px; margin-right: 10px;">
-									{% endfor %}
-								</div>
-							{% endif %}
-							<small>Le
-								{{ review.createdAt|date('d/m/Y H:i') }}</small>
+				<!-- Boutons pour lire tous les avis et laisser un avis -->
+				<div class="uk-text-center uk-margin">
+					<div class="uk-grid-small uk-flex-center" uk-grid>
+						<div>
+							<button class="uk-button uk-button-primary uk-border-pill" type="button" uk-toggle="target: #reviews-modal" style="background-color: #ff7043; color: white;">
+								Lire tous les avis
+							</button>
+						</div>
+						<div>
+							<a href="{{ path('app_recipe_review', { slug: recipe.slug }) }}" class="uk-button uk-button-primary uk-border-pill uk-box-shadow-hover-large" style="background-color: #ff7043; color: white;">
+								Laisser un avis
+							</a>
 						</div>
 					</div>
-				{% endfor %}
+				</div>
+
+				<!-- Affichage de quelques avis en teaser -->
+				<div class="uk-child-width-1-1@s uk-child-width-1-2@m uk-grid-match" uk-grid>
+					{% for review in approvedReviews|slice(0, 2) %}
+						<div>
+							<div
+								class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-hover-large uk-animation-slide-bottom-small" style="background-color: #fff7f0;">
+								<!-- Badge de note -->
+								<div class="uk-badge" style="background-color: #ff7043; color: white; position: absolute; top: -10px; left: -10px;">
+									{{ review.rating }}/5
+								</div>
+								<!-- Avis -->
+								<p class="uk-text-large uk-margin-top">{{ review.comment }}</p>
+
+								<!-- Images associées à l'avis -->
+								{% if review.images %}
+									<div class="review-images uk-margin-top uk-flex" uk-lightbox>
+										{% for image in review.images %}
+											<a href="{{ asset('uploads/reviews/' ~ image) }}" data-caption="Image d'avis">
+												<img src="{{ asset('uploads/reviews/' ~ image) }}" alt="Image d'avis" class="uk-border-rounded" style="max-width: 150px; margin-right: 10px;">
+											</a>
+										{% endfor %}
+									</div>
+								{% endif %}
+
+								<!-- Auteur et date -->
+								<p class="uk-text-meta uk-margin-remove-top">
+									Par
+									<strong>{{ review.visitorName ?? 'Anonyme' }}</strong>
+									le
+									{{ review.createdAt|date('d/m/Y') }}
+								</p>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+
+				<!-- Modal pour tous les avis -->
+				<div id="reviews-modal" class="uk-modal-full" uk-modal>
+					<div class="uk-modal-dialog">
+						<button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
+						<div class="uk-padding-large">
+							<h2 class="uk-heading-line uk-text-center">
+								<span>Tous les avis</span>
+							</h2>
+							<div class="uk-grid-small uk-child-width-1-1@s uk-child-width-1-2@m uk-grid-match" uk-grid>
+								{% for review in approvedReviews %}
+									<div>
+										<div
+											class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-hover-large" style="background-color: #fff7f0;">
+											<!-- Badge de note -->
+											<div class="uk-badge" style="background-color: #ff7043; color: white; position: absolute; top: -10px; left: -10px;">
+												{{ review.rating }}/5
+											</div>
+											<!-- Avis -->
+											<p class="uk-text-large uk-margin-top">{{ review.comment }}</p>
+
+											<!-- Images associées à l'avis -->
+											{% if review.images %}
+												<div class="review-images uk-margin-top uk-flex" uk-lightbox>
+													{% for image in review.images %}
+														<a href="{{ asset('uploads/reviews/' ~ image) }}" data-caption="Image d'avis">
+															<img src="{{ asset('uploads/reviews/' ~ image) }}" alt="Image d'avis" class="uk-border-rounded" style="max-width: 150px; margin-right: 10px;">
+														</a>
+													{% endfor %}
+												</div>
+											{% endif %}
+
+											<!-- Auteur et date -->
+											<p class="uk-text-meta uk-margin-remove-top">
+												Par
+												<strong>{{ review.visitorName ?? 'Anonyme' }}</strong>
+												le
+												{{ review.createdAt|date('d/m/Y') }}
+											</p>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+							<!-- Pagination -->
+							{% if approvedReviews|length > 10 %}
+								<ul class="uk-pagination uk-flex-center uk-margin-large-top"><!-- Implémentez la pagination ici --></ul>
+							{% endif %}
+						</div>
+					</div>
+				</div>
 			{% else %}
 				<p class="uk-text-center">Pas encore d'avis pour cette recette.</p>
+				<!-- Bouton pour laisser un avis si aucun avis n'est présent -->
+				<div class="uk-text-center uk-margin">
+					<a href="{{ path('app_recipe_review', { slug: recipe.slug }) }}" class="uk-button uk-button-primary uk-border-pill uk-box-shadow-hover-large" style="background-color: #ff7043; color: white;">
+						Laisser un avis
+					</a>
+				</div>
 			{% endif %}
 		</div>
 
-		<!-- Formulaire pour laisser un avis -->
-		<div class="uk-margin-large-top">
-			<h3 class="uk-heading-line uk-text-center">
-				<span>Laissez votre avis</span>
-			</h3>
-			{{ form_start(form, {'attr': {'class': 'uk-form-stacked uk-width-1-2@m uk-align-center'}}) }}
-
-			<div class="uk-margin">
-				{{ form_label(form.visitorName) }}
-				<div class="uk-inline">
-					<span class="uk-form-icon" uk-icon="icon: user"></span>
-					{{ form_widget(form.visitorName, {'attr': {'class': 'uk-input', 'placeholder': 'Votre nom (facultatif)'}}) }}
-				</div>
-				{{ form_errors(form.visitorName) }}
-			</div>
-
-			<div class="uk-margin">
-				{{ form_label(form.visitorEmail) }}
-				<div class="uk-inline">
-					<span class="uk-form-icon" uk-icon="icon: mail"></span>
-					{{ form_widget(form.visitorEmail, {'attr': {'class': 'uk-input', 'placeholder': 'Votre email (facultatif)'}}) }}
-				</div>
-				{{ form_errors(form.visitorEmail) }}
-			</div>
-
-			<div class="uk-margin">
-				{{ form_label(form.rating) }}
-				<div class="uk-form-controls">
-					{% for choice in form.rating %}
-						<label class="uk-margin-small-right">
-							{{ form_widget(choice, {'attr': {'class': 'uk-radio'}}) }}
-							{{ choice.vars.label }}
-						</label>
-					{% endfor %}
-				</div>
-				{{ form_errors(form.rating) }}
-			</div>
-
-			<div class="uk-margin">
-				{{ form_label(form.comment) }}
-				<div class="uk-inline">
-					<span class="uk-form-icon" uk-icon="icon: comment"></span>
-					{{ form_widget(form.comment, {'attr': {'class': 'uk-textarea', 'rows': 5, 'placeholder': 'Votre avis'}}) }}
-				</div>
-				{{ form_errors(form.comment) }}
-			</div>
-
-			<div class="uk-margin">
-				{{ form_label(form.images) }}
-				<div class="uk-inline">
-					<span class="uk-form-icon" uk-icon="icon: image"></span>
-					{{ form_widget(form.images, {'attr': {'class': 'uk-input', 'multiple': 'multiple'}}) }}
-				</div>
-				{{ form_errors(form.images) }}
-
-				<!-- Prévisualisation des images -->
-				<div id="image-preview" class="uk-margin-top"></div>
-			</div>
-
-			<div class="uk-margin">
-				<button class="uk-button uk-button-primary uk-button-large uk-border-rounded uk-animation-slide-bottom" type="submit">
-					<span uk-spinner="ratio: 0.8" hidden></span>
-					Soumettre
-				</button>
-			</div>
-
-			{{ form_end(form) }}
-		</div>
-
-		<!-- Partager la recette -->
-		<div class="uk-margin-large-top uk-text-center">
-			<div class="uk-grid-small uk-child-width-1-2@s uk-child-width-1-4@m uk-grid-divider" uk-grid>
-				<div>
-					<!-- Bouton "Partager la recette" -->
-					<div class="uk-inline">
-						<button class="uk-button uk-button-primary uk-button-large uk-border-pill uk-box-shadow-hover-large" type="button" style="background-color: #ff7043; color: white;">
-							<span uk-icon="icon: social"></span>
-							Partager la recette
-						</button>
-						<div uk-dropdown="mode: click; pos: bottom-center">
-							<ul class="uk-nav uk-dropdown-nav">
-								<li>
-									<a href="#" onclick="copyToClipboard('{{ path('app_recipe_details', {slug: recipe.slug}, true) }}')">
-										<span uk-icon="icon: link"></span>
-										Copier le lien
-									</a>
-								</li>
-								<!-- Autres options de partage... -->
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
+		<!-- Fin du container -->
 	</div>
-	<!-- Fin du container -->
 
-	<!-- Script pour copier le lien dans le presse-papiers et prévisualiser les images -->
-	<script>
-		// Copie du lien dans le presse-papiers avec notification UIkit
-function copyToClipboard(text) {
-navigator.clipboard.writeText(text).then(function () {
-UIkit.notification({message: 'Lien copié dans le presse-papiers', status: 'success', pos: 'top-right', timeout: 2000});
-}, function () {
-UIkit.notification({message: 'Échec de la copie du lien', status: 'danger', pos: 'top-right', timeout: 2000});
-});
-}
-
-// Prévisualisation des images avant téléchargement
-document.addEventListener('DOMContentLoaded', function () {
-const imageInput = document.querySelector('input[type="file"][name$="[images]"]');
-const previewContainer = document.getElementById('image-preview');
-
-imageInput.addEventListener('change', function () {
-previewContainer.innerHTML = '';
-const files = imageInput.files;
-if (files) {
-Array.from(files).forEach(file => {
-const reader = new FileReader();
-reader.onload = function (e) {
-const img = document.createElement('img');
-img.src = e.target.result;
-img.style.maxWidth = '150px';
-img.classList.add('uk-border-rounded', 'uk-margin-small-right', 'uk-margin-small-bottom');
-previewContainer.appendChild(img);
-};
-reader.readAsDataURL(file);
-});
-}
-});
-});
-
-// Animation de chargement sur le bouton de soumission
-document.querySelector('form').addEventListener('submit', function (e) {
-const button = e.target.querySelector('button[type="submit"]');
-const spinner = button.querySelector('span[uk-spinner]');
-spinner.hidden = false;
-button.disabled = true;
-});
-	</script>
-{% endblock %}
+	<!-- Scripts -->
+	<script>// Assurez-vous que UIKit est correctement inclus avec le composant Lightbox</script>{% endblock %}
