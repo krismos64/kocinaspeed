@@ -25,7 +25,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('<img src="/img/logo.png" alt="Logo" style="max-height: 40px; margin-right: 10px;"> Kocinaspeed');
+            ->setTitle('<a href="' . $this->generateUrl('app_home') . '"><img src="/img/logo.png" alt="Logo" style="max-height: 40px; margin-right: 10px;"> Kocinaspeed</a>');
     }
 
     public function configureMenuItems(): iterable

@@ -1,6 +1,8 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
 {% block page_title %}
-	<img src="{{ asset('img/logo.png') }}" alt="Logo Kocinaspeed" style="max-height: 60px; margin-right: 10px;">
+	<a href="{{ path('app_home') }}" class="uk-logo">
+		<img src="{{ asset('img/logo.png') }}" alt="Logo" width="90" height="90" class="uk-border-circle">
+	</a>
 	Kocinaspeed
 {% endblock %}
