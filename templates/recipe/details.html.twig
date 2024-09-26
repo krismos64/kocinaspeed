@@ -67,12 +67,24 @@
 		{% if approvedReviews|length > 0 %}
 			<!-- Boutons pour lire tous les avis et laisser un avis -->
 			<div class="uk-text-center uk-margin">
-				<div class="uk-grid-small uk-flex-center" uk-grid>
+				<div
+					class="uk-grid-small uk-flex-center" uk-grid>
+					<!-- Bouton pour afficher la note moyenne -->
+					<div>
+						<button class="uk-button uk-button-primary uk-border-pill" type="button" style="background-color: #ff7043; color: white;">
+							Note moyenne
+							{{ recipe.getAverageRating()|number_format(2) }}/5
+						</button>
+					</div>
+
+					<!-- Bouton Lire tous les avis -->
 					<div>
 						<button class="uk-button uk-button-primary uk-border-pill" type="button" uk-toggle="target: #reviews-modal" style="background-color: #ff7043; color: white;">
 							Lire tous les avis
 						</button>
 					</div>
+
+					<!-- Bouton Laisser un avis -->
 					<div>
 						<a href="{{ path('app_recipe_review', { slug: recipe.slug }) }}" class="uk-button uk-button-primary uk-border-pill uk-box-shadow-hover-large" style="background-color: #ff7043; color: white;">
 							Laisser un avis
@@ -80,7 +92,6 @@
 					</div>
 				</div>
 			</div>
-
 			<!-- Affichage de quelques avis en teaser -->
 			<div class="uk-child-width-1-1@s uk-child-width-1-2@m uk-grid-match" uk-grid>
 				{% for review in approvedReviews|slice(0, 2) %}
@@ -184,4 +195,4 @@
 
 <!-- Scripts -->
 <script>// Assurez-vous que UIKit est correctement inclus avec le composant Lightbox</script>
-				{% endblock %}
+						{% endblock %}

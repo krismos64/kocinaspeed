@@ -50,7 +50,6 @@ class ReviewCrudController extends AbstractCrudController
             $createdAt,
             BooleanField::new('approved', 'Approuvé ?'),
 
-            // Utiliser AdminReviewImageType pour gérer les images dans l'admin
             CollectionField::new('images', 'Images')
                 ->setEntryType(AdminReviewImageType::class)
                 ->allowAdd(true)
@@ -61,10 +60,9 @@ class ReviewCrudController extends AbstractCrudController
                 ])
                 ->setHelp('Vous pouvez ajouter plusieurs images (formats acceptés : JPG, PNG)'),
 
-            // Aperçu des images déjà téléchargées dans l'interface d'administration
             CollectionField::new('images', 'Aperçu des images')
-                ->setTemplatePath('admin/review_images.html.twig') // Utiliser un template custom
-                ->onlyOnIndex(), // Afficher uniquement dans la vue d'index
+                ->setTemplatePath('admin/review_images.html.twig')
+                ->onlyOnIndex(),
         ];
     }
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
@@ -74,7 +72,7 @@ class ReviewCrudController extends AbstractCrudController
         }
 
         foreach ($entityInstance->getImages() as $image) {
-            $imageFile = $image->getImageFile(); // Accéder au fichier image à partir de l'entité
+            $imageFile = $image->getImageFile();
 
             if ($imageFile) {
                 $newFilename = md5(uniqid()) . '.' . $imageFile->guessExtension();
@@ -102,7 +100,7 @@ class ReviewCrudController extends AbstractCrudController
         }
 
         foreach ($entityInstance->getImages() as $image) {
-            $imageFile = $image->getImageFile(); // Accéder au fichier image à partir de l'entité
+            $imageFile = $image->getImageFile();
 
             if ($imageFile) {
                 $newFilename = md5(uniqid()) . '.' . $imageFile->guessExtension();

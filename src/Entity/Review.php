@@ -89,7 +89,6 @@ class Review
     public function removeImage(ReviewImage $image): self
     {
         if ($this->images->removeElement($image)) {
-            // Set the owning side to null (unless already changed)
             if ($image->getReview() === $this) {
                 $image->setReview(null);
             }
@@ -98,8 +97,7 @@ class Review
         return $this;
     }
 
-    // Getters and Setters for other properties...
-
+    // Gestion des champs de l'avis
     public function getId(): ?int
     {
         return $this->id;
@@ -207,5 +205,23 @@ class Review
         $this->visitorEmail = $visitorEmail;
 
         return $this;
+    }
+
+    // Appeler le recalcul de la note moyenne avant de persister, mettre à jour ou supprimer un avis
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function updateRecipeRating(): void
+    {
+        if ($this->recipe) {
+            $this->recipe->calculateAverageRating(); // Met à jour la note moyenne de la recette
+        }
+    }
+
+    #[ORM\PostRemove]
+    public function updateRecipeRatingOnRemove(): void
+    {
+        if ($this->recipe) {
+            $this->recipe->calculateAverageRating(); // Met à jour la note moyenne si l'avis est supprimé
+        }
     }
 }

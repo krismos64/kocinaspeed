@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Recipe;
 use App\Entity\Review;
 use App\Entity\User;
+use App\Entity\ContactMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -17,7 +18,6 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        // Rediriger vers le CRUD des recettes par défaut
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
         return $this->redirect($adminUrlGenerator->setController(RecipeCrudController::class)->generateUrl());
     }
@@ -25,24 +25,15 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Kocinaspeed Administration');
+            ->setTitle('<img src="/img/logo.png" alt="Logo" style="max-height: 40px; margin-right: 10px;"> Kocinaspeed');
     }
 
     public function configureMenuItems(): iterable
     {
-        // Lien "Retour au site Kocinaspeed" sous forme de bouton
-        yield MenuItem::linkToUrl('Retour au site Kocinaspeed', 'fa fa-arrow-left', $this->generateUrl('app_home'))
-            ->setCssClass('btn btn-primary'); // Ajouter des classes CSS pour le style de bouton
-
-        yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
-
-        yield MenuItem::section('Gestion des recettes');
+        yield MenuItem::linkToUrl('Retour sur Kocinaspeed', 'fa fa-arrow-left', $this->generateUrl('app_home'));
         yield MenuItem::linkToCrud('Recettes', 'fa fa-utensils', Recipe::class);
-
-        yield MenuItem::section('Gestion des avis');
-        yield MenuItem::linkToCrud('Avis', 'fa fa-comments', Review::class);
-
-        yield MenuItem::section('Gestion des utilisateurs');
-        yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class);
+        yield MenuItem::linkToCrud('Messages des visiteurs', 'fa fa-envelope', ContactMessage::class);
+        yield MenuItem::linkToCrud('Avis des visiteurs', 'fa fa-comments', Review::class);
+        yield MenuItem::linkToCrud('Administrateurs kocinaspeed', 'fa fa-user', User::class);
     }
 }

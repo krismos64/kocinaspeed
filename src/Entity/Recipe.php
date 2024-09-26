@@ -38,7 +38,7 @@ class Recipe
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $rating = null;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Review::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Review::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $reviews;
 
     #[ORM\Column]
@@ -55,6 +55,7 @@ class Recipe
         'PLATS' => 'Plats',
         'APERITIFS' => 'Apéritifs',
     ];
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -71,6 +72,7 @@ class Recipe
     public function onPreUpdate(): void
     {
         $this->updated_at = new \DateTimeImmutable();
+        $this->calculateAverageRating(); // Calcul de la note moyenne lors des mises à jour
     }
 
     public function getId(): ?int
@@ -86,9 +88,9 @@ class Recipe
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
+
     public function __toString(): string
     {
         return $this->name ?? 'Recette sans nom';
@@ -102,7 +104,6 @@ class Recipe
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
-
         return $this;
     }
 
@@ -114,7 +115,6 @@ class Recipe
     public function setSubtitle(string $subtitle): static
     {
         $this->subtitle = $subtitle;
-
         return $this;
     }
 
@@ -126,7 +126,6 @@ class Recipe
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -138,7 +137,6 @@ class Recipe
     public function setImage(string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -150,7 +148,6 @@ class Recipe
     public function setVideo(string $video): static
     {
         $this->video = $video;
-
         return $this;
     }
 
@@ -162,7 +159,6 @@ class Recipe
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
@@ -174,7 +170,6 @@ class Recipe
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
-
         return $this;
     }
 
@@ -186,8 +181,12 @@ class Recipe
     public function setRating(?float $rating): self
     {
         $this->rating = $rating;
-
         return $this;
+    }
+
+    public function getAverageRating(): ?float
+    {
+        return $this->rating;
     }
 
     public function getReviews(): Collection
@@ -202,18 +201,19 @@ class Recipe
             $review->setRecipe($this);
         }
 
+        $this->calculateAverageRating(); // Recalculer la note moyenne après l'ajout d'un avis
         return $this;
     }
 
     public function removeReview(Review $review): self
     {
         if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
             if ($review->getRecipe() === $this) {
                 $review->setRecipe(null);
             }
         }
 
+        $this->calculateAverageRating(); // Recalculer la note moyenne après la suppression d'un avis
         return $this;
     }
 
@@ -225,10 +225,12 @@ class Recipe
     public function setCategory(string $category): self
     {
         $this->category = $category;
-
         return $this;
     }
 
+    /**
+     * Méthode pour calculer la note moyenne des avis approuvés
+     */
     public function calculateAverageRating(): void
     {
         $approvedReviews = $this->reviews->filter(function ($review) {
@@ -242,7 +244,7 @@ class Recipe
 
             $this->rating = $totalRating / $approvedReviews->count();
         } else {
-            $this->rating = null;
+            $this->rating = null; // Si pas d'avis approuvés, la note devient null
         }
     }
 }

@@ -25,6 +25,9 @@ class ContactMessage
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
+    #[ORM\Column(type: 'boolean')]
+    private $isTreated = false; // Par défaut, un message est considéré comme non traité
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -79,6 +82,18 @@ class ContactMessage
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function isTreated(): ?bool
+    {
+        return $this->isTreated;
+    }
+
+    public function setIsTreated(bool $isTreated): self
+    {
+        $this->isTreated = $isTreated;
 
         return $this;
     }
