@@ -30,6 +30,10 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
+        // Lien "Retour au site Kocinaspeed" sous forme de bouton
+        yield MenuItem::linkToUrl('Retour au site Kocinaspeed', 'fa fa-arrow-left', $this->generateUrl('app_home'))
+            ->setCssClass('btn btn-primary'); // Ajouter des classes CSS pour le style de bouton
+
         yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
 
         yield MenuItem::section('Gestion des recettes');
