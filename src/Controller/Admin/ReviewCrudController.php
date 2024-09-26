@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Review;
 use App\Entity\ReviewImage;
 use App\Form\ReviewImageType;
+use App\Form\AdminReviewImageType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -16,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -32,10 +34,8 @@ class ReviewCrudController extends AbstractCrudController
     {
         return Review::class;
     }
-
     public function configureFields(string $pageName): iterable
     {
-        // Définir le champ createdAt pour qu'il soit visible uniquement sur les pages d'index et de détails
         $createdAt = DateTimeField::new('createdAt', 'Créé le')
             ->setFormTypeOptions(['widget' => 'single_text'])
             ->hideOnForm();
@@ -49,8 +49,10 @@ class ReviewCrudController extends AbstractCrudController
             TextareaField::new('comment', 'Commentaire'),
             $createdAt,
             BooleanField::new('approved', 'Approuvé ?'),
+
+            // Utiliser AdminReviewImageType pour gérer les images dans l'admin
             CollectionField::new('images', 'Images')
-                ->setEntryType(ReviewImageType::class)
+                ->setEntryType(AdminReviewImageType::class)
                 ->allowAdd(true)
                 ->allowDelete(true)
                 ->setFormTypeOptions([
@@ -58,9 +60,13 @@ class ReviewCrudController extends AbstractCrudController
                     'entry_options' => ['label' => false],
                 ])
                 ->setHelp('Vous pouvez ajouter plusieurs images (formats acceptés : JPG, PNG)'),
+
+            // Aperçu des images déjà téléchargées dans l'interface d'administration
+            CollectionField::new('images', 'Aperçu des images')
+                ->setTemplatePath('admin/review_images.html.twig') // Utiliser un template custom
+                ->onlyOnIndex(), // Afficher uniquement dans la vue d'index
         ];
     }
-
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if (!$entityInstance instanceof Review) {
@@ -75,10 +81,10 @@ class ReviewCrudController extends AbstractCrudController
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('reviews_images_directory'),
+                        $this->getParameter('review_images_directory'),
                         $newFilename
                     );
-                    $image->setImagePath('uploads/reviews/' . $newFilename);
+                    $image->setImagePath($newFilename);
                     $this->addFlash('success', 'Image téléchargée avec succès.');
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
@@ -103,10 +109,10 @@ class ReviewCrudController extends AbstractCrudController
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('reviews_images_directory'),
+                        $this->getParameter('review_images_directory'),
                         $newFilename
                     );
-                    $image->setImagePath('uploads/reviews/' . $newFilename);
+                    $image->setImagePath($newFilename);
                     $this->addFlash('success', 'Image téléchargée avec succès.');
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');

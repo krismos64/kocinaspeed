@@ -1,0 +1,5 @@
+{% for image in field.value %}
+	<img src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" alt="Aperçu de l'image" style="max-width: 150px; max-height: 150px; margin: 5px;">
+{% else %}
+	<div>Aucune image</div>
+{% endfor %}
