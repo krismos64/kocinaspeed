@@ -23,17 +23,20 @@ class Recipe
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $subtitle = null;
-
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    private ?string $description = null; // Utilisé pour les étapes de préparation
 
-    #[ORM\Column(length: 255)]
-    private ?string $image = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $ingredients = null; // Liste des ingrédients
 
-    #[ORM\Column(length: 255)]
-    private ?string $video = null;
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $cookingTime = null; // Temps de cuisson en minutes
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $video = null; // URL vidéo optionnelle
+
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeImage::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $images; // Plusieurs images pour le slider
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $rating = null;
@@ -59,6 +62,7 @@ class Recipe
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -72,8 +76,10 @@ class Recipe
     public function onPreUpdate(): void
     {
         $this->updated_at = new \DateTimeImmutable();
-        $this->calculateAverageRating(); // Calcul de la note moyenne lors des mises à jour
+        $this->calculateAverageRating(); // Calcul de la note moyenne
     }
+
+    // Getters et setters
 
     public function getId(): ?int
     {
@@ -85,15 +91,10 @@ class Recipe
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->name ?? 'Recette sans nom';
     }
 
     public function getSlug(): ?string
@@ -101,20 +102,9 @@ class Recipe
         return $this->slug;
     }
 
-    public function setSlug(string $slug): static
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
-        return $this;
-    }
-
-    public function getSubtitle(): ?string
-    {
-        return $this->subtitle;
-    }
-
-    public function setSubtitle(string $subtitle): static
-    {
-        $this->subtitle = $subtitle;
         return $this;
     }
 
@@ -123,20 +113,31 @@ class Recipe
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getIngredients(): ?string
     {
-        return $this->image;
+        return $this->ingredients;
     }
 
-    public function setImage(string $image): static
+    public function setIngredients(?string $ingredients): self
     {
-        $this->image = $image;
+        $this->ingredients = $ingredients;
+        return $this;
+    }
+
+    public function getCookingTime(): ?int
+    {
+        return $this->cookingTime;
+    }
+
+    public function setCookingTime(?int $cookingTime): self
+    {
+        $this->cookingTime = $cookingTime;
         return $this;
     }
 
@@ -145,31 +146,9 @@ class Recipe
         return $this->video;
     }
 
-    public function setVideo(string $video): static
+    public function setVideo(?string $video): self
     {
         $this->video = $video;
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
-    {
-        $this->created_at = $created_at;
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
-    {
-        $this->updated_at = $updated_at;
         return $this;
     }
 
@@ -184,9 +163,25 @@ class Recipe
         return $this;
     }
 
-    public function getAverageRating(): ?float
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->rating;
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
+        return $this;
     }
 
     public function getReviews(): Collection
@@ -201,7 +196,7 @@ class Recipe
             $review->setRecipe($this);
         }
 
-        $this->calculateAverageRating(); // Recalculer la note moyenne après l'ajout d'un avis
+        $this->calculateAverageRating();
         return $this;
     }
 
@@ -213,24 +208,10 @@ class Recipe
             }
         }
 
-        $this->calculateAverageRating(); // Recalculer la note moyenne après la suppression d'un avis
+        $this->calculateAverageRating();
         return $this;
     }
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): self
-    {
-        $this->category = $category;
-        return $this;
-    }
-
-    /**
-     * Méthode pour calculer la note moyenne des avis approuvés
-     */
     public function calculateAverageRating(): void
     {
         $approvedReviews = $this->reviews->filter(function ($review) {
@@ -244,7 +225,33 @@ class Recipe
 
             $this->rating = $totalRating / $approvedReviews->count();
         } else {
-            $this->rating = null; // Si pas d'avis approuvés, la note devient null
+            $this->rating = null;
         }
+    }
+
+    // Gestion des images
+
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(RecipeImage $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setRecipe($this);
+        }
+        return $this;
+    }
+
+    public function removeImage(RecipeImage $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            if ($image->getRecipe() === $this) {
+                $image->setRecipe(null);
+            }
+        }
+        return $this;
     }
 }
