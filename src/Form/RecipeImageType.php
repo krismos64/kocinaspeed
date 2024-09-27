@@ -15,7 +15,7 @@ class RecipeImageType extends AbstractType
     {
         $builder->add('imageFile', FileType::class, [
             'label' => 'Image',
-            'mapped' => false, // On ne mappe pas directement le champ à l'entité
+            'mapped' => true, // On ne mappe pas directement le champ à l'entité
             'required' => false,
             'constraints' => [
                 new File([

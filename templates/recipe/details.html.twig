@@ -29,7 +29,7 @@
 			<ul class="uk-slideshow-items">
 				{% for image in recipe.images %}
 					<li>
-						<img src="{{ asset('uploads/' ~ image.imagePath) }}" alt="{{ recipe.name }}" uk-cover>
+						<img src="{{ asset('uploads/recipes/' ~ image.imagePath) }}" alt="{{ recipe.name }}" uk-cover>
 					</li>
 				{% endfor %}
 			</ul>

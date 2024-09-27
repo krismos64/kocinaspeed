@@ -63,9 +63,12 @@ class RecipeController extends AbstractController
             $recipe->setSlug($slugger->slug($recipe->getName()));
 
             // Gestion des images uploadées pour la recette
-            $images = $form->get('images')->getData();
-            foreach ($images as $image) {
-                $imageFile = $image->getImageFile();
+            $imageForms = $form->get('images');
+            foreach ($imageForms as $imageForm) {
+                /** @var RecipeImage $image */
+                $image = $imageForm->getData();
+                $imageFile = $imageForm->get('imageFile')->getData();
+
                 if ($imageFile) {
                     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $safeFilename = $slugger->slug($originalFilename);
@@ -77,12 +80,14 @@ class RecipeController extends AbstractController
                             $newFilename
                         );
                     } catch (FileException $e) {
-                        $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
+                        $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
                         continue;
                     }
 
+                    // Mettre à jour le chemin de l'image dans l'entité
                     $image->setImagePath($newFilename);
-                    $image->setRecipe($recipe);
+                    $image->setRecipe($recipe); // Lier l'image à la recette
+                    $recipe->addImage($image); // Associer l'image à la recette
                 }
             }
 
@@ -94,11 +99,10 @@ class RecipeController extends AbstractController
             return $this->redirectToRoute('app_recipe_details', ['slug' => $recipe->getSlug()]);
         }
 
-        return $this->render('recipe/new.html.twig', [
+        return $this->render('recipe/recipe_new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-
     #[Route('/recette/{slug}/laisser-un-avis', name: 'app_recipe_review')]
     public function reviewForm(
         string $slug,

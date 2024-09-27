@@ -114,7 +114,7 @@
 									<div class="uk-card-media-top">
 										{% if recipe.images|length > 0 %}
 											<!-- Affiche la première image de la collection -->
-											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('uploads/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}">
+											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}">
 										{% else %}
 											<!-- Image par défaut si aucune image n'est disponible -->
 											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}">

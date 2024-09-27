@@ -7,22 +7,22 @@ use App\Entity\RecipeImage;
 use App\Form\RecipeImageType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Proxies\__CG__\App\Entity\Recipe as EntityRecipe;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Flex\Recipe as FlexRecipe;
 
 class RecipeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Recipe::class;
+        return EntityRecipe::class;
     }
 
     public function configureFields(string $pageName): iterable
@@ -48,16 +48,22 @@ class RecipeCrudController extends AbstractCrudController
                 /** @var RecipeImage $image */
                 $imageFile = $image->getImageFile();
                 if ($imageFile) {
-                    // Appel à la méthode pour uploader l'image
-                    $image->uploadImage($this->getParameter('recipe_images_directory'));
+                    // Génération du nom unique pour l'image
+                    $newFilename = md5(uniqid()) . '.' . $imageFile->guessExtension();
 
-                    // Vérifier que l'imagePath a bien été définie
-                    if ($image->getImagePath() === null) {
-                        throw new \Exception('Le chemin de l\'image n\'a pas été défini après l\'upload.');
+                    try {
+                        // Déplacer l'image téléchargée dans le répertoire
+                        $imageFile->move(
+                            $this->getParameter('recipe_images_directory'),
+                            $newFilename
+                        );
+
+                        // Mettre à jour le chemin de l'image dans l'entité RecipeImage
+                        $image->setImagePath($newFilename);
+                        $image->setRecipe($entityInstance); // Relier l'image à la recette
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
                     }
-
-                    // Associer l'image à la recette
-                    $image->setRecipe($entityInstance);
                 }
             }
         }
@@ -80,9 +86,23 @@ class RecipeCrudController extends AbstractCrudController
                         }
                     }
 
-                    // Appelle la méthode uploadImage dans l'entité RecipeImage pour gérer l'upload
-                    $image->uploadImage($this->getParameter('recipe_images_directory'));
-                    $image->setRecipe($entityInstance); // Relie l'image à la recette
+                    // Génération du nouveau nom pour l'image
+                    $newFilename = md5(uniqid()) . '.' . $imageFile->guessExtension();
+
+                    try {
+                        // Déplacer la nouvelle image
+                        $imageFile->move(
+                            $this->getParameter('recipe_images_directory'),
+                            $newFilename
+                        );
+
+                        // Mettre à jour le chemin de l'image dans l'entité
+                        $image->setImagePath($newFilename);
+                        $image->setRecipe($entityInstance); // Relier l'image à la recette
+
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
+                    }
                 }
             }
         }
