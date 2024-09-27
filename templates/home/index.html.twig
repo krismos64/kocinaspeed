@@ -5,8 +5,7 @@
 
 {% block body %}
 	<div class="uk-container">
-		<div class="uk-border-rounded-large uk-background-top-center uk-background-cover
-			  uk-background-norepeat uk-light uk-inline uk-overflow-hidden uk-width-1-1" style="background-image: url('{{ asset('img/background1.jpg') }}');">
+		<div class="uk-border-rounded-large uk-background-top-center uk-background-cover uk-background-norepeat uk-light uk-inline uk-overflow-hidden uk-width-1-1" style="background-image: url('{{ asset('img/background1.jpg') }}');">
 			<div class="uk-position-cover uk-header-overlay"></div>
 			<div class="uk-position-relative" data-uk-grid>
 				<div class="uk-width-1-2@m uk-flex uk-flex-middle">
@@ -21,17 +20,13 @@
 
 	<!-- Section de présentation avec une vignette (card) et un titre personnalisé -->
 	<div class="uk-section uk-section-muted uk-padding uk-position-relative">
-		<div
-			class="uk-container uk-text-center">
-			<!-- Vignette ou carte UIkit pour encadrer la section -->
+		<div class="uk-container uk-text-center">
 			<div
 				class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-padding-large">
-
 				<!-- Animation d'image ajoutée sous la carte -->
 				<div class="uk-animation-kenburns uk-inline-clip uk-transition-toggle uk-margin-large-top" tabindex="0">
 					<img src="{{ asset('img/logo2.png') }}" alt="logo kocinaspeed" class="uk-border-rounded-large" style="max-width: 100%; height: auto;">
 				</div>
-
 
 				<!-- Titre personnalisé avec une couleur différente -->
 				<h2 class="uk-heading-line uk-text-bold uk-animation-slide-top-small" style="color: #ff7043;">
@@ -60,11 +55,11 @@
 					<li>Laissez vos avis et partagez vos découvertes avec d'autres passionnés</li>
 					<li>Des mises à jour régulières avec de nouvelles recettes pour vous inspirer</li>
 				</ul>
-
 			</div>
 		</div>
 	</div>
 
+	<!-- Section affichant les recettes -->
 	<div class="uk-section uk-section-default">
 		<div class="uk-container">
 			<div data-uk-grid>
@@ -139,14 +134,18 @@
 							</form>
 						</div>
 					</div>
+
+					<!-- Liste des recettes avec affichage de la première image uniquement -->
 					<div class="uk-child-width-1-2 uk-child-width-1-3@s" data-uk-grid>
 						{% for recipe in recipes %}
 							<div>
 								<div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height">
 									<div class="uk-card-media-top">
-										{% if recipe.image %}
-											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('uploads/' ~ recipe.image) }}" alt="{{ recipe.name }}">
+										{% if recipe.images|length > 0 %}
+											<!-- Affiche la première image de la collection -->
+											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('uploads/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}">
 										{% else %}
+											<!-- Image par défaut si aucune image n'est disponible -->
 											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}">
 										{% endif %}
 										<div class="uk-position-cover uk-card-overlay uk-border-rounded-medium"></div>

@@ -24,10 +24,10 @@ class Recipe
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null; // Utilisé pour les étapes de préparation
+    private ?string $description = null; // Description ou étapes de préparation
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $ingredients = null; // Liste des ingrédients
+    private ?string $ingredients = null; // Ingrédients de la recette
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $cookingTime = null; // Temps de cuisson en minutes
@@ -36,13 +36,13 @@ class Recipe
     private ?string $video = null; // URL vidéo optionnelle
 
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeImage::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $images; // Plusieurs images pour le slider
+    private Collection $images; // Images pour le slider
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $rating = null;
+    private ?float $rating = null; // Note moyenne des avis
 
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Review::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
-    private Collection $reviews;
+    private Collection $reviews; // Collection d'avis
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -51,7 +51,7 @@ class Recipe
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $category = null;
+    private ?string $category = null; // Catégorie de la recette
 
     const CATEGORIES = [
         'DESSERTS' => 'Desserts',
@@ -76,7 +76,7 @@ class Recipe
     public function onPreUpdate(): void
     {
         $this->updated_at = new \DateTimeImmutable();
-        $this->calculateAverageRating(); // Calcul de la note moyenne
+        $this->calculateAverageRating(); // Calcul de la note moyenne lors des mises à jour
     }
 
     // Getters et setters
@@ -184,6 +184,8 @@ class Recipe
         return $this;
     }
 
+    // Gestion des avis (reviews)
+
     public function getReviews(): Collection
     {
         return $this->reviews;
@@ -196,7 +198,7 @@ class Recipe
             $review->setRecipe($this);
         }
 
-        $this->calculateAverageRating();
+        $this->calculateAverageRating(); // Recalculer la note moyenne après ajout
         return $this;
     }
 
@@ -208,10 +210,11 @@ class Recipe
             }
         }
 
-        $this->calculateAverageRating();
+        $this->calculateAverageRating(); // Recalculer la note moyenne après suppression
         return $this;
     }
 
+    // Calcul de la note moyenne des avis approuvés
     public function calculateAverageRating(): void
     {
         $approvedReviews = $this->reviews->filter(function ($review) {
@@ -223,13 +226,14 @@ class Recipe
                 return $review->getRating();
             })->toArray());
 
-            $this->rating = $totalRating / $approvedReviews->count();
+            // Mise à jour de la note moyenne, arrondie à 2 décimales
+            $this->rating = round($totalRating / $approvedReviews->count(), 2);
         } else {
-            $this->rating = null;
+            $this->rating = null; // Si aucun avis approuvé
         }
     }
 
-    // Gestion des images
+    // Gestion des images (RecipeImage)
 
     public function getImages(): Collection
     {

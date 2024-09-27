@@ -3,17 +3,20 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Recipe;
+use App\Entity\RecipeImage;
+use App\Form\RecipeImageType;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class RecipeCrudController extends AbstractCrudController
 {
@@ -24,66 +27,66 @@ class RecipeCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $fields = [
-            TextField::new('name', 'Titre')->setFormTypeOptions([
-                'attr' => ['maxlength' => 255],
-            ]),
-
-            SlugField::new('slug')
-                ->setTargetFieldName('name')
-                ->hideOnIndex(),
-
-            TextField::new('subtitle', 'Sous-Titre')->setFormTypeOptions([
-                'attr' => ['maxlength' => 255],
-            ]),
-
-            ChoiceField::new('category', 'Catégorie')
-                ->setChoices(array_flip(Recipe::CATEGORIES))
-                ->setRequired(true),
-
-            ImageField::new('image', 'Image')
-                ->setBasePath('uploads/')
-                ->setUploadDir('public/uploads')
-                ->setUploadedFileNamePattern('[randomhash].[extension]')
-                ->setRequired(false),
-
-            TextField::new('video', 'Vidéo')->setFormTypeOptions([
-                'attr' => ['maxlength' => 255],
-            ])->hideOnIndex(),
-
-            // Ajout de la note moyenne dans la vue d'index
-            NumberField::new('rating', 'Note moyenne') // Utiliser la propriété rating
-                ->setFormTypeOptions([
-                    'attr' => [
-                        'min' => 0,
-                        'max' => 5,
-                        'step' => 0.1,
-                    ],
-                ])
-                ->onlyOnIndex(), // Afficher uniquement dans la vue d'index
-
-            DateField::new('created_at', 'Créée le')
-                ->setFormat('short')
-                ->onlyOnDetail(),
-
-            DateField::new('updated_at', 'Mise à jour le')
-                ->setFormat('short')
-                ->onlyOnDetail(),
+        return [
+            TextField::new('name', 'Titre'),
+            SlugField::new('slug')->setTargetFieldName('name')->hideOnIndex(),
+            ChoiceField::new('category', 'Catégorie')->setChoices(array_flip(Recipe::CATEGORIES)),
+            TextEditorField::new('description', 'Description'),
+            TextField::new('ingredients', 'Ingrédients'),
+            NumberField::new('cookingTime', 'Temps de cuisson (minutes)'),
+            CollectionField::new('images', 'Images')
+                ->setEntryType(RecipeImageType::class)
+                ->setFormTypeOptions(['by_reference' => false])
+                ->onlyOnForms(),
         ];
+    }
 
-        if ($pageName === Crud::PAGE_NEW || $pageName === Crud::PAGE_EDIT) {
-            $fields[] = TextEditorField::new('description', 'Description');
-        } else {
-            $fields[] = TextareaField::new('description', 'Description')
-                ->formatValue(function ($value) {
-                    return strip_tags($value);
-                })
-                ->onlyOnDetail();
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Recipe) {
+            foreach ($entityInstance->getImages() as $image) {
+                /** @var RecipeImage $image */
+                $imageFile = $image->getImageFile();
+                if ($imageFile) {
+                    // Appel à la méthode pour uploader l'image
+                    $image->uploadImage($this->getParameter('recipe_images_directory'));
+
+                    // Vérifier que l'imagePath a bien été définie
+                    if ($image->getImagePath() === null) {
+                        throw new \Exception('Le chemin de l\'image n\'a pas été défini après l\'upload.');
+                    }
+
+                    // Associer l'image à la recette
+                    $image->setRecipe($entityInstance);
+                }
+            }
         }
 
-        $fields[] = AssociationField::new('reviews', 'Avis')
-            ->hideOnForm();
+        parent::persistEntity($entityManager, $entityInstance);
+    }
 
-        return $fields;
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Recipe) {
+            foreach ($entityInstance->getImages() as $image) {
+                /** @var RecipeImage $image */
+                $imageFile = $image->getImageFile();
+                if ($imageFile) {
+                    // Suppression de l'ancienne image si elle existe
+                    if ($image->getImagePath()) {
+                        $oldImagePath = $this->getParameter('recipe_images_directory') . '/' . $image->getImagePath();
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                    }
+
+                    // Appelle la méthode uploadImage dans l'entité RecipeImage pour gérer l'upload
+                    $image->uploadImage($this->getParameter('recipe_images_directory'));
+                    $image->setRecipe($entityInstance); // Relie l'image à la recette
+                }
+            }
+        }
+
+        parent::updateEntity($entityManager, $entityInstance);
     }
 }

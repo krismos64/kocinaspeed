@@ -1,0 +1,66 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+	{{ 'Ajouter une nouvelle recette'|trans }}
+{% endblock %}
+
+{% block content_body %}
+	<div class="content-panel">
+		<h1 class="title">{{ 'Nouvelle Recette' }}</h1>
+
+		{{ form_start(form) }}
+
+		<div class="form-group">
+			{{ form_label(form.name) }}
+			{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.name) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.slug) }}
+			{{ form_widget(form.slug, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.slug) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.category) }}
+			{{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.category) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.description) }}
+			{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.description) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.ingredients) }}
+			{{ form_widget(form.ingredients, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.ingredients) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.cookingTime) }}
+			{{ form_widget(form.cookingTime, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.cookingTime) }}
+		</div>
+
+		<!-- Images upload -->
+		<div class="form-group">
+			{{ form_label(form.images) }}
+			{{ form_widget(form.images, {'attr': {'class': 'form-control', 'multiple': 'multiple'}}) }}
+			{{ form_errors(form.images) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.video) }}
+			{{ form_widget(form.video, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.video) }}
+		</div>
+
+		<button class="btn btn-primary">{{ 'Ajouter la recette'|trans }}</button>
+
+		{{ form_end(form) }}
+	</div>
+{% endblock %}
