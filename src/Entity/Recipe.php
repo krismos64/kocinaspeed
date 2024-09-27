@@ -2,105 +2,260 @@
 
 namespace App\Entity;
 
+use App\Repository\RecipeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
-class RecipeImage
+#[ORM\Entity(repositoryClass: RecipeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+class Recipe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $imagePath = null;
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
-    #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'images')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Recipe $recipe = null;
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
 
-    /**
-     * Cette propriété ne sera pas stockée dans la base de données, elle est utilisée
-     * temporairement pour le téléchargement du fichier.
-     */
-    #[Assert\File(
-        maxSize: '5M',
-        mimeTypes: ['image/jpeg', 'image/png'],
-        mimeTypesMessage: 'Veuillez télécharger une image valide (JPG ou PNG).'
-    )]
-    private ?File $imageFile = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
-    // Getters et Setters pour les propriétés
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $ingredients = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $cookingTime = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $video = null;
+
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeImage::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $images;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $rating = null;
+
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Review::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $reviews;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $category = null;
+
+    const CATEGORIES = [
+        'DESSERTS' => 'Desserts',
+        'PLATS' => 'Plats',
+        'APERITIFS' => 'Apéritifs',
+    ];
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+        $this->images = new ArrayCollection();
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+        $this->calculateAverageRating();
+    }
+
+    // Ajout de la méthode __toString pour éviter l'erreur de conversion en string
+    public function __toString(): string
+    {
+        return $this->name ?: 'Recette';
+    }
+
+    // Getters et setters
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getImagePath(): ?string
+    public function getName(): ?string
     {
-        return $this->imagePath;
+        return $this->name;
     }
 
-    public function setImagePath(?string $imagePath): self
+    public function setName(string $name): self
     {
-        $this->imagePath = $imagePath;
-
+        $this->name = $name;
         return $this;
     }
 
-    public function getRecipe(): ?Recipe
+    public function getSlug(): ?string
     {
-        return $this->recipe;
+        return $this->slug;
     }
 
-    public function setRecipe(?Recipe $recipe): self
+    public function setSlug(string $slug): self
     {
-        $this->recipe = $recipe;
-
+        $this->slug = $slug;
         return $this;
     }
 
-    /**
-     * @return File|UploadedFile|null
-     */
-    public function getImageFile(): ?File
+    public function getDescription(): ?string
     {
-        return $this->imageFile;
+        return $this->description;
     }
 
-    /**
-     * @param File|UploadedFile|null $imageFile
-     */
-    public function setImageFile(?File $imageFile = null): void
+    public function setDescription(string $description): self
     {
-        $this->imageFile = $imageFile;
+        $this->description = $description;
+        return $this;
+    }
 
-        // Mettre à jour `imagePath` uniquement si une nouvelle image a été téléchargée
-        if ($imageFile instanceof UploadedFile) {
-            // Vous pouvez mettre à jour la propriété imagePath ici si nécessaire
-            // Exemple: $this->imagePath = 'temporary-name.jpg';
+    public function getIngredients(): ?string
+    {
+        return $this->ingredients;
+    }
+
+    public function setIngredients(?string $ingredients): self
+    {
+        $this->ingredients = $ingredients;
+        return $this;
+    }
+
+    public function getCookingTime(): ?int
+    {
+        return $this->cookingTime;
+    }
+
+    public function setCookingTime(?int $cookingTime): self
+    {
+        $this->cookingTime = $cookingTime;
+        return $this;
+    }
+
+    public function getVideo(): ?string
+    {
+        return $this->video;
+    }
+
+    public function setVideo(?string $video): self
+    {
+        $this->video = $video;
+        return $this;
+    }
+
+    public function getRating(): ?float
+    {
+        return $this->rating;
+    }
+
+    public function setRating(?float $rating): self
+    {
+        $this->rating = $rating;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(RecipeImage $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setRecipe($this);
         }
+        return $this;
     }
 
-    // Méthode pour gérer l'upload de l'image et définir le chemin
-    public function uploadImage(string $directory): void
+    public function removeImage(RecipeImage $image): self
     {
-        if ($this->imageFile instanceof UploadedFile) {
-            $newFilename = uniqid() . '.' . $this->imageFile->guessExtension();
-
-            try {
-                // Déplacer l'image vers le bon répertoire
-                $this->imageFile->move($directory, $newFilename);
-
-                // Mettre à jour le chemin de l'image dans l'entité
-                $this->setImagePath($newFilename);
-            } catch (\Exception $e) {
-                throw new \Exception('Erreur lors du téléchargement de l\'image : ' . $e->getMessage());
+        if ($this->images->removeElement($image)) {
+            if ($image->getRecipe() === $this) {
+                $image->setRecipe(null);
             }
+        }
+        return $this;
+    }
+
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setRecipe($this);
+        }
+
+        $this->calculateAverageRating();
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            if ($review->getRecipe() === $this) {
+                $review->setRecipe(null);
+            }
+        }
+
+        $this->calculateAverageRating();
+        return $this;
+    }
+
+    public function calculateAverageRating(): void
+    {
+        $approvedReviews = $this->reviews->filter(function ($review) {
+            return $review->isApproved();
+        });
+
+        if ($approvedReviews->count() > 0) {
+            $totalRating = array_sum($approvedReviews->map(function ($review) {
+                return $review->getRating();
+            })->toArray());
+
+            $this->rating = round($totalRating / $approvedReviews->count(), 2);
+        } else {
+            $this->rating = null;
         }
     }
 }
