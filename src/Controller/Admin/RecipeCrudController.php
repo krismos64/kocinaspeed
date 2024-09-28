@@ -13,16 +13,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Proxies\__CG__\App\Entity\Recipe as EntityRecipe;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Flex\Recipe as FlexRecipe;
 
 class RecipeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return EntityRecipe::class;
+        return Recipe::class;
     }
 
     public function configureFields(string $pageName): iterable

@@ -21,75 +21,36 @@
 			</div>
 		</div>
 	</div>
-
+	<!-- Section affichant les recettes -->
 	<div class="uk-section uk-section-default">
 		<div class="uk-container">
-			<div
-				data-uk-grid>
-				<!-- Filtrage par catégories -->
+			<div data-uk-grid>
 				<div class="uk-width-1-4@m sticky-container">
 					<div data-uk-sticky="offset: 100; bottom: true; media: @m;">
-						<h2>Catégories</h2>
-						<ul
-							class="uk-nav-default uk-nav-parent-icon uk-nav-filter uk-margin-medium-top" data-uk-nav>
-							<!-- Catégorie Plats -->
-							<li class="uk-parent">
-								<a href="#">Plats</a>
-								<ul class="uk-nav-sub">
-									{% set plats_recipes = recipes|filter(recipe => recipe.category == 'Plats') %}
-									{% if plats_recipes|length > 0 %}
-										{% for recipe in plats_recipes %}
+						<h2>Nos recettes</h2>
+						<ul class="uk-nav-default uk-nav-parent-icon uk-nav-filter uk-margin-medium-top" data-uk-nav>
+							{% for category_key, category_label in constant('App\\Entity\\Recipe::CATEGORIES') %}
+								<li class="uk-parent">
+									<a href="#">{{ category_label }}</a>
+									<ul class="uk-nav-sub">
+										{% set category_recipes = recipes|filter(recipe => recipe.category == category_key) %}
+										{% if category_recipes|length > 0 %}
+											{% for recipe in category_recipes %}
+												<li>
+													<a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}">{{ recipe.name }}</a>
+												</li>
+											{% endfor %}
+										{% else %}
 											<li>
-												<a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}">{{ recipe.name }}</a>
+												<span>Aucune recette disponible</span>
 											</li>
-										{% endfor %}
-									{% else %}
-										<li>
-											<span>Aucune recette disponible</span>
-										</li>
-									{% endif %}
-								</ul>
-							</li>
-							<!-- Catégorie Desserts -->
-							<li class="uk-parent">
-								<a href="#">Desserts</a>
-								<ul class="uk-nav-sub">
-									{% set desserts_recipes = recipes|filter(recipe => recipe.category == 'Desserts') %}
-									{% if desserts_recipes|length > 0 %}
-										{% for recipe in desserts_recipes %}
-											<li>
-												<a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}">{{ recipe.name }}</a>
-											</li>
-										{% endfor %}
-									{% else %}
-										<li>
-											<span>Aucune recette disponible</span>
-										</li>
-									{% endif %}
-								</ul>
-							</li>
-							<!-- Catégorie Apéritifs -->
-							<li class="uk-parent">
-								<a href="#">Apéritifs</a>
-								<ul class="uk-nav-sub">
-									{% set aperitifs_recipes = recipes|filter(recipe => recipe.category == 'Apéritifs') %}
-									{% if aperitifs_recipes|length > 0 %}
-										{% for recipe in aperitifs_recipes %}
-											<li>
-												<a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}">{{ recipe.name }}</a>
-											</li>
-										{% endfor %}
-									{% else %}
-										<li>
-											<span>Aucune recette disponible</span>
-										</li>
-									{% endif %}
-								</ul>
-							</li>
+										{% endif %}
+									</ul>
+								</li>
+							{% endfor %}
 						</ul>
 					</div>
 				</div>
-
 				<!-- Section des recettes affichées -->
 				<div
 					class="uk-width-expand@m">
@@ -102,7 +63,6 @@
 							</form>
 						</div>
 					</div>
-
 					<!-- Titre des recettes -->
 					<h2 class="uk-margin-large-top uk-text-bold">Toutes les recettes</h2>
 

@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Proxies\__CG__\App\Entity\Recipe;
+use App\Entity\Recipe; // Utilise l'entité réelle Recipe, pas le proxy
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,10 +23,6 @@ class RecipeImage
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
 
-    /**
-     * Cette propriété ne sera pas stockée dans la base de données, elle est utilisée
-     * temporairement pour le téléchargement du fichier.
-     */
     #[Assert\File(
         maxSize: '5M',
         mimeTypes: ['image/jpeg', 'image/png'],
@@ -79,12 +75,6 @@ class RecipeImage
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
-
-        // Mettre à jour `imagePath` uniquement si une nouvelle image a été téléchargée
-        if ($imageFile instanceof UploadedFile) {
-            // Vous pouvez mettre à jour la propriété imagePath ici si nécessaire
-            // Exemple: $this->imagePath = 'temporary-name.jpg';
-        }
     }
 
     // Méthode pour gérer l'upload de l'image et définir le chemin
