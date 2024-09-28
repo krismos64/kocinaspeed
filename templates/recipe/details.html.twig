@@ -74,11 +74,30 @@
 				<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">Les avis des utilisateurs</span>
 			</h1>
 
-			<!-- Note moyenne dans un cadre -->
-			<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-margin-large-top" style="background-color: #ffedd5;">
-				<h3 class="uk-card-title uk-text-bold" style="color: #ff7043;">Note moyenne</h3>
-				<p class="uk-text-large uk-text-center">
-					{{ recipe.rating ?? 'Pas encore de note' }}/5</p>
+			<!-- Note moyenne dans un cadre amélioré -->
+			<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-margin-large-top uk-animation-fade" style="background-color: #fff5e1;">
+				<div
+					class="uk-flex uk-flex-center uk-flex-middle">
+					<!-- Icône de note -->
+					<span uk-icon="star" style="color: #ff7043; font-size: 3rem; margin-right: 15px;"></span>
+
+					<!-- Contenu texte -->
+					<div>
+						<h3 class="uk-card-title uk-text-bold" style="color: #ff7043;">Note moyenne</h3>
+
+						<!-- Affichage des étoiles dynamiques -->
+						<div class="uk-flex uk-flex-center uk-margin-small-top">
+							{% for i in 1..5 %}
+								<span class="uk-icon" uk-icon="icon: star; ratio: 1.5" style="color: {{ i <= recipe.rating ? '#ff7043' : '#e0e0e0' }};"></span>
+							{% endfor %}
+						</div>
+
+						<!-- Texte de la note moyenne -->
+						<p class="uk-text-large uk-text-center uk-margin-remove-top" style="color: #ff7043;">
+							{{ recipe.rating ?? 'Pas encore de note' }}/5
+						</p>
+					</div>
+				</div>
 			</div>
 
 
