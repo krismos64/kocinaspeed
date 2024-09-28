@@ -26,8 +26,8 @@ class Recipe
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $ingredients = null;
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $ingredients = [];
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $cookingTime = null;
@@ -79,7 +79,6 @@ class Recipe
         $this->calculateAverageRating();
     }
 
-    // Ajout de la méthode __toString pour éviter l'erreur de conversion en string
     public function __toString(): string
     {
         return $this->name ?: 'Recette';
@@ -125,12 +124,12 @@ class Recipe
         return $this;
     }
 
-    public function getIngredients(): ?string
+    public function getIngredients(): ?array
     {
         return $this->ingredients;
     }
 
-    public function setIngredients(?string $ingredients): self
+    public function setIngredients(?array $ingredients): self
     {
         $this->ingredients = $ingredients;
         return $this;

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Recipe;
 use App\Entity\RecipeImage;
 use App\Form\RecipeImageType;
+use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -14,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Form\Extension\Core\Type\TextType as TypeTextType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -31,7 +33,14 @@ class RecipeCrudController extends AbstractCrudController
             SlugField::new('slug')->setTargetFieldName('name')->hideOnIndex(),
             ChoiceField::new('category', 'Catégorie')->setChoices(array_flip(Recipe::CATEGORIES)),
             TextEditorField::new('description', 'Description'),
-            TextField::new('ingredients', 'Ingrédients'),
+            CollectionField::new('ingredients', 'Ingrédients')
+                ->setEntryType(TypeTextType::class)
+                ->setFormTypeOptions([
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false
+                ])
+                ->onlyOnForms(),
             NumberField::new('cookingTime', 'Temps de cuisson (minutes)'),
 
             // Champ pour la vidéo YouTube

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240927121954 extends AbstractMigration
+final class Version20240928144801 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20240927121954 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE recipe_image CHANGE recipe_id recipe_id INT NOT NULL, CHANGE image_path image_path VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE recipe CHANGE ingredients ingredients JSON DEFAULT NULL COMMENT \'(DC2Type:json)\'');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE recipe_image CHANGE recipe_id recipe_id INT DEFAULT NULL, CHANGE image_path image_path VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE recipe CHANGE ingredients ingredients LONGTEXT DEFAULT NULL');
     }
 }

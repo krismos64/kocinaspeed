@@ -41,7 +41,11 @@
 		<!-- Ingrédients dans un cadre -->
 		<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-margin-large-top" style="background-color: #e0f7fa;">
 			<h3 class="uk-card-title uk-text-bold" style="color: #006064;">Ingrédients</h3>
-			<p class="uk-text-lead">{{ recipe.ingredients|nl2br }}</p>
+			<ul>
+				{% for ingredient in recipe.ingredients %}
+					<li>{{ ingredient }}</li>
+				{% endfor %}
+			</ul>
 		</div>
 
 		<!-- Temps de cuisson dans un cadre -->
