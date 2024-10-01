@@ -37,19 +37,19 @@
 							<li>
 								<a href="{{ path('app_contact') }}">Contact</a>
 							</li>
+							<li>
+								<a href="#video-modal" uk-toggle>Présentation vidéo de Kocinaspeed</a>
+							</li>
 						</ul>
 					</div>
-					<!-- Navbar Center (Logo YouTube) -->
-					<div class="uk-navbar-center">
+
+					<!-- Navbar Right (Logo YouTube déplacé à droite en mode desktop) -->
+					<div class="uk-navbar-right">
 						<div class="uk-visible@m">
 							<a href="https://www.youtube.com/channel/UCkMEwuAnNMG21xfh_rmjkFg" target="_blank">
 								<img src="{{ asset('img/logo-youtube.jpg') }}" alt="YouTube Kocinaspeed" width="200" height="200">
 							</a>
 						</div>
-					</div>
-					<!-- Navbar Right (Menu Burger pour mobile) -->
-					<div
-						class="uk-navbar-right">
 						<!-- Menu Burger pour mobile -->
 						<a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-toggle>
 							<span data-uk-navbar-toggle-icon></span>
@@ -61,12 +61,12 @@
 
 		<!-- Section principale -->
 		{% block body %}{% endblock %}
+
 		<!-- Section Footer -->
 		<footer class="uk-section uk-section-secondary uk-padding-large uk-light">
 			<div class="uk-container">
 				<div
 					class="uk-grid-large uk-child-width-1-3@m uk-flex-middle" data-uk-grid>
-
 					<!-- Colonne 1 : Logo et présentation -->
 					<div class="uk-text-center uk-text-left@m">
 						<a href="{{ path('app_home') }}" class="uk-logo">
@@ -137,6 +137,9 @@
 					<li>
 						<a href="{{ path('app_contact') }}">Contact</a>
 					</li>
+					<li>
+						<a href="#video-modal" uk-toggle>Présentation vidéo de Kocinaspeed</a>
+					</li>
 				</ul>
 
 				<!-- Bouton de Connexion ou Espace Admin dans le Offcanvas (Icone) -->
@@ -164,6 +167,16 @@
 					<a href="{{ path('app_home') }}">
 						<img src="{{ asset('img/logo.png') }}" alt="Logo" width="150" height="150" class="uk-margin-small-top">
 					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Video -->
+		<div id="video-modal" uk-modal>
+			<div class="uk-modal-dialog uk-modal-body uk-padding-remove">
+				<button class="uk-modal-close-default" type="button" uk-close></button>
+				<div class="uk-responsive-width">
+					<iframe src="https://www.youtube.com/embed/355H3qhGkkU" width="100%" height="315" frameborder="0" allowfullscreen uk-video></iframe>
 				</div>
 			</div>
 		</div>
