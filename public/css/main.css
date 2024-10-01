@@ -4481,13 +4481,19 @@ ul.uk-nav-sub {
     align-items: center;
     justify-content: center;
   }
+  /* Fixer la hauteur des vignettes et forcer les images à s'ajuster */
+  .fixed-card-height {
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   .fixed-image {
     width: 100%;
-    height: 100%;
+    height: 200px;
     object-fit: cover;
-  }
-  .fixed-card-height {
-    height: 100%;
+    object-position: center;
   }
   .uk-card-media-top {
     height: 200px;

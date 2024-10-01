@@ -109,7 +109,7 @@
 								<div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height">
 									<div class="uk-card-media-top">
 										{% if recipe.images|length > 0 %}
-											<!-- Affiche la première image de la collection -->
+											<!-- Affiche la première image de la collection et applique une taille fixe avec ajustement automatique -->
 											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}">
 										{% else %}
 											<!-- Image par défaut si aucune image n'est disponible -->
