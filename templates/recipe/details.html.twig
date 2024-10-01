@@ -38,7 +38,7 @@
 			<a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
 		</div>
 
-		<!-- Ingrédients dans un cadre -->
+		<!-- Ingrédients -->
 		<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-margin-large-top" style="background-color: #e0f7fa;">
 			<h3 class="uk-card-title uk-text-bold" style="color: #006064;">Ingrédients</h3>
 			<ul>
@@ -48,20 +48,20 @@
 			</ul>
 		</div>
 
-		<!-- Temps de cuisson dans un cadre -->
+		<!-- Temps de cuisson -->
 		<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-margin-large-top" style="background-color: #fff9c4;">
 			<h3 class="uk-card-title uk-text-bold" style="color: #f57f17;">Temps de préparation</h3>
 			<p>{{ recipe.cookingTime }}
 				minutes</p>
 		</div>
 
-		<!-- Préparation dans un cadre -->
+		<!-- Préparation -->
 		<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-margin-large-top" style="background-color: #ffe0b2;">
 			<h3 class="uk-card-title uk-text-bold" style="color: #ff7043;">Étapes de préparation</h3>
 			<p class="uk-text-lead">{{ recipe.description|raw }}</p>
 		</div>
 
-		<!-- Vidéo de la recette, affichée seulement si une vidéo est présente -->
+		<!-- Vidéo de la recette -->
 		{% if recipe.video %}
 			<div class="uk-margin-large-top uk-text-center">
 				<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-padding-remove">
@@ -78,25 +78,17 @@
 				<span style="color: #ff7043; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px;">Les avis des utilisateurs</span>
 			</h1>
 
-			<!-- Note moyenne dans un cadre amélioré -->
+			<!-- Note moyenne -->
 			<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-small uk-margin-large-top uk-animation-fade" style="background-color: #fff5e1;">
-				<div
-					class="uk-flex uk-flex-center uk-flex-middle">
-					<!-- Icône de note -->
+				<div class="uk-flex uk-flex-center uk-flex-middle">
 					<span uk-icon="star" style="color: #ff7043; font-size: 3rem; margin-right: 15px;"></span>
-
-					<!-- Contenu texte -->
 					<div>
 						<h3 class="uk-card-title uk-text-bold" style="color: #ff7043;">Note moyenne</h3>
-
-						<!-- Affichage des étoiles dynamiques -->
 						<div class="uk-flex uk-flex-center uk-margin-small-top">
 							{% for i in 1..5 %}
 								<span class="uk-icon" uk-icon="icon: star; ratio: 1.5" style="color: {{ i <= recipe.rating ? '#ff7043' : '#e0e0e0' }};"></span>
 							{% endfor %}
 						</div>
-
-						<!-- Texte de la note moyenne -->
 						<p class="uk-text-large uk-text-center uk-margin-remove-top" style="color: #ff7043;">
 							{{ recipe.rating ?? 'Pas encore de note' }}/5
 						</p>
@@ -104,61 +96,49 @@
 				</div>
 			</div>
 
-
 			{% set approvedReviews = recipe.reviews|filter(r => r.isApproved()) %}
 
 			{% if approvedReviews|length > 0 %}
 				<!-- Boutons pour lire tous les avis et laisser un avis -->
 				<div class="uk-text-center uk-margin">
-					<div
-						class="uk-grid-small uk-flex-center" uk-grid>
-						<!-- Bouton Lire tous les avis -->
+					<div class="uk-grid-small uk-flex-center" uk-grid>
 						<div>
-							<button class="uk-button uk-button-primary uk-border-pill" type="button" uk-toggle="target: #reviews-modal" style="background-color: #ff7043; color: white;">
-								Lire tous les avis
-							</button>
+							<button class="uk-button uk-button-primary uk-border-pill" type="button" uk-toggle="target: #reviews-modal" style="background-color: #ff7043; color: white;">Lire tous les avis</button>
 						</div>
-
-						<!-- Bouton Laisser un avis -->
 						<div>
-							<a href="{{ path('app_recipe_review', { slug: recipe.slug }) }}" class="uk-button uk-button-primary uk-border-pill uk-box-shadow-hover-large" style="background-color: #ff7043; color: white;">
-								Laisser un avis
-							</a>
+							<a href="{{ path('app_recipe_review', { slug: recipe.slug }) }}" class="uk-button uk-button-primary uk-border-pill uk-box-shadow-hover-large" style="background-color: #ff7043; color: white;">Laisser un avis</a>
 						</div>
 					</div>
 				</div>
 
-				<!-- Affichage de quelques avis en teaser -->
+				<!-- Avis en teaser -->
 				<div class="uk-child-width-1-1@s uk-child-width-1-2@m uk-grid-match" uk-grid>
 					{% for review in approvedReviews|slice(0, 2) %}
 						<div>
 							<div
 								class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-hover-large uk-animation-slide-bottom-small" style="background-color: #fff7f0;">
 								<!-- Badge de note -->
-								<div class="uk-badge" style="background-color: #ff7043; color: white; position: absolute; top: -10px; left: -10px;">
-									{{ review.rating }}/5
-								</div>
-								<!-- Avis -->
+								<div class="uk-badge" style="background-color: #ff7043; color: white; position: absolute; top: -10px; left: -10px;">{{ review.rating }}/5</div>
 								<p class="uk-text-large uk-margin-top">{{ review.comment }}</p>
 
-								<!-- Images associées à l'avis -->
+								<!-- Images associées à l'avis avec taille fixe -->
 								{% if review.images|length > 0 %}
 									<div class="review-images uk-margin-top uk-flex" uk-lightbox>
 										{% for image in review.images %}
-											<a href="{{ asset('uploads/reviews/' ~ image.imagePath) }}" data-caption="Image d'avis">
-												<img src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" alt="Image d'avis" class="uk-border-rounded" style="max-width: 150px; margin-right: 10px;">
-											</a>
+											<div class="uk-cover-container uk-margin-right" style="width: 150px; height: 100px;">
+												<a href="{{ asset('uploads/reviews/' ~ image.imagePath) }}" data-caption="Image d'avis">
+													<img src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" alt="Image d'avis" uk-cover>
+													<canvas width="150" height="100"></canvas>
+												</a>
+											</div>
 										{% endfor %}
 									</div>
 								{% endif %}
 
-								<!-- Auteur et date -->
-								<p class="uk-text-meta uk-margin-remove-top">
-									Par
+								<p class="uk-text-meta uk-margin-remove-top">Par
 									<strong>{{ review.visitorName ?? 'Anonyme' }}</strong>
 									le
-									{{ review.createdAt|date('d/m/Y') }}
-								</p>
+									{{ review.createdAt|date('d/m/Y') }}</p>
 							</div>
 						</div>
 					{% endfor %}
@@ -178,30 +158,27 @@
 										<div
 											class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-hover-large" style="background-color: #fff7f0;">
 											<!-- Badge de note -->
-											<div class="uk-badge" style="background-color: #ff7043; color: white; position: absolute; top: -10px; left: -10px;">
-												{{ review.rating }}/5
-											</div>
-											<!-- Avis -->
+											<div class="uk-badge" style="background-color: #ff7043; color: white; position: absolute; top: -10px; left: -10px;">{{ review.rating }}/5</div>
 											<p class="uk-text-large uk-margin-top">{{ review.comment }}</p>
 
-											<!-- Images associées à l'avis -->
+											<!-- Images associées à l'avis avec taille fixe -->
 											{% if review.images|length > 0 %}
 												<div class="review-images uk-margin-top uk-flex" uk-lightbox>
 													{% for image in review.images %}
-														<a href="{{ asset('uploads/reviews/' ~ image.imagePath) }}" data-caption="Image d'avis">
-															<img src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" alt="Image d'avis" class="uk-border-rounded" style="max-width: 150px; margin-right: 10px;">
-														</a>
+														<div class="uk-cover-container uk-margin-right" style="width: 150px; height: 100px;">
+															<a href="{{ asset('uploads/reviews/' ~ image.imagePath) }}" data-caption="Image d'avis">
+																<img src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" alt="Image d'avis" uk-cover>
+																<canvas width="150" height="100"></canvas>
+															</a>
+														</div>
 													{% endfor %}
 												</div>
 											{% endif %}
 
-											<!-- Auteur et date -->
-											<p class="uk-text-meta uk-margin-remove-top">
-												Par
+											<p class="uk-text-meta uk-margin-remove-top">Par
 												<strong>{{ review.visitorName ?? 'Anonyme' }}</strong>
 												le
-												{{ review.createdAt|date('d/m/Y') }}
-											</p>
+												{{ review.createdAt|date('d/m/Y') }}</p>
 										</div>
 									</div>
 								{% endfor %}
@@ -215,18 +192,12 @@
 				</div>
 			{% else %}
 				<p class="uk-text-center">Pas encore d'avis pour cette recette.</p>
-				<!-- Bouton pour laisser un avis si aucun avis n'est présent -->
+				<!-- Bouton pour laisser un avis -->
 				<div class="uk-text-center uk-margin">
-					<a href="{{ path('app_recipe_review', { slug: recipe.slug }) }}" class="uk-button uk-button-primary uk-border-pill uk-box-shadow-hover-large" style="background-color: #ff7043; color: white;">
-						Laisser un avis
-					</a>
+					<a href="{{ path('app_recipe_review', { slug: recipe.slug }) }}" class="uk-button uk-button-primary uk-border-pill uk-box-shadow-hover-large" style="background-color: #ff7043; color: white;">Laisser un avis</a>
 				</div>
 			{% endif %}
 		</div>
 	</div>
 
-	<!-- Scripts UIKit pour le slider et le lightbox -->
-	<script>
-		UIkit.use(UikitLightbox);
-	</script>
 {% endblock %}
