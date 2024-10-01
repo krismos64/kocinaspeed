@@ -71,15 +71,16 @@
 						{% for recipe in recipes %}
 							<div>
 								<div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height">
-									<div class="uk-card-media-top">
+									<div class="uk-card-media-top uk-cover-container fixed-image-container">
 										{% if recipe.images|length > 0 %}
-											<!-- Affiche la première image de la collection -->
-											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}">
+											<!-- Utilise uk-cover pour forcer l'adaptation de l'image -->
+											<img class="uk-cover" src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}" data-uk-cover>
 										{% else %}
 											<!-- Image par défaut si aucune image n'est disponible -->
-											<img class="uk-border-rounded-medium fixed-image" src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}">
+											<img class="uk-cover" src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}" data-uk-cover>
 										{% endif %}
-										<div class="uk-position-cover uk-card-overlay uk-border-rounded-medium"></div>
+										<canvas width="300" height="200"></canvas>
+										<!-- Canvas de taille fixe pour forcer le ratio -->
 									</div>
 									<div>
 										<h3 class="uk-card-title uk-text-500 uk-margin-small-bottom uk-margin-top">{{ recipe.name }}</h3>
