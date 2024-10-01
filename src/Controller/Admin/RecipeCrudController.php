@@ -32,7 +32,7 @@ class RecipeCrudController extends AbstractCrudController
             TextField::new('name', 'Titre'),
             SlugField::new('slug')->setTargetFieldName('name')->hideOnIndex(),
             ChoiceField::new('category', 'Catégorie')->setChoices(array_flip(Recipe::CATEGORIES)),
-            TextEditorField::new('description', 'Description'),
+            TextEditorField::new('description', 'Étapes de préparation'),
             CollectionField::new('ingredients', 'Ingrédients')
                 ->setEntryType(TypeTextType::class)
                 ->setFormTypeOptions([
@@ -41,7 +41,7 @@ class RecipeCrudController extends AbstractCrudController
                     'by_reference' => false
                 ])
                 ->onlyOnForms(),
-            NumberField::new('cookingTime', 'Temps de cuisson (minutes)'),
+            NumberField::new('cookingTime', 'Temps de préparation (minutes)'),
 
             // Champ pour la vidéo YouTube
             TextField::new('video', 'Lien Vidéo YouTube')->hideOnIndex(),
