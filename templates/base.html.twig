@@ -47,21 +47,9 @@
 							</a>
 						</div>
 					</div>
-					<!-- Navbar Right (Connexion/Espace Admin) -->
-					<div class="uk-navbar-right">
-						<div class="uk-navbar-item">
-							<div>
-								{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-									{% if is_granted('ROLE_ADMIN') %}
-										<a class="uk-button uk-button-secondary" href="{{ path('app_admin') }}">Admin</a>
-									{% else %}
-										<a class="uk-button uk-button-secondary" href="{{ path('app_profile') }}">Mon Profil</a>
-									{% endif %}
-								{% else %}
-									<a class="uk-button uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
-								{% endif %}
-							</div>
-						</div>
+					<!-- Navbar Right (Menu Burger pour mobile) -->
+					<div
+						class="uk-navbar-right">
 						<!-- Menu Burger pour mobile -->
 						<a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-toggle>
 							<span data-uk-navbar-toggle-icon></span>
@@ -151,16 +139,16 @@
 					</li>
 				</ul>
 
-				<!-- Bouton de Connexion ou Espace Admin dans le Offcanvas -->
-				<div class="uk-margin-medium-top">
+				<!-- Bouton de Connexion ou Espace Admin dans le Offcanvas (Icone) -->
+				<div class="uk-margin-medium-top uk-text-center">
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 						{% if is_granted('ROLE_ADMIN') %}
-							<a class="uk-button uk-width-1-1 uk-button-secondary" href="{{ path('app_admin') }}">Admin</a>
+							<a class="uk-icon-link" uk-icon="cog" href="{{ path('app_admin') }}"></a>
 						{% else %}
-							<a class="uk-button uk-width-1-1 uk-button-secondary" href="{{ path('app_profile') }}">Mon Profil</a>
+							<a class="uk-icon-link" uk-icon="user" href="{{ path('app_profile') }}"></a>
 						{% endif %}
 					{% else %}
-						<a class="uk-button uk-width-1-1 uk-button-primary" href="{{ path('app_login') }}">Connexion</a>
+						<a class="uk-icon-link" uk-icon="sign-in" href="{{ path('app_login') }}"></a>
 					{% endif %}
 				</div>
 
