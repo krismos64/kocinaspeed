@@ -21,6 +21,17 @@ use Symfony\Component\Mime\Email;
 
 class RecipeController extends AbstractController
 {
+    #[Route('/', name: 'app_home')]
+    public function index(RecipeRepository $recipeRepository): Response
+    {
+        // Récupérer les 6 dernières recettes ajoutées par date de création
+        $recipes = $recipeRepository->findBy([], ['createdAt' => 'DESC'], 6);
+
+        return $this->render('home/index.html.twig', [
+            'recipes' => $recipes,
+        ]);
+    }
+
     #[Route('/recette/{slug}', name: 'app_recipe_details')]
     public function show(
         RecipeRepository $recipeRepository,
@@ -103,6 +114,7 @@ class RecipeController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     #[Route('/recette/{slug}/laisser-un-avis', name: 'app_recipe_review')]
     public function reviewForm(
         string $slug,
@@ -135,8 +147,7 @@ class RecipeController extends AbstractController
                 if ($imageFile) {
                     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $safeFilename = $slugger->slug($originalFilename);
-                    $newFilename = $safeFilename . '-' . uniqid() . '.' .
-                        $imageFile->guessExtension();
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
                     // Déplacer le fichier dans le répertoire de destination
                     try {
@@ -158,7 +169,7 @@ class RecipeController extends AbstractController
                     $reviewImage->setReview($review);
 
                     // Ajouter l'image à la collection de l'avis
-                    $review->addImage($reviewImage); // Correction du 'reviewImagee'
+                    $review->addImage($reviewImage);
                 }
             }
 
@@ -185,7 +196,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recettes', name: 'app_recipe_index')]
-    public function index(RecipeRepository $recipeRepository, Request $request): Response
+    public function recipeList(RecipeRepository $recipeRepository, Request $request): Response
     {
         $category = $request->query->get('category');
         if ($category) {
