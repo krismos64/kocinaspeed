@@ -25,7 +25,7 @@
 		</h1>
 
 		<!-- Slider des images de la recette -->
-		<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="animation: fade">
+		<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="animation: fade; autoplay: true; autoplay-interval: 2000; pause-on-hover: true">
 			<ul class="uk-slideshow-items">
 				{% for image in recipe.images %}
 					<li>
@@ -34,8 +34,10 @@
 				{% endfor %}
 			</ul>
 
-			<a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
-			<a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+			{% if recipe.images|length > 1 %}
+				<a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+				<a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+			{% endif %}
 		</div>
 
 		<!-- Ingrédients -->

@@ -68,10 +68,18 @@
 
 					<!-- Titre des recettes et filtres -->
 					<h2 class="uk-margin-large-top uk-text-bold">Toutes les recettes</h2>
-					<div class="uk-margin-medium-bottom">
-						<a href="{{ path('app_recipe_index', {'category': 'all'}) }}" class="uk-button uk-button-default uk-margin-small-right {% if category == 'all' %}uk-button-primary{% endif %}">Toutes</a>
+					<div class="uk-margin-medium-bottom uk-flex uk-flex-wrap uk-child-width-auto@s uk-grid-small" uk-grid>
+						<div>
+							<a href="{{ path('app_recipe_index', {'category': 'all'}) }}" class="uk-button uk-button-default {% if category == 'all' %}uk-button-primary{% endif %}">
+								Toutes
+							</a>
+						</div>
 						{% for cat, label in categories %}
-							<a href="{{ path('app_recipe_index', {'category': cat}) }}" class="uk-button uk-button-default uk-margin-small-right {% if category == cat %}uk-button-primary{% endif %}">{{ label }}</a>
+							<div>
+								<a href="{{ path('app_recipe_index', {'category': cat}) }}" class="uk-button uk-button-default {% if category == cat %}uk-button-primary{% endif %}">
+									{{ label }}
+								</a>
+							</div>
 						{% endfor %}
 					</div>
 
