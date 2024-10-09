@@ -199,16 +199,20 @@ class RecipeController extends AbstractController
     public function recipeList(RecipeRepository $recipeRepository, Request $request): Response
     {
         $category = $request->query->get('category');
+
         if ($category) {
-            $recipes = $recipeRepository->findBy(['category' => $category]);
+            // Récupérer les recettes par catégorie et trier par nom
+            $recipes = $recipeRepository->findBy(['category' => $category], ['name' => 'ASC']);
         } else {
-            $recipes = $recipeRepository->findAll();
+            // Si aucune catégorie, on récupère toutes les recettes triées par nom
+            $recipes = $recipeRepository->findBy([], ['name' => 'ASC']);
         }
 
         return $this->render('recipe/index.html.twig', [
             'recipes' => $recipes,
         ]);
     }
+
 
     #[Route('/recherche', name: 'app_recipe_search')]
     public function search(RecipeRepository $recipeRepository, Request $request): Response
