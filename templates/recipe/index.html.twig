@@ -66,13 +66,19 @@
 						</div>
 					</div>
 
-					<!-- Titre des recettes -->
+					<!-- Titre des recettes et filtres -->
 					<h2 class="uk-margin-large-top uk-text-bold">Toutes les recettes</h2>
+					<div class="uk-margin-medium-bottom">
+						<button class="uk-button uk-button-default uk-margin-small-right filter-btn" data-category="all">Toutes les recettes</button>
+						<button class="uk-button uk-button-default uk-margin-small-right filter-btn" data-category="APERITIFS">Apéritifs</button>
+						<button class="uk-button uk-button-default uk-margin-small-right filter-btn" data-category="PLATS">Plats</button>
+						<button class="uk-button uk-button-default filter-btn" data-category="DESSERTS">Desserts</button>
+					</div>
 
 					<!-- Liste des recettes avec affichage de la première image uniquement -->
 					<div class="uk-child-width-1-2 uk-child-width-1-3@s" data-uk-grid>
 						{% for recipe in pager %}
-							<div>
+							<div class="recipe-item" data-category="{{ recipe.category }}">
 								<div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height">
 									<div class="uk-card-media-top uk-cover-container fixed-image-container">
 										{% if recipe.images|length > 0 %}
@@ -122,4 +128,42 @@
 			</div>
 		</div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+var filterButtons = document.querySelectorAll('.filter-btn');
+var recipeItems = document.querySelectorAll('.recipe-item');
+
+filterButtons.forEach(function (button) {
+button.addEventListener('click', function () {
+var category = this.getAttribute('data-category');
+console.log('Catégorie sélectionnée:', category);
+
+filterButtons.forEach(function (btn) {
+btn.classList.remove('uk-button-primary');
+});
+this.classList.add('uk-button-primary');
+
+var visibleCount = 0;
+recipeItems.forEach(function (item) {
+var itemCategory = item.getAttribute('data-category');
+console.log('Recette:', item.querySelector('h3').textContent, 'Catégorie:', itemCategory);
+if (category === 'all' || itemCategory === category) {
+item.style.display = '';
+visibleCount++;
+} else {
+item.style.display = 'none';
+}
+});
+
+console.log('Nombre de recettes visibles:', visibleCount);
+
+// Mise à jour de la grille UIkit
+UIkit.update(event);
+});
+});
+});
+	</script>
 {% endblock %}
