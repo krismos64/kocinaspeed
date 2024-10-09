@@ -25,9 +25,23 @@ class RecipeController extends AbstractController
     public function index(RecipeRepository $recipeRepository): Response
     {
         // Récupérer les 6 dernières recettes ajoutées par date de création
-        $recipes = $recipeRepository->findBy([], ['createdAt' => 'DESC'], 6);
+        $latestRecipes = $recipeRepository->findBy([], ['createdAt' => 'DESC'], 6);
+
+        // Récupérer toutes les recettes pour les filtres par catégorie, triées par nom
+        $allRecipes = $recipeRepository->findBy([], ['name' => 'ASC']);
 
         return $this->render('home/index.html.twig', [
+            'recipes' => $latestRecipes, // Pour l'affichage des dernières recettes
+            'allRecipes' => $allRecipes, // Pour les filtres par catégorie
+        ]);
+    }
+    #[Route('/recettes', name: 'app_recipe_index')]
+    public function recipeList(RecipeRepository $recipeRepository): Response
+    {
+        // Récupérer toutes les recettes, triées par ordre alphabétique pour un affichage complet
+        $recipes = $recipeRepository->findBy([], ['name' => 'ASC']);
+
+        return $this->render('recipe/index.html.twig', [
             'recipes' => $recipes,
         ]);
     }
@@ -194,25 +208,6 @@ class RecipeController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-    #[Route('/recettes', name: 'app_recipe_index')]
-    public function recipeList(RecipeRepository $recipeRepository, Request $request): Response
-    {
-        $category = $request->query->get('category');
-
-        if ($category) {
-            // Récupérer les recettes par catégorie et trier par nom
-            $recipes = $recipeRepository->findBy(['category' => $category], ['name' => 'ASC']);
-        } else {
-            // Si aucune catégorie, on récupère toutes les recettes triées par nom
-            $recipes = $recipeRepository->findBy([], ['name' => 'ASC']);
-        }
-
-        return $this->render('recipe/index.html.twig', [
-            'recipes' => $recipes,
-        ]);
-    }
-
 
     #[Route('/recherche', name: 'app_recipe_search')]
     public function search(RecipeRepository $recipeRepository, Request $request): Response
