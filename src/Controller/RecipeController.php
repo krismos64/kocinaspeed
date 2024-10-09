@@ -10,7 +10,7 @@ use App\Form\RecipeType;
 use App\Form\ReviewType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Pagerfanta\Doctrine\ORM\QueryAdapter as DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,21 +35,28 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/recettes', name: 'app_recipe_index')]
-    public function recipeList(RecipeRepository $recipeRepository, Request $request): Response
+    #[Route('/recettes/{category}', name: 'app_recipe_index', defaults: ['category' => 'all'])]
+    public function recipeList(RecipeRepository $recipeRepository, Request $request, string $category = 'all'): Response
     {
         $page = $request->query->getInt('page', 1);
 
         $queryBuilder = $recipeRepository->createQueryBuilder('r')
             ->orderBy('r.name', 'ASC');
 
-        $adapter = new DoctrineORMAdapter($queryBuilder);
+        if ($category !== 'all') {
+            $queryBuilder->andWhere('r.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        $adapter = new QueryAdapter($queryBuilder);
         $pagerfanta = new Pagerfanta($adapter);
         $pagerfanta->setMaxPerPage(9);
         $pagerfanta->setCurrentPage($page);
 
         return $this->render('recipe/index.html.twig', [
             'pager' => $pagerfanta,
+            'category' => $category,
+            'categories' => Recipe::CATEGORIES,
         ]);
     }
 

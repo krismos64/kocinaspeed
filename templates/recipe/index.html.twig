@@ -30,11 +30,11 @@
 					<div data-uk-sticky="offset: 100; bottom: true; media: @m;">
 						<h2>Nos recettes</h2>
 						<ul class="uk-nav-default uk-nav-parent-icon uk-nav-filter uk-margin-medium-top" data-uk-nav>
-							{% for category_key, category_label in constant('App\\Entity\\Recipe::CATEGORIES') %}
+							{% for cat, label in categories %}
 								<li class="uk-parent">
-									<a href="#">{{ category_label }}</a>
+									<a href="#">{{ label }}</a>
 									<ul class="uk-nav-sub">
-										{% set category_recipes = pager|filter(recipe => recipe.category == category_key) %}
+										{% set category_recipes = pager|filter(recipe => recipe.category == cat) %}
 										{% if category_recipes|length > 0 %}
 											{% for recipe in category_recipes %}
 												<li>
@@ -69,16 +69,16 @@
 					<!-- Titre des recettes et filtres -->
 					<h2 class="uk-margin-large-top uk-text-bold">Toutes les recettes</h2>
 					<div class="uk-margin-medium-bottom">
-						<button class="uk-button uk-button-default uk-margin-small-right filter-btn" data-category="all">Toutes les recettes</button>
-						<button class="uk-button uk-button-default uk-margin-small-right filter-btn" data-category="APERITIFS">Apéritifs</button>
-						<button class="uk-button uk-button-default uk-margin-small-right filter-btn" data-category="PLATS">Plats</button>
-						<button class="uk-button uk-button-default filter-btn" data-category="DESSERTS">Desserts</button>
+						<a href="{{ path('app_recipe_index', {'category': 'all'}) }}" class="uk-button uk-button-default uk-margin-small-right {% if category == 'all' %}uk-button-primary{% endif %}">Toutes</a>
+						{% for cat, label in categories %}
+							<a href="{{ path('app_recipe_index', {'category': cat}) }}" class="uk-button uk-button-default uk-margin-small-right {% if category == cat %}uk-button-primary{% endif %}">{{ label }}</a>
+						{% endfor %}
 					</div>
 
 					<!-- Liste des recettes avec affichage de la première image uniquement -->
 					<div class="uk-child-width-1-2 uk-child-width-1-3@s" data-uk-grid>
 						{% for recipe in pager %}
-							<div class="recipe-item" data-category="{{ recipe.category }}">
+							<div>
 								<div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height">
 									<div class="uk-card-media-top uk-cover-container fixed-image-container">
 										{% if recipe.images|length > 0 %}
@@ -99,31 +99,33 @@
 							</div>
 						{% else %}
 							<div class="uk-width-1-1">
-								<p class="uk-text-center">Aucune recette disponible.</p>
+								<p class="uk-text-center">Aucune recette disponible dans cette catégorie.</p>
 							</div>
 						{% endfor %}
 					</div>
 
-					<!-- Liens de pagination -->
-					<ul class="uk-pagination uk-flex-center uk-margin-large-top">
-						{% if pager.hasPreviousPage %}
-							<li>
-								<a href="{{ path('app_recipe_index', { page: pager.previousPage }) }}">&laquo; Précédent</a>
-							</li>
-						{% endif %}
+					<!-- Pagination -->
+					{% if pager.haveToPaginate %}
+						<ul class="uk-pagination uk-flex-center uk-margin-large-top">
+							{% if pager.hasPreviousPage %}
+								<li>
+									<a href="{{ path('app_recipe_index', { category: category, page: pager.previousPage }) }}">&laquo; Précédent</a>
+								</li>
+							{% endif %}
 
-						{% for pageNumber in 1..pager.nbPages %}
-							<li class="{{ pageNumber == pager.currentPage ? 'uk-active' : '' }}">
-								<a href="{{ path('app_recipe_index', { page: pageNumber }) }}">{{ pageNumber }}</a>
-							</li>
-						{% endfor %}
+							{% for page in 1..pager.nbPages %}
+								<li {% if page == pager.currentPage %} class="uk-active" {% endif %}>
+									<a href="{{ path('app_recipe_index', { category: category, page: page }) }}">{{ page }}</a>
+								</li>
+							{% endfor %}
 
-						{% if pager.hasNextPage %}
-							<li>
-								<a href="{{ path('app_recipe_index', { page: pager.nextPage }) }}">Suivant &raquo;</a>
-							</li>
-						{% endif %}
-					</ul>
+							{% if pager.hasNextPage %}
+								<li>
+									<a href="{{ path('app_recipe_index', { category: category, page: pager.nextPage }) }}">Suivant &raquo;</a>
+								</li>
+							{% endif %}
+						</ul>
+					{% endif %}
 				</div>
 			</div>
 		</div>
