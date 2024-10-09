@@ -102,21 +102,23 @@
 						</div>
 					</div>
 
-					<!-- Liste des recettes avec affichage de la première image uniquement -->
+					<!-- Titre modifié pour la section des recettes -->
+					<h2 class="uk-heading-line uk-text-center">
+						<span>Nos dernières recettes postées</span>
+					</h2>
+
+					<!-- Limiter les recettes affichées à 6 avec slice -->
 					<div class="uk-child-width-1-2 uk-child-width-1-3@s" data-uk-grid>
-						{% for recipe in recipes %}
+						{% for recipe in recipes|slice(0, 6) %}
 							<div>
 								<div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height">
 									<div class="uk-card-media-top uk-cover-container fixed-image-container">
 										{% if recipe.images|length > 0 %}
-											<!-- Utilise uk-cover pour forcer l'adaptation de l'image -->
 											<img class="uk-cover" src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}" data-uk-cover>
 										{% else %}
-											<!-- Image par défaut si aucune image n'est disponible -->
 											<img class="uk-cover" src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}" data-uk-cover>
 										{% endif %}
 										<canvas width="300" height="200"></canvas>
-										<!-- Canvas de taille fixe pour forcer le ratio -->
 									</div>
 									<div>
 										<h3 class="uk-card-title uk-text-500 uk-margin-small-bottom uk-margin-top">{{ recipe.name }}</h3>
@@ -130,4 +132,5 @@
 			</div>
 		</div>
 	</div>
+
 {% endblock %}
