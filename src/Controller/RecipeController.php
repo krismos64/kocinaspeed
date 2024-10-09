@@ -10,6 +10,8 @@ use App\Form\RecipeType;
 use App\Form\ReviewType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter as DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,46 +26,47 @@ class RecipeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(RecipeRepository $recipeRepository): Response
     {
-        // Récupérer les 6 dernières recettes ajoutées par date de création
         $latestRecipes = $recipeRepository->findBy([], ['createdAt' => 'DESC'], 6);
-
-        // Récupérer toutes les recettes pour les filtres par catégorie, triées par nom
         $allRecipes = $recipeRepository->findBy([], ['name' => 'ASC']);
 
         return $this->render('home/index.html.twig', [
-            'recipes' => $latestRecipes, // Pour l'affichage des dernières recettes
-            'allRecipes' => $allRecipes, // Pour les filtres par catégorie
+            'recipes' => $latestRecipes,
+            'allRecipes' => $allRecipes,
         ]);
     }
+
     #[Route('/recettes', name: 'app_recipe_index')]
-    public function recipeList(RecipeRepository $recipeRepository): Response
+    public function recipeList(RecipeRepository $recipeRepository, Request $request): Response
     {
-        // Récupérer toutes les recettes, triées par ordre alphabétique pour un affichage complet
-        $recipes = $recipeRepository->findBy([], ['name' => 'ASC']);
+        $page = $request->query->getInt('page', 1);
+
+        $queryBuilder = $recipeRepository->createQueryBuilder('r')
+            ->orderBy('r.name', 'ASC');
+
+        $adapter = new DoctrineORMAdapter($queryBuilder);
+        $pagerfanta = new Pagerfanta($adapter);
+        $pagerfanta->setMaxPerPage(9);
+        $pagerfanta->setCurrentPage($page);
 
         return $this->render('recipe/index.html.twig', [
-            'recipes' => $recipes,
+            'pager' => $pagerfanta,
         ]);
     }
 
     #[Route('/recette/{slug}', name: 'app_recipe_details')]
-    public function show(
-        RecipeRepository $recipeRepository,
-        string $slug
-    ): Response {
-        $recipe = $recipeRepository->findOneBySlug($slug);
+    public function show(RecipeRepository $recipeRepository, string $slug): Response
+    {
+        $recipe = $recipeRepository->findOneBy(['slug' => $slug]);
 
         if (!$recipe) {
             throw $this->createNotFoundException('Aucune recette trouvée pour le slug ' . $slug);
         }
 
-        // Extraction de l'ID de la vidéo YouTube s'il y a une vidéo
         $videoId = null;
         if ($recipe->getVideo()) {
             $videoId = $this->extractYoutubeId($recipe->getVideo());
         }
 
-        // Récupération des images associées à la recette
         $recipeImages = $recipe->getImages();
 
         return $this->render('recipe/details.html.twig', [
@@ -74,23 +77,17 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recette/ajouter', name: 'app_recipe_new')]
-    public function addRecipe(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        SluggerInterface $slugger
-    ): Response {
+    public function addRecipe(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    {
         $recipe = new Recipe();
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Génération du slug pour la recette
             $recipe->setSlug($slugger->slug($recipe->getName()));
 
-            // Gestion des images uploadées pour la recette
             $imageForms = $form->get('images');
             foreach ($imageForms as $imageForm) {
-                /** @var RecipeImage $image */
                 $image = $imageForm->getData();
                 $imageFile = $imageForm->get('imageFile')->getData();
 
@@ -109,10 +106,9 @@ class RecipeController extends AbstractController
                         continue;
                     }
 
-                    // Mettre à jour le chemin de l'image dans l'entité
                     $image->setImagePath($newFilename);
-                    $image->setRecipe($recipe); // Lier l'image à la recette
-                    $recipe->addImage($image); // Associer l'image à la recette
+                    $image->setRecipe($recipe);
+                    $recipe->addImage($image);
                 }
             }
 
@@ -154,8 +150,7 @@ class RecipeController extends AbstractController
             $review->setApproved(false);
 
             $imagesData = $form->get('images');
-            foreach ($imagesData as $key => $imageForm) {
-                /** @var UploadedFile $imageFile */
+            foreach ($imagesData as $imageForm) {
                 $imageFile = $imageForm->get('imageFile')->getData();
 
                 if ($imageFile) {
@@ -163,26 +158,19 @@ class RecipeController extends AbstractController
                     $safeFilename = $slugger->slug($originalFilename);
                     $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
-                    // Déplacer le fichier dans le répertoire de destination
                     try {
                         $imageFile->move(
                             $this->getParameter('review_images_directory'),
                             $newFilename
                         );
                     } catch (FileException $e) {
-                        $this->addFlash(
-                            'error',
-                            'Une erreur est survenue lors du téléchargement de l\'image.'
-                        );
-                        continue; // Passer à l'image suivante en cas d'erreur
+                        $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
+                        continue;
                     }
 
-                    // Créer une nouvelle entité ReviewImage seulement si une image a été téléchargée
                     $reviewImage = new ReviewImage();
                     $reviewImage->setImagePath($newFilename);
                     $reviewImage->setReview($review);
-
-                    // Ajouter l'image à la collection de l'avis
                     $review->addImage($reviewImage);
                 }
             }
@@ -229,7 +217,6 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    // Méthode privée pour extraire l'ID de la vidéo YouTube
     private function extractYoutubeId(string $videoUrl): ?string
     {
         if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $videoUrl, $matches)) {
