@@ -40,6 +40,18 @@ class RecipeController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
 
+        // Récupère toutes les recettes de la catégorie pour le menu de navigation
+        $allRecipesQueryBuilder = $recipeRepository->createQueryBuilder('r')
+            ->orderBy('r.name', 'ASC');
+
+        if ($category !== 'all') {
+            $allRecipesQueryBuilder->andWhere('r.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        $allRecipes = $allRecipesQueryBuilder->getQuery()->getResult();
+
+        // Pagination pour les recettes à afficher sur la page
         $queryBuilder = $recipeRepository->createQueryBuilder('r')
             ->orderBy('r.name', 'ASC');
 
@@ -57,6 +69,7 @@ class RecipeController extends AbstractController
             'pager' => $pagerfanta,
             'category' => $category,
             'categories' => Recipe::CATEGORIES,
+            'allRecipes' => $allRecipes,
         ]);
     }
 

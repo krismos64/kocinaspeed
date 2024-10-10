@@ -34,7 +34,7 @@
 								<li class="uk-parent">
 									<a href="#">{{ label }}</a>
 									<ul class="uk-nav-sub">
-										{% set category_recipes = pager|filter(recipe => recipe.category == cat) %}
+										{% set category_recipes = allRecipes|filter(recipe => recipe.category == cat) %}
 										{% if category_recipes|length > 0 %}
 											{% for recipe in category_recipes %}
 												<li>
