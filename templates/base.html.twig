@@ -186,5 +186,13 @@
 		<script src="{{ asset('js/uikit.js') }}" defer></script>
 		{% block javascripts %}{% endblock %}
 
+		<!-- Script pour la bulle de chat Chatbase -->
+		<script>
+			window.embeddedChatbotConfig = {
+chatbotId: "h7h4r15Lk4FkE9FhbINev",
+domain: "www.chatbase.co"
+}
+		</script>
+		<script src="https://www.chatbase.co/embed.min.js" chatbotid="h7h4r15Lk4FkE9FhbINev" domain="www.chatbase.co" defer></script>
 	</body>
 </html>
