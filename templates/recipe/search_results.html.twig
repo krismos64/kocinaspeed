@@ -4,13 +4,19 @@
 {% endblock %}
 
 {% block body %}
-	<div class="uk-container">
-		<h1>Résultats pour "{{ query }}"</h1>
+	<div
+		class="uk-container">
+		<!-- Titre de la section avec un style similaire -->
+		<h1 class="uk-heading-line uk-text-center uk-margin-medium-bottom" style="font-family: 'Dancing Script', cursive; color: #4e342e;">
+			<span>Résultats pour "{{ query }}"</span>
+		</h1>
+
 		{% if recipes is not empty %}
-			<div class="uk-grid-match uk-child-width-1-2 uk-child-width-1-3@m" data-uk-grid>
+			<!-- Grille des recettes avec un dégradé de fond -->
+			<div class="uk-grid-match uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m" data-uk-grid>
 				{% for recipe in recipes %}
 					<div>
-						<div class="uk-card uk-card-default uk-card-hover">
+						<div class="uk-card uk-card-default uk-card-hover uk-border-rounded" style="background: linear-gradient(135deg, rgba(255, 245, 238, 0.9), rgba(232, 245, 233, 0.9));">
 							<div class="uk-card-media-top">
 								<div class="uk-cover-container" style="height: 200px;">
 									{% if recipe.images|length > 0 %}
@@ -18,10 +24,13 @@
 									{% else %}
 										<img src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}" uk-cover>
 									{% endif %}
+									<canvas width="300" height="200"></canvas>
 								</div>
 							</div>
 							<div class="uk-card-body uk-padding-small">
-								<h3 class="uk-card-title uk-text-500 uk-margin-remove-bottom">{{ recipe.name }}</h3>
+								<h3 class="uk-card-title uk-text-500 uk-margin-remove-bottom" style="font-family: 'Poppins', sans-serif; color: #4e342e;">
+									{{ recipe.name }}
+								</h3>
 							</div>
 							<a href="{{ path('app_recipe_details', { slug: recipe.slug }) }}" class="uk-position-cover"></a>
 						</div>
@@ -29,7 +38,9 @@
 				{% endfor %}
 			</div>
 		{% else %}
-			<p>Aucune recette trouvée pour "{{ query }}"</p>
+			<p class="uk-text-center" style="font-family: 'Roboto', sans-serif; color: #4e342e;">
+				Aucune recette trouvée pour "{{ query }}"
+			</p>
 		{% endif %}
 	</div>
 {% endblock %}
