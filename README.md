@@ -1,82 +1,296 @@
-KocinaSpeed est une plateforme de recettes de cuisine rapides conçue pour permettre aux utilisateurs de découvrir des recettes simples. Le projet comprend un espace administrateur pour la gestion des recettes et des avis, ainsi qu’une intégration avec YouTube pour présenter des vidéos de cuisine.
+# KocinaSpeed 🍽️
 
-Table des matières
+[![Symfony](https://img.shields.io/badge/Symfony-7.1-black.svg)](https://symfony.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4.svg)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1.svg)](https://mysql.com)
 
-    •	Fonctionnalités
-    •	Installation
-    •	Configuration
-    •	Technologies utilisées
-    •	Contributeur
+**KocinaSpeed** est une plateforme moderne de recettes de cuisine rapides développée avec Symfony 7.1. Elle permet aux utilisateurs de découvrir des recettes simples et savoureuses, avec un système complet d'avis et de notation.
 
-Fonctionnalités
+## 📋 Table des matières
 
-    •	Recettes rapides : Accès à des recettes filtrables par catégorie.
-    •	Espace administrateur : Gestion des recettes (CRUD) et des avis avec modération.
-    •	Avis utilisateurs : Les utilisateurs peuvent noter les recettes de 1 à 5 étoiles et laisser un commentaire.
-    •	YouTube Intégration : Les recettes peuvent être accompagnées de vidéos YouTube.
-    •	Page de contact : Formulaire pour envoyer des messages au support avec notification par email.
-    •	Espace personnel : Gestion du profil utilisateur et fonctionnalités réservées aux administrateurs.
+- [Fonctionnalités](#-fonctionnalités)
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Configuration](#-configuration)
+- [Technologies utilisées](#-technologies-utilisées)
+- [Structure du projet](#-structure-du-projet)
+- [API et Endpoints](#-api-et-endpoints)
+- [Contributeurs](#-contributeurs)
 
-Installation
+## ✨ Fonctionnalités
 
-Pré-requis
+### 👥 **Côté utilisateur**
+- **Navigation par catégories** : Desserts, Plats, Apéritifs
+- **Recherche avancée** : Recherche par nom de recette en temps réel
+- **Système de notation** : Notes de 1 à 5 étoiles avec commentaires
+- **Upload d'images** : Les utilisateurs peuvent ajouter des photos de leurs réalisations
+- **Interface responsive** : Design moderne avec UIkit et dégradés subtils
 
-    •	PHP 8.1 ou supérieur
-    •	Composer
-    •	MySQL
-    •	Symfony CLI (facultatif mais recommandé)
-    •	Serveur web (Apache, Nginx, etc.)
+### 🛠️ **Administration (EasyAdmin)**
+- **Gestion complète des recettes** : CRUD avec gestion des images multiples
+- **Modération des avis** : Système d'approbation des commentaires
+- **Gestion des utilisateurs** : Rôles et permissions
+- **Messages de contact** : Interface de gestion des demandes utilisateurs
+- **Dashboard moderne** : Interface intuitive et statistiques
 
-Étapes d’installation
+### 🎥 **Fonctionnalités avancées**
+- **Intégration YouTube** : Vidéos de démonstration pour les recettes
+- **Système de slugs** : URLs SEO-friendly
+- **Pagination intelligente** : Avec Pagerfanta
+- **Emails automatiques** : Notifications pour les nouveaux avis
+- **Reset de mot de passe** : Système sécurisé de récupération
 
-    1.	Clonez ce dépôt GitHub :
-    git clone https://github.com/krismos64/kocinaspeed
+## 🏗️ Architecture
 
+```
+src/
+├── Controller/           # Contrôleurs (Home, Recipe, Review, Contact, etc.)
+│   └── Admin/           # Contrôleurs d'administration EasyAdmin
+├── Entity/              # Entités Doctrine (Recipe, User, Review, etc.)
+├── Form/                # Types de formulaires Symfony
+├── Repository/          # Repositories Doctrine
+└── Command/             # Commandes console personnalisées
+
+templates/
+├── base.html.twig       # Template de base
+├── home/                # Templates de la page d'accueil
+├── recipe/              # Templates des recettes
+├── admin/               # Templates d'administration
+└── emails/              # Templates d'emails
+
+public/
+├── uploads/             # Images uploadées
+│   ├── recipes/         # Images des recettes
+│   └── reviews/         # Images des avis
+└── img/                 # Assets statiques
+```
+
+## 🚀 Installation
+
+### Pré-requis
+
+- **PHP 8.2+** avec extensions : `ctype`, `iconv`
+- **Composer** (gestionnaire de dépendances PHP)
+- **MySQL 5.7+** ou **MariaDB 10.2+**
+- **Node.js & npm** (pour les assets front-end)
+- **Symfony CLI** (optionnel mais recommandé)
+
+### Étapes d'installation
+
+1. **Cloner le projet**
+```bash
+git clone https://github.com/krismos64/kocinaspeed.git
 cd kocinaspeed
+```
 
-2. Installez les dépendances PHP avec Composer :
-   composer install
+2. **Installer les dépendances PHP**
+```bash
+composer install
+```
 
-3. Configurez la base de données dans le fichier .env :
-   DATABASE_URL="mysql://username:password@127.0.0.1:3306/kocinaspeed"
+3. **Configuration de l'environnement**
+```bash
+cp .env .env.local
+# Éditer .env.local avec vos paramètres
+```
 
-4. Créez la base de données et effectuez les migrations :
-   php bin/console doctrine:database:create
-   php bin/console doctrine:migrations:migrate
+4. **Configuration de la base de données**
+```env
+DATABASE_URL="mysql://username:password@127.0.0.1:3306/kocinaspeed?serverVersion=8.0"
+```
 
-5. Installez les dépendances JS et CSS :
-   npm install
-   npm run build
+5. **Créer la base de données**
+```bash
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+```
 
-6. Démarrez le serveur de développement Symfony :
-   symfony server:start
+6. **Créer un utilisateur administrateur**
+```bash
+php bin/console app:create-admin-user
+```
 
-7. Accédez à l’application sur http://localhost:8000.
+7. **Installer les assets**
+```bash
+php bin/console importmap:install
+```
 
-Configuration
+8. **Démarrer le serveur de développement**
+```bash
+symfony server:start
+# ou
+php -S localhost:8000 -t public
+```
 
-    •	Variables d’environnement :
-    •	Configurez votre fichier .env.local pour définir les clés API, les accès base de données, et les informations d’envoi d’email via MAILER_DSN.
+9. **Accéder à l'application**
+- **Site public** : http://localhost:8000
+- **Administration** : http://localhost:8000/admin
 
-Exemple :
-MAILER_DSN=smtp://support@kocinaspeed.fr:password@smtp.server.com:465?encryption=ssl
+## ⚙️ Configuration
 
-    •	Gestion des messages échoués : Utilisez Messenger pour la gestion asynchrone des emails. Pour configurer les messages échoués, consultez les fichiers messenger.yaml.
+### Variables d'environnement (.env.local)
 
-Technologies utilisées
+```env
+# Base de données
+DATABASE_URL="mysql://username:password@127.0.0.1:3306/kocinaspeed?serverVersion=8.0"
 
-    •	Framework : Symfony 7
-    •	Langages : PHP 8, JavaScript, HTML5/CSS3
-    •	Base de données : MySQL
-    •	ORM : Doctrine
-    •	Front-end : UIkit, Twig
-    •	Système de templates : Twig
-    •	Gestion des tâches asynchrones : Symfony Messenger
-    •	Emails : Symfony Mailer avec SMTP
-    •	Vidéo : Intégration YouTube
+# Configuration email
+MAILER_DSN=smtp://support@kocinaspeed.fr:password@smtp.server.com:465
 
-Contributeurs
+# Environnement
+APP_ENV=dev
+APP_SECRET=your-secret-key
 
-    •	Christophe Mostefaoui - Développeur principal
+# Répertoires d'upload (configurés dans services.yaml)
+RECIPE_IMAGES_DIR=%kernel.project_dir%/public/uploads/recipes
+REVIEW_IMAGES_DIR=%kernel.project_dir%/public/uploads/reviews
+```
 
-Si vous souhaitez contribuer, n’hésitez pas à ouvrir une issue ou une pull request. Toute suggestion est la bienvenue !
+### Configuration des permissions
+
+```bash
+# Permissions pour les répertoires d'upload
+sudo chown -R www-data:www-data public/uploads/
+sudo chmod -R 755 public/uploads/
+
+# Cache et logs
+sudo chown -R www-data:www-data var/
+sudo chmod -R 755 var/
+```
+
+### Messagerie asynchrone
+
+Le projet utilise **Symfony Messenger** pour l'envoi d'emails asynchrones. Configuration dans `config/packages/messenger.yaml`.
+
+## 🛠️ Technologies utilisées
+
+### Backend
+- **Symfony 7.1** - Framework PHP moderne
+- **PHP 8.2+** - Langage backend avec les dernières fonctionnalités
+- **Doctrine ORM** - Mapping objet-relationnel
+- **MySQL/MariaDB** - Base de données relationnelle
+- **EasyAdmin 4** - Interface d'administration
+- **Symfony Messenger** - Gestion des tâches asynchrones
+
+### Frontend
+- **UIkit 3** - Framework CSS moderne et responsive
+- **Twig** - Moteur de templates
+- **Stimulus** - Framework JavaScript léger
+- **AssetMapper** - Gestion des assets Symfony
+
+### Fonctionnalités
+- **Symfony Security** - Authentification et autorisation
+- **Symfony Mailer** - Envoi d'emails avec support SMTP
+- **Pagerfanta** - Pagination avancée
+- **Symfony Form** - Gestion des formulaires
+- **Doctrine Migrations** - Gestion des évolutions de BDD
+
+## 📁 Structure du projet
+
+### Entités principales
+
+```php
+Recipe {
+    id, name, slug, description, 
+    ingredients (JSON), cookingTime,
+    category, rating, video (YouTube),
+    images (OneToMany), reviews (OneToMany)
+}
+
+User {
+    id, email, password, name, roles,
+    resetToken, resetTokenExpiry,
+    reviews (OneToMany)
+}
+
+Review {
+    id, rating (1-5), comment, approved,
+    visitorName, visitorEmail,
+    recipe (ManyToOne), user (ManyToOne),
+    images (OneToMany)
+}
+```
+
+### Routes principales
+
+| Route | Contrôleur | Description |
+|-------|------------|-------------|
+| `/` | `HomeController::index` | Page d'accueil |
+| `/recettes/{category}` | `RecipeController::recipeList` | Liste des recettes |
+| `/recette/{slug}` | `RecipeController::show` | Détail d'une recette |
+| `/recherche` | `RecipeController::search` | Recherche de recettes |
+| `/admin` | EasyAdmin | Interface d'administration |
+
+## 🔧 API et Endpoints
+
+### Recherche
+- **GET** `/recherche?query={term}` - Recherche de recettes par nom
+
+### Administration (EasyAdmin)
+- **GET** `/admin` - Dashboard administrateur
+- **CRUD** `/admin/recipe` - Gestion des recettes
+- **CRUD** `/admin/review` - Modération des avis
+- **CRUD** `/admin/user` - Gestion des utilisateurs
+
+## 🧪 Tests et développement
+
+### Commandes utiles
+
+```bash
+# Cache
+php bin/console cache:clear
+
+# Base de données
+php bin/console doctrine:schema:update --dump-sql
+php bin/console doctrine:fixtures:load
+
+# Assets
+php bin/console importmap:update
+
+# Tests (si configurés)
+php bin/phpunit
+```
+
+### Développement
+
+Pour contribuer au projet :
+1. Forkez le repository
+2. Créez une branche feature (`git checkout -b feature/nouvelle-fonctionnalite`)
+3. Committez vos changements (`git commit -am 'Ajout nouvelle fonctionnalité'`)
+4. Pushez sur la branche (`git push origin feature/nouvelle-fonctionnalite`)
+5. Créez une Pull Request
+
+## 📊 Fonctionnalités à venir
+
+- [ ] API REST complète
+- [ ] Système de favoris
+- [ ] Export PDF des recettes
+- [ ] Notifications push
+- [ ] Mode sombre
+- [ ] Suggestions de recettes par IA
+- [ ] Application mobile
+
+## 🐛 Support et problèmes
+
+Si vous rencontrez des problèmes :
+1. Vérifiez les logs dans `var/log/`
+2. Consultez la documentation Symfony
+3. Ouvrez une issue sur GitHub
+
+## 📄 Licence
+
+Ce projet est sous licence propriétaire. Tous droits réservés.
+
+## 👥 Contributeurs
+
+- **Christophe Mostefaoui** - *Développeur principal* - [GitHub](https://github.com/krismos64)
+
+## 🙏 Remerciements
+
+- Framework Symfony et sa communauté
+- UIkit pour l'interface utilisateur
+- Toute la communauté PHP
+
+---
+
+**KocinaSpeed** - *Cuisinez vite, cuisinez bien !* 🍽️✨
