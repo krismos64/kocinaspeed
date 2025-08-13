@@ -1,30 +1,48 @@
 framework:
     cache:
-        # Configuration optimisée pour la production
-        prefix_seed: 'kocinaspeed_prod'
+        app: cache.adapter.filesystem
+        system: cache.adapter.filesystem
         
-        # APCu pour les performances maximales
-        app: cache.adapter.apcu
-        system: cache.adapter.apcu
-        
-        # Pools optimisés pour la production
         pools:
-            # Cache pour les données de recettes avec APCu
+            cache.app:
+                adapter: cache.adapter.filesystem
+            cache.system:
+                adapter: cache.adapter.filesystem
+            cache.validator:
+                adapter: cache.adapter.filesystem
+            cache.serializer:
+                adapter: cache.adapter.filesystem
+            cache.annotations:
+                adapter: cache.adapter.filesystem
+            cache.property_info:
+                adapter: cache.adapter.filesystem
+            cache.messenger.restart_workers_signal:
+                adapter: cache.adapter.filesystem
+            cache.validator_expression_language:
+                adapter: cache.adapter.filesystem
+            cache.security_expression_language:
+                adapter: cache.adapter.filesystem
+            cache.security_is_csrf_token_valid_attribute_expression_language:
+                adapter: cache.adapter.filesystem
+            cache.doctrine.orm.default.result:
+                adapter: cache.adapter.filesystem
+            cache.doctrine.orm.default.query:
+                adapter: cache.adapter.filesystem
+            doctrine.result_cache_pool:
+                adapter: cache.adapter.filesystem
+            doctrine.system_cache_pool:
+                adapter: cache.adapter.filesystem
+            cache.asset_mapper:
+                adapter: cache.adapter.filesystem
             recipes.cache:
-                adapter: cache.adapter.apcu
-                default_lifetime: 3600  # 1 heure en prod
-                
-            # Cache pour les données de recherche avec APCu
+                adapter: cache.adapter.filesystem
+                default_lifetime: 3600
             search.cache:
-                adapter: cache.adapter.apcu
-                default_lifetime: 1800  # 30 minutes en prod
-                
-            # Cache pour les données statiques avec APCu
+                adapter: cache.adapter.filesystem
+                default_lifetime: 1800
             static.cache:
-                adapter: cache.adapter.apcu
-                default_lifetime: 7200  # 2 heures en prod
-                
-            # Cache pour les images avec filesystem (persiste)
+                adapter: cache.adapter.filesystem
+                default_lifetime: 7200
             images.cache:
                 adapter: cache.adapter.filesystem
-                default_lifetime: 604800 # 7 jours en prod
+                default_lifetime: 604800
