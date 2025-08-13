@@ -3,6 +3,11 @@
 {% block title %}Se connecter
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/password-toggle.css') }}">
+{% endblock %}
+
 {% block body %}
 	<div class="uk-section uk-flex uk-flex-middle uk-flex-center uk-animation-fade" uk-height-viewport="expand: true" style="background: #f8f9fa;">
 		<div class="uk-width-1-3@m uk-width-1-2@s uk-card uk-card-default uk-card-body uk-box-shadow-large uk-border-rounded">
@@ -28,9 +33,12 @@
 				<!-- Champ Mot de passe -->
 				<div class="uk-margin">
 					<label class="uk-form-label" for="password">Mot de passe :</label>
-					<div class="uk-inline uk-width-1-1">
+					<div class="uk-inline uk-width-1-1" style="position: relative;">
 						<span class="uk-form-icon" uk-icon="icon: lock"></span>
-						<input class="uk-input uk-form-large uk-border-rounded" type="password" id="password" name="_password" placeholder="Votre mot de passe" required>
+						<input class="uk-input uk-form-large uk-border-rounded" type="password" id="password" name="_password" placeholder="Votre mot de passe" required style="padding-right: 50px;">
+						<button type="button" id="togglePassword" title="Afficher/masquer le mot de passe" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; z-index: 10; color: #666; font-size: 18px;">
+							<i class="fas fa-eye" id="eyeIcon"></i>
+						</button>
 					</div>
 				</div>
 
@@ -49,4 +57,41 @@
 			</div>
 		</div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/password-toggle.js') }}"></script>
+    
+    <!-- Script de fallback simple -->
+    <script>
+    // Fallback simple si la classe PasswordToggle n'est pas disponible
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (toggleButton && passwordField && eyeIcon && !window.PasswordToggle) {
+            toggleButton.addEventListener('click', function() {
+                const isPassword = passwordField.type === 'password';
+                passwordField.type = isPassword ? 'text' : 'password';
+                
+                // Changer l'icône
+                eyeIcon.classList.remove('fa-eye', 'fa-eye-slash');
+                eyeIcon.classList.add(isPassword ? 'fa-eye-slash' : 'fa-eye');
+                eyeIcon.style.color = isPassword ? '#007acc' : '#666';
+                
+                // Mettre à jour le titre
+                toggleButton.title = isPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+            });
+            
+            // Styles de base
+            toggleButton.style.opacity = '0.7';
+            passwordField.addEventListener('focus', () => toggleButton.style.opacity = '1');
+            passwordField.addEventListener('blur', () => {
+                if (!passwordField.value) toggleButton.style.opacity = '0.7';
+            });
+        }
+    });
+    </script>
 {% endblock %}

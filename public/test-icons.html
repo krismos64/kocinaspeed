@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test des Icônes Password Toggle</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .icon-test {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .password-field {
+            position: relative;
+            margin: 20px 0;
+        }
+        .password-field input {
+            width: 100%;
+            padding: 12px 50px 12px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: #666;
+            font-size: 18px;
+        }
+        .password-toggle:hover {
+            color: #007acc;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test des Icônes Password Toggle</h1>
+        
+        <h2>Test des icônes Font Awesome :</h2>
+        
+        <div class="icon-test">
+            <i class="fas fa-eye"></i>
+            <span>Icône œil (fa-eye) - État masqué</span>
+        </div>
+        
+        <div class="icon-test">
+            <i class="fas fa-eye-slash"></i>
+            <span>Icône œil barré (fa-eye-slash) - État visible</span>
+        </div>
+        
+        <div class="icon-test">
+            <i class="fas fa-lock"></i>
+            <span>Icône cadenas (fa-lock) - Pour référence</span>
+        </div>
+        
+        <h2>Test du champ mot de passe :</h2>
+        
+        <div class="password-field">
+            <input type="password" id="testPassword" placeholder="Tapez un mot de passe de test">
+            <button type="button" class="password-toggle" id="testToggle" title="Afficher/masquer le mot de passe">
+                <i class="fas fa-eye" id="testEyeIcon"></i>
+            </button>
+        </div>
+        
+        <p><strong>Instructions :</strong></p>
+        <ol>
+            <li>Tapez un mot de passe dans le champ ci-dessus</li>
+            <li>Cliquez sur l'icône œil à droite</li>
+            <li>Vérifiez que le mot de passe s'affiche/se masque</li>
+            <li>Vérifiez que l'icône change (œil ↔ œil barré)</li>
+        </ol>
+        
+        <div id="status" style="margin-top: 20px; padding: 10px; background: #e9ecef; border-radius: 4px;">
+            <strong>Status :</strong> <span id="statusText">Prêt pour le test</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('testToggle');
+            const passwordField = document.getElementById('testPassword');
+            const eyeIcon = document.getElementById('testEyeIcon');
+            const statusText = document.getElementById('statusText');
+            
+            toggleButton.addEventListener('click', function() {
+                const isPassword = passwordField.type === 'password';
+                passwordField.type = isPassword ? 'text' : 'password';
+                
+                // Changer l'icône
+                eyeIcon.classList.remove('fa-eye', 'fa-eye-slash');
+                eyeIcon.classList.add(isPassword ? 'fa-eye-slash' : 'fa-eye');
+                eyeIcon.style.color = isPassword ? '#007acc' : '#666';
+                
+                // Mettre à jour le statut
+                statusText.textContent = isPassword ? 'Mot de passe visible ✅' : 'Mot de passe masqué 🔒';
+                
+                // Mettre à jour le titre
+                toggleButton.title = isPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+            });
+            
+            // Test au focus
+            passwordField.addEventListener('focus', function() {
+                statusText.textContent = 'Champ actif - Prêt pour test du toggle';
+            });
+        });
+    </script>
+</body>
+</html>
