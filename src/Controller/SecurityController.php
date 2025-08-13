@@ -16,7 +16,7 @@ class SecurityController extends AbstractController
         // Si l'utilisateur est déjà connecté, on redirige vers l'admin ou la page d'accueil selon son rôle
         if ($this->getUser()) {
             if ($security->isGranted('ROLE_ADMIN')) {
-                return $this->redirectToRoute('app_admin');
+                return $this->redirectToRoute('admin'); // EasyAdmin dashboard
             } else {
                 return $this->redirectToRoute('app_home');
             }
@@ -33,12 +33,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/admin', name: 'app_admin')]
-    public function admin()
-    {
-        // Page d'administration, accessible uniquement pour les administrateurs
-        return $this->render('admin/dashboard.html.twig');
-    }
+    // Route admin supprimée - gérée par EasyAdmin DashboardController
 
     #[Route('/logout', name: 'app_logout')]
     public function logout()

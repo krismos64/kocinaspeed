@@ -118,18 +118,12 @@
 									<!-- Image de la recette - Plus grande et plus attractive -->
 									<div class="uk-card-media-top uk-cover-container uk-overflow-hidden" style="height: 280px; position: relative;">
 										{% if recipe.images|length > 0 %}
-											<img class="lazy-load" 
-												 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
-												 data-src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" 
+											<img src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" 
 												 alt="{{ recipe.name }}" 
-												 loading="lazy"
 												 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
 										{% else %}
-											<img class="lazy-load" 
-												 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='280'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
-												 data-src="{{ asset('img/default-image.jpg') }}" 
+											<img src="{{ asset('img/default-image.jpg') }}" 
 												 alt="{{ recipe.name }}" 
-												 loading="lazy"
 												 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
 										{% endif %}
 										
@@ -243,14 +237,9 @@
     100% { transform: scale(1); }
 }
 
-/* Lazy loading effect */
-.lazy-load {
-    transition: opacity 0.3s ease;
-    opacity: 0;
-}
-
-.lazy-load.loaded {
-    opacity: 1;
+/* Images loaded with smooth transition */
+img {
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 </style>
 {% endblock %}
@@ -273,22 +262,7 @@
 				});
 			});
 
-			// Lazy loading for images
-			var lazyImages = document.querySelectorAll('.lazy-load');
-			var imageObserver = new IntersectionObserver(function(entries, observer) {
-				entries.forEach(function(entry) {
-					if (entry.isIntersecting) {
-						var img = entry.target;
-						img.src = img.dataset.src;
-						img.classList.add('loaded');
-						imageObserver.unobserve(img);
-					}
-				});
-			});
-
-			lazyImages.forEach(function(img) {
-				imageObserver.observe(img);
-			});
+			// Images se chargent directement, plus de lazy loading
 		});
 	</script>
 {% endblock %}

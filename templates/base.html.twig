@@ -505,9 +505,9 @@
 				<div class="uk-margin-medium-top uk-text-center">
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 						{% if is_granted('ROLE_ADMIN') %}
-							<a class="uk-icon-link" uk-icon="cog" href="{{ path('app_admin') }}"></a>
+							<a class="uk-icon-link" uk-icon="cog" href="{{ path('admin') }}"></a>
 						{% else %}
-							<a class="uk-icon-link" uk-icon="user" href="{{ path('app_profile') }}"></a>
+							<a class="uk-icon-link" uk-icon="user" href="{{ path('app_home') }}"></a>
 						{% endif %}
 					{% else %}
 						<a class="uk-icon-link" uk-icon="sign-in" href="{{ path('app_login') }}"></a>
