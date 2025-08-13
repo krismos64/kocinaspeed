@@ -42,7 +42,6 @@
 ### 🎥 **Fonctionnalités avancées**
 
 - **Intégration YouTube** : Vidéos de démonstration pour les recettes
-- **Chatbot IA intégré** : Assistant culinaire avec design néon moderne
 - **Podcast intégré** : Présentation audio de KocinaSpeed
 - **Système de slugs** : URLs SEO-friendly optimisées
 - **Pagination intelligente** : Avec Pagerfanta
