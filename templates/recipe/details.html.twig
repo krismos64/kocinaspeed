@@ -2,7 +2,7 @@
 
 {% block title %}{{ recipe.name }} - Recette Facile et Rapide | KocinaSpeed{% endblock %}
 
-{% block meta_description %}Découvrez la recette {{ recipe.name }} sur KocinaSpeed. {{ recipe.description|slice(0, 120) }}{{ recipe.description|length > 120 ? '...' : '' }} Temps de préparation: {{ recipe.cookingTime ? recipe.cookingTime ~ ' min' : 'Rapide' }}. Avec photos et avis.{% endblock %}
+{% block meta_description %}Découvrez la recette {{ recipe.name }} sur KocinaSpeed. {{ recipe.description|striptags|slice(0, 120) }}{{ recipe.description|striptags|length > 120 ? '...' : '' }} Temps de préparation: {{ recipe.cookingTime ? recipe.cookingTime ~ ' min' : 'Rapide' }}. Avec photos et avis.{% endblock %}
 
 {% block meta_keywords %}{{ recipe.name }}, recette {{ recipe.name|lower }}, {{ recipe.category }}, recette rapide, cuisine française, {{ recipe.cookingTime ? recipe.cookingTime ~ ' minutes' : 'cuisine rapide' }}{% endblock %}
 
@@ -12,7 +12,7 @@
 
 {% block og_type %}article{% endblock %}
 {% block og_title %}{{ recipe.name }} - Recette KocinaSpeed{% endblock %}
-{% block og_description %}{{ recipe.description|slice(0, 160) }}{{ recipe.description|length > 160 ? '...' : '' }}{% endblock %}
+{% block og_description %}{{ recipe.description|striptags|slice(0, 160) }}{{ recipe.description|striptags|length > 160 ? '...' : '' }}{% endblock %}
 {% block og_image %}{% if recipe.images|length > 0 %}{{ app.request.schemeAndHttpHost }}{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}{% else %}{{ parent() }}{% endif %}{% endblock %}
 {% block og_image_alt %}Photo de la recette {{ recipe.name }}{% endblock %}
 
@@ -136,7 +136,7 @@
 		"@type": "ListItem",
 		"position": 3,
 		"name": "{{ recipe.category|title }}",
-		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_list', {category: recipe.category}) }}"
+		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_index', {category: recipe.category}) }}"
 	},
 	{
 		"@type": "ListItem",
