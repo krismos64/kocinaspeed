@@ -15,7 +15,7 @@ class HomeController extends AbstractController
     {
         $recipes = $entityManager->getRepository(Recipe::class)->findAll();
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('pages/home.html.twig', [
             'recipes' => $recipes,
         ]);
     }

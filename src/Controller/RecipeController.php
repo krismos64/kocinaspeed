@@ -29,7 +29,7 @@ class RecipeController extends AbstractController
         $latestRecipes = $recipeRepository->findBy([], ['createdAt' => 'DESC'], 6);
         $allRecipes = $recipeRepository->findBy([], ['name' => 'ASC']);
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('pages/home.html.twig', [
             'recipes' => $latestRecipes,
             'allRecipes' => $allRecipes,
         ]);

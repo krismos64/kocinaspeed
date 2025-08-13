@@ -66,7 +66,7 @@ class PasswordResetController extends AbstractController
             }
         }
 
-        return $this->render('security/forgot_password.html.twig');
+        return $this->render('auth/forgot_password.html.twig');
     }
 
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
@@ -92,7 +92,7 @@ class PasswordResetController extends AbstractController
             // Validation de la longueur du mot de passe
             if (strlen($newPassword) < 6) {
                 $this->addFlash('error', 'Le mot de passe doit contenir au moins 6 caractères.');
-                return $this->render('security/reset_password.html.twig', [
+                return $this->render('auth/reset_password.html.twig', [
                     'token' => $token,
                 ]);
             }
@@ -108,7 +108,7 @@ class PasswordResetController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('security/reset_password.html.twig', [
+        return $this->render('auth/reset_password.html.twig', [
             'token' => $token,
         ]);
     }
