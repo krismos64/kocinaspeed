@@ -1,0 +1,74 @@
+{
+  "name": "KocinaSpeed - Recettes Rapides et Délicieuses",
+  "short_name": "KocinaSpeed",
+  "description": "Découvrez les meilleures recettes françaises rapides et délicieuses avec photos, vidéos et avis communauté",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff7043",
+  "orientation": "portrait-primary",
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "scope": "/",
+  "categories": ["food", "lifestyle", "cooking"],
+  "icons": [
+    {
+      "src": "/img/logos/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/logos/logo.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/img/screenshots/homepage.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "Page d'accueil KocinaSpeed"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Recettes",
+      "short_name": "Recettes",
+      "description": "Voir toutes les recettes",
+      "url": "/recettes",
+      "icons": [
+        {
+          "src": "/img/logos/logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Desserts",
+      "short_name": "Desserts", 
+      "description": "Recettes de desserts",
+      "url": "/recettes/desserts",
+      "icons": [
+        {
+          "src": "/img/logos/logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Nous contacter",
+      "url": "/contact",
+      "icons": [
+        {
+          "src": "/img/logos/logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

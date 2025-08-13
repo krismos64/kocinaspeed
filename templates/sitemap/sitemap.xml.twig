@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+
+    {# URLs statiques #}
+    {% for url in staticUrls %}
+    <url>
+        <loc>{{ app.request.schemeAndHttpHost }}{{ url.loc }}</loc>
+        <lastmod>{{ url.lastmod|date('Y-m-d\\TH:i:sP') }}</lastmod>
+        <changefreq>{{ url.changefreq }}</changefreq>
+        <priority>{{ url.priority }}</priority>
+    </url>
+    {% endfor %}
+
+    {# URLs des catégories #}
+    {% for url in categoryUrls %}
+    <url>
+        <loc>{{ app.request.schemeAndHttpHost }}{{ url.loc }}</loc>
+        <lastmod>{{ url.lastmod|date('Y-m-d\\TH:i:sP') }}</lastmod>
+        <changefreq>{{ url.changefreq }}</changefreq>
+        <priority>{{ url.priority }}</priority>
+    </url>
+    {% endfor %}
+
+    {# URLs des recettes avec images #}
+    {% for url in recipeUrls %}
+    <url>
+        <loc>{{ app.request.schemeAndHttpHost }}{{ url.loc }}</loc>
+        <lastmod>{{ url.lastmod|date('Y-m-d\\TH:i:sP') }}</lastmod>
+        <changefreq>{{ url.changefreq }}</changefreq>
+        <priority>{{ url.priority }}</priority>
+        
+        {# Images associées à la recette #}
+        {% for image in url.images %}
+        <image:image>
+            <image:loc>{{ app.request.schemeAndHttpHost }}{{ asset('uploads/recipes/' ~ image.imagePath) }}</image:loc>
+            <image:caption>{{ image.recipe.name }} - {{ image.recipe.description|slice(0, 100) }}{{ image.recipe.description|length > 100 ? '...' : '' }}</image:caption>
+            <image:title>{{ image.recipe.name }}</image:title>
+            <image:geo_location>France</image:geo_location>
+        </image:image>
+        {% endfor %}
+        
+        {# Vidéo YouTube si disponible #}
+        {% if url.images|first and url.images|first.recipe.video %}
+        <video:video>
+            <video:thumbnail_loc>{{ app.request.schemeAndHttpHost }}{{ asset('uploads/recipes/' ~ url.images|first.imagePath) }}</video:thumbnail_loc>
+            <video:title>{{ url.images|first.recipe.name }} - Recette vidéo KocinaSpeed</video:title>
+            <video:description>{{ url.images|first.recipe.description|slice(0, 200) }}{{ url.images|first.recipe.description|length > 200 ? '...' : '' }}</video:description>
+            <video:content_loc>{{ url.images|first.recipe.video }}</video:content_loc>
+            <video:duration>{{ url.images|first.recipe.cookingTime ? url.images|first.recipe.cookingTime * 60 : 300 }}</video:duration>
+            <video:category>Cuisine</video:category>
+            <video:tag>recette</video:tag>
+            <video:tag>cuisine française</video:tag>
+            <video:tag>{{ url.images|first.recipe.category }}</video:tag>
+            <video:family_friendly>yes</video:family_friendly>
+        </video:video>
+        {% endif %}
+    </url>
+    {% endfor %}
+
+</urlset>

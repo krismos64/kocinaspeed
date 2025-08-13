@@ -1,6 +1,104 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Kocinaspeed
+{% block title %}KocinaSpeed - Recettes Rapides et Délicieuses | Cuisine Française Facile{% endblock %}
+
+{% block meta_description %}Découvrez KocinaSpeed, votre plateforme de recettes françaises rapides et délicieuses. Plus de 100 recettes faciles avec photos, vidéos YouTube et avis communauté. Desserts, plats principaux, apéritifs - tout pour cuisiner vite et bien !{% endblock %}
+
+{% block meta_keywords %}recettes rapides, cuisine française, recettes faciles, KocinaSpeed, desserts rapides, plats principaux, apéritifs, recettes avec photos, vidéos cuisine, recettes maison, cuisine simple{% endblock %}
+
+{% block og_title %}KocinaSpeed - Les Meilleures Recettes Rapides de France{% endblock %}
+{% block og_description %}Plateforme #1 des recettes françaises rapides et délicieuses. Découvrez des centaines de recettes faciles avec photos HD, vidéos et conseils de notre communauté passionnée.{% endblock %}
+
+{% block schema_type %}WebSite{% endblock %}
+
+{% block recipe_count %}{{ allRecipes|length }}{% endblock %}
+
+{% block additional_schema %}
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	"name": "Recettes KocinaSpeed - Collection Complète",
+	"description": "Découvrez notre collection complète de recettes françaises rapides et délicieuses",
+	"url": "{{ app.request.schemeAndHttpHost }}{{ path('app_home') }}",
+	"mainEntity": {
+		"@type": "ItemList",
+		"name": "Dernières Recettes KocinaSpeed",
+		"numberOfItems": {{ recipes|length }},
+		"itemListElement": [
+			{% for recipe in recipes %}
+			{
+				"@type": "Recipe",
+				"position": {{ loop.index }},
+				"name": "{{ recipe.name }}",
+				"description": "{{ recipe.description|slice(0, 100) }}{{ recipe.description|length > 100 ? '...' : '' }}",
+				"image": "{% if recipe.images|length > 0 %}{{ app.request.schemeAndHttpHost }}{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}{% endif %}",
+				"url": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_details', {slug: recipe.slug}) }}",
+				"author": {
+					"@type": "Organization",
+					"name": "KocinaSpeed"
+				},
+				"aggregateRating": {% if recipe.reviews|length > 0 %}{
+					"@type": "AggregateRating",
+					"ratingValue": "{{ recipe.rating ? recipe.rating : 4.5 }}",
+					"reviewCount": "{{ recipe.reviews|length }}"
+				}{% else %}null{% endif %},
+				"prepTime": "PT{{ recipe.cookingTime ? recipe.cookingTime : 15 }}M",
+				"recipeCategory": "{{ recipe.category }}",
+				"recipeCuisine": "Française"
+			}{% if not loop.last %},{% endif %}
+			{% endfor %}
+		]
+	},
+	"about": {
+		"@type": "Thing",
+		"name": "Cuisine Française Rapide",
+		"description": "Recettes traditionnelles françaises adaptées pour une préparation rapide"
+	},
+	"keywords": "recettes rapides, cuisine française, recettes faciles, desserts, plats principaux, apéritifs"
+}
+</script>
+
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "FAQPage", 
+	"mainEntity": [
+		{
+			"@type": "Question",
+			"name": "Qu'est-ce que KocinaSpeed ?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "KocinaSpeed est une plateforme de recettes françaises rapides et délicieuses. Nous proposons des centaines de recettes faciles à préparer avec photos, vidéos et avis de notre communauté."
+			}
+		},
+		{
+			"@type": "Question", 
+			"name": "Combien de temps faut-il pour préparer vos recettes ?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "Nos recettes sont spécialement conçues pour être rapides. La plupart peuvent être préparées en 15 à 30 minutes, parfaites pour les repas de tous les jours."
+			}
+		},
+		{
+			"@type": "Question",
+			"name": "Puis-je laisser des avis sur les recettes ?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "Oui ! Vous pouvez laisser des avis, noter les recettes de 1 à 5 étoiles et même partager vos photos de réalisations. Notre communauté adore partager ses expériences culinaires."
+			}
+		},
+		{
+			"@type": "Question",
+			"name": "Y a-t-il des vidéos pour apprendre à cuisiner ?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "Oui, certaines de nos recettes incluent des vidéos détaillées sur YouTube pour vous guider étape par étape dans la préparation."
+			}
+		}
+	]
+}
+</script>
 {% endblock %}
 
 {% block body %}

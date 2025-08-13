@@ -1,9 +1,150 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-	{{ recipe.name }}
-	- Kocinaspeed
+{% block title %}{{ recipe.name }} - Recette Facile et Rapide | KocinaSpeed{% endblock %}
+
+{% block meta_description %}Découvrez la recette {{ recipe.name }} sur KocinaSpeed. {{ recipe.description|slice(0, 120) }}{{ recipe.description|length > 120 ? '...' : '' }} Temps de préparation: {{ recipe.cookingTime ? recipe.cookingTime ~ ' min' : 'Rapide' }}. Avec photos et avis.{% endblock %}
+
+{% block meta_keywords %}{{ recipe.name }}, recette {{ recipe.name|lower }}, {{ recipe.category }}, recette rapide, cuisine française, {{ recipe.cookingTime ? recipe.cookingTime ~ ' minutes' : 'cuisine rapide' }}{% endblock %}
+
+{% block canonical %}{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_details', {slug: recipe.slug}) }}{% endblock %}
+
+{% block robots %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ recipe.name }} - Recette KocinaSpeed{% endblock %}
+{% block og_description %}{{ recipe.description|slice(0, 160) }}{{ recipe.description|length > 160 ? '...' : '' }}{% endblock %}
+{% block og_image %}{% if recipe.images|length > 0 %}{{ app.request.schemeAndHttpHost }}{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}{% else %}{{ parent() }}{% endif %}{% endblock %}
+{% block og_image_alt %}Photo de la recette {{ recipe.name }}{% endblock %}
+
+{% block twitter_card %}summary_large_image{% endblock %}
+
+{% block schema_type %}Recipe{% endblock %}
+
+{% block additional_schema %}
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org/",
+	"@type": "Recipe",
+	"name": "{{ recipe.name }}",
+	"description": "{{ recipe.description }}",
+	"image": [
+		{% for image in recipe.images %}
+		"{{ app.request.schemeAndHttpHost }}{{ asset('uploads/recipes/' ~ image.imagePath) }}"{% if not loop.last %},{% endif %}
+		{% endfor %}
+	],
+	"author": {
+		"@type": "Organization",
+		"name": "KocinaSpeed",
+		"url": "{{ app.request.schemeAndHttpHost }}{{ path('app_home') }}"
+	},
+	"datePublished": "{{ recipe.createdAt ? recipe.createdAt|date('Y-m-d') : 'now'|date('Y-m-d') }}",
+	"dateModified": "{{ recipe.updatedAt ? recipe.updatedAt|date('Y-m-d') : recipe.createdAt|date('Y-m-d') }}",
+	"prepTime": "PT{{ recipe.cookingTime ? recipe.cookingTime : 15 }}M",
+	"cookTime": "PT{{ recipe.cookingTime ? recipe.cookingTime : 15 }}M",
+	"totalTime": "PT{{ recipe.cookingTime ? recipe.cookingTime * 2 : 30 }}M",
+	"recipeCategory": "{{ recipe.category }}",
+	"recipeCuisine": "Française",
+	"recipeYield": "4",
+	"keywords": "{{ recipe.name }}, {{ recipe.category }}, recette française, cuisine rapide",
+	"recipeIngredient": [
+		{% if recipe.ingredients %}
+			{% for ingredient in recipe.ingredients %}
+			"{{ ingredient }}"{% if not loop.last %},{% endif %}
+			{% endfor %}
+		{% else %}
+		"Voir la liste des ingrédients dans la recette"
+		{% endif %}
+	],
+	"recipeInstructions": [
+		{
+			"@type": "HowToStep",
+			"text": "{{ recipe.description }}"
+		}
+	],
+	"nutrition": {
+		"@type": "NutritionInformation",
+		"servingSize": "1 portion"
+	},
+	"aggregateRating": {% if recipe.reviews|length > 0 %}{
+		"@type": "AggregateRating",
+		"ratingValue": "{{ recipe.rating ? recipe.rating : 4.5 }}",
+		"reviewCount": "{{ recipe.reviews|length }}",
+		"bestRating": "5",
+		"worstRating": "1"
+	}{% else %}null{% endif %},
+	"review": [
+		{% for review in recipe.reviews|slice(0, 5) %}
+		{
+			"@type": "Review",
+			"author": {
+				"@type": "Person",
+				"name": "{{ review.user ? review.user.name : review.visitorName }}"
+			},
+			"reviewRating": {
+				"@type": "Rating",
+				"ratingValue": "{{ review.rating }}",
+				"bestRating": "5",
+				"worstRating": "1"
+			},
+			"reviewBody": "{{ review.comment }}"
+		}{% if not loop.last %},{% endif %}
+		{% endfor %}
+	],
+	"video": {% if recipe.video %}{
+		"@type": "VideoObject",
+		"name": "{{ recipe.name }} - Vidéo recette",
+		"description": "Apprenez à préparer {{ recipe.name }} avec cette vidéo étape par étape",
+		"contentUrl": "{{ recipe.video }}",
+		"embedUrl": "{{ recipe.video }}",
+		"uploadDate": "{{ recipe.createdAt|date('Y-m-d') }}",
+		"duration": "PT{{ recipe.cookingTime ? recipe.cookingTime * 60 : 300 }}S",
+		"thumbnail": {
+			"@type": "ImageObject",
+			"contentUrl": "{% if recipe.images|length > 0 %}{{ app.request.schemeAndHttpHost }}{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}{% endif %}"
+		}
+	}{% else %}null{% endif %},
+	"publisher": {
+		"@type": "Organization",
+		"name": "KocinaSpeed",
+		"logo": {
+			"@type": "ImageObject",
+			"url": "{{ app.request.schemeAndHttpHost }}{{ asset('img/logos/logo.png') }}"
+		}
+	},
+	"mainEntityOfPage": {
+		"@type": "WebPage",
+		"@id": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_details', {slug: recipe.slug}) }}"
+	}
+}
+</script>
 {% endblock %}
+
+{% block breadcrumb_json %}[
+	{
+		"@type": "ListItem", 
+		"position": 1,
+		"name": "Accueil",
+		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_home') }}"
+	},
+	{
+		"@type": "ListItem",
+		"position": 2, 
+		"name": "Recettes",
+		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_index') }}"
+	},
+	{
+		"@type": "ListItem",
+		"position": 3,
+		"name": "{{ recipe.category|title }}",
+		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_list', {category: recipe.category}) }}"
+	},
+	{
+		"@type": "ListItem",
+		"position": 4,
+		"name": "{{ recipe.name }}",
+		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_details', {slug: recipe.slug}) }}"
+	}
+]{% endblock %}
 
 {% block body %}
 	<div

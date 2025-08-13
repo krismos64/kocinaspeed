@@ -1,0 +1,79 @@
+# Robots.txt pour KocinaSpeed - Recettes rapides et délicieuses
+# Générés automatiquement pour optimiser le crawl des moteurs de recherche et IA
+
+User-agent: *
+{% if is_production %}
+# Production - Autoriser l'indexation complète
+Allow: /
+Disallow: /admin/
+Disallow: /login
+Disallow: /logout
+Disallow: /_profiler/
+Disallow: /_wdt/
+Disallow: /var/
+Disallow: /vendor/
+Disallow: /src/
+Disallow: /config/
+Disallow: /bin/
+Disallow: /uploads/tmp/
+Disallow: /*?*utm_*
+Disallow: /*?*session*
+Disallow: /*?*PHPSESSID*
+
+# Encourager l'indexation des contenus importants
+Allow: /uploads/recipes/
+Allow: /uploads/reviews/
+Allow: /img/
+Allow: /css/
+Allow: /js/
+
+# Directive spécifique pour Googlebot
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Directive pour les bots IA/LLM
+User-agent: GPTBot
+Allow: /
+Allow: /sitemap.xml
+Allow: /sitemap-images.xml
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Yandex
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
+
+{% else %}
+# Development - Bloquer l'indexation
+Disallow: /
+{% endif %}
+
+# Sitemaps
+Sitemap: {{ app.request.schemeAndHttpHost }}/sitemap.xml
+Sitemap: {{ app.request.schemeAndHttpHost }}/sitemap-images.xml
+
+# Contact pour les questions sur le crawling
+# Contact: support@kocinaspeed.fr
+
+# Informations supplémentaires pour les IA
+# Ce site contient des recettes de cuisine françaises
+# Contenu: recettes, photos, vidéos, avis utilisateurs
+# Langue principale: Français (fr-FR)
+# Mise à jour: quotidienne

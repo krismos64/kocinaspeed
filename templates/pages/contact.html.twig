@@ -1,6 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contact - Kocinaspeed{% endblock %}
+{% block title %}Contact - KocinaSpeed | Contactez Notre Équipe de Cuisine{% endblock %}
+
+{% block meta_description %}Contactez l'équipe KocinaSpeed pour vos questions sur nos recettes, suggestions ou partenariats. Réponse rapide garantie sous 24h. Support par email : support@kocinaspeed.fr{% endblock %}
+
+{% block meta_keywords %}contact KocinaSpeed, support recettes, questions cuisine, partenariat culinaire, aide recettes, contact email{% endblock %}
+
+{% block og_title %}Contactez KocinaSpeed - Support et Questions{% endblock %}
+{% block og_description %}Besoin d'aide ou d'informations ? Contactez notre équipe passionnée de cuisine pour toutes vos questions sur nos recettes rapides et délicieuses.{% endblock %}
+
+{% block breadcrumb_json %}[
+	{
+		"@type": "ListItem",
+		"position": 1,
+		"name": "Accueil", 
+		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_home') }}"
+	},
+	{
+		"@type": "ListItem",
+		"position": 2,
+		"name": "Contact",
+		"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_contact') }}"
+	}
+]{% endblock %}
+
+{% block additional_schema %}
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "ContactPage",
+	"name": "Contact KocinaSpeed",
+	"description": "Contactez KocinaSpeed pour toutes vos questions sur la cuisine rapide et délicieuse",
+	"url": "{{ app.request.schemeAndHttpHost }}{{ path('app_contact') }}",
+	"mainEntity": {
+		"@type": "Organization",
+		"name": "KocinaSpeed",
+		"email": "support@kocinaspeed.fr",
+		"address": {
+			"@type": "PostalAddress",
+			"addressCountry": "FR",
+			"addressLocality": "France"
+		},
+		"contactPoint": {
+			"@type": "ContactPoint", 
+			"contactType": "customer service",
+			"email": "support@kocinaspeed.fr",
+			"availableLanguage": "French",
+			"hoursAvailable": {
+				"@type": "OpeningHoursSpecification",
+				"dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+				"opens": "09:00",
+				"closes": "18:00"
+			}
+		}
+	}
+}
+</script>
+{% endblock %}
 
 {% block body %}
 <!-- Section Hero avec dégradé -->

@@ -1,13 +1,70 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="fr" dir="ltr" prefix="og: https://ogp.me/ns#">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>
-			{% block title %}Kocinaspeed
-			{% endblock %}
-		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		
+		<!-- SEO Meta Tags -->
+		<title>{% block title %}KocinaSpeed - Recettes Rapides et Délicieuses | Cuisine Française{% endblock %}</title>
+		<meta name="description" content="{% block meta_description %}Découvrez KocinaSpeed, votre plateforme de recettes rapides et délicieuses. Plus de 100 recettes françaises faciles à préparer avec vidéos, photos et avis communauté. Cuisine rapide, desserts, plats principaux et apéritifs.{% endblock %}">
+		<meta name="keywords" content="{% block meta_keywords %}recettes rapides, cuisine française, recettes faciles, cuisine maison, desserts, plats principaux, apéritifs, recettes avec photos, vidéos cuisine, avis recettes, KocinaSpeed{% endblock %}">
+		<meta name="author" content="KocinaSpeed - Christophe Mostefaoui">
+		<meta name="robots" content="{% block robots %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endblock %}">
+		<meta name="googlebot" content="index, follow">
+		<meta name="bingbot" content="index, follow">
+		
+		<!-- Canonical URL -->
+		<link rel="canonical" href="{% block canonical %}{{ app.request.uri }}{% endblock %}">
+		
+		<!-- Hreflang for international SEO -->
+		<link rel="alternate" hreflang="fr" href="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
+		<link rel="alternate" hreflang="fr-FR" href="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
+		<link rel="alternate" hreflang="x-default" href="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
+		
+		<!-- Open Graph Meta Tags -->
+		<meta property="og:type" content="{% block og_type %}website{% endblock %}">
+		<meta property="og:title" content="{% block og_title %}{{ block('title') }}{% endblock %}">
+		<meta property="og:description" content="{% block og_description %}{{ block('meta_description') }}{% endblock %}">
+		<meta property="og:url" content="{% block og_url %}{{ app.request.uri }}{% endblock %}">
+		<meta property="og:site_name" content="KocinaSpeed">
+		<meta property="og:image" content="{% block og_image %}{{ app.request.schemeAndHttpHost }}{{ asset('img/logos/logo.png') }}{% endblock %}">
+		<meta property="og:image:alt" content="{% block og_image_alt %}Logo KocinaSpeed - Recettes rapides et délicieuses{% endblock %}">
+		<meta property="og:locale" content="fr_FR">
+		<meta property="og:image:width" content="1200">
+		<meta property="og:image:height" content="630">
+		
+		<!-- Twitter Card Meta Tags -->
+		<meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
+		<meta name="twitter:title" content="{% block twitter_title %}{{ block('og_title') }}{% endblock %}">
+		<meta name="twitter:description" content="{% block twitter_description %}{{ block('og_description') }}{% endblock %}">
+		<meta name="twitter:image" content="{% block twitter_image %}{{ block('og_image') }}{% endblock %}">
+		<meta name="twitter:image:alt" content="{% block twitter_image_alt %}{{ block('og_image_alt') }}{% endblock %}">
+		<meta name="twitter:creator" content="@KocinaSpeed">
+		<meta name="twitter:site" content="@KocinaSpeed">
+		
+		<!-- AI/LLM Specific Meta Tags -->
+		<meta name="application-name" content="KocinaSpeed">
+		<meta name="theme-color" content="#ff7043">
+		<meta name="msapplication-TileColor" content="#ff7043">
+		<meta name="msapplication-navbutton-color" content="#ff7043">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+		
+		<!-- Structured Data Context -->
+		<meta name="schema-context" content="https://schema.org">
+		<meta name="content-type" content="{% block content_type %}recipes and cooking{% endblock %}">
+		<meta name="content-language" content="fr-FR">
+		<meta name="geo.region" content="FR">
+		<meta name="geo.placename" content="France">
+		
+		<!-- Favicon and App Icons -->
 		<link rel="icon" href="{{ asset('img/logos/logo.png') }}" type="image/png">
+		<link rel="apple-touch-icon" href="{{ asset('img/logos/logo.png') }}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/logos/logo.png') }}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/logos/logo.png') }}">
+		<link rel="manifest" href="{{ asset('manifest.json') }}">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.3/dist/css/uikit.min.css"/>
 		<link rel="stylesheet" href="{{ asset('css/main.css') }}">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -15,6 +72,96 @@
 		<link href="https://fonts.googleapis.com/css?family=Leckerli+One&display=swap" rel="stylesheet">
 		<script src="{{ asset('js/uikit.js') }}" defer></script>
 		<script src="{{ asset('js/lazy-loading.js') }}" defer></script>
+		
+		<!-- Structured Data JSON-LD for AI/LLM and SEO -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "{% block schema_type %}WebSite{% endblock %}",
+			"name": "KocinaSpeed",
+			"alternateName": "Kocina Speed",
+			"description": "Plateforme de recettes rapides et délicieuses avec photos, vidéos et avis communauté. Spécialisé dans la cuisine française facile et accessible.",
+			"url": "{{ app.request.schemeAndHttpHost }}",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "{{ app.request.schemeAndHttpHost }}{{ asset('img/logos/logo.png') }}",
+				"width": 200,
+				"height": 200
+			},
+			"sameAs": [
+				"https://www.youtube.com/channel/UCkMEwuAnNMG21xfh_rmjkFg",
+				"https://www.facebook.com/kocinaspeed",
+				"https://www.instagram.com/kocinaspeed"
+			],
+			"potentialAction": {
+				"@type": "SearchAction",
+				"target": {
+					"@type": "EntryPoint",
+					"urlTemplate": "{{ app.request.schemeAndHttpHost }}{{ path('app_recipe_search') }}?query={search_term_string}"
+				},
+				"query-input": "required name=search_term_string"
+			},
+			"publisher": {
+				"@type": "Organization",
+				"name": "KocinaSpeed",
+				"logo": {
+					"@type": "ImageObject",
+					"url": "{{ app.request.schemeAndHttpHost }}{{ asset('img/logos/logo.png') }}"
+				},
+				"foundingDate": "2024",
+				"founder": {
+					"@type": "Person",
+					"name": "Christophe Mostefaoui",
+					"alternateName": "Krismos64"
+				},
+				"contactPoint": {
+					"@type": "ContactPoint",
+					"telephone": "+33-XXX-XXX-XXX",
+					"contactType": "customer service",
+					"email": "support@kocinaspeed.fr",
+					"availableLanguage": "French"
+				},
+				"address": {
+					"@type": "PostalAddress",
+					"addressCountry": "FR",
+					"addressLocality": "France"
+				}
+			},
+			"mainEntity": {
+				"@type": "ItemList",
+				"name": "Recettes KocinaSpeed",
+				"description": "Collection de recettes rapides et délicieuses",
+				"numberOfItems": "{% block recipe_count %}100+{% endblock %}",
+				"itemListElement": [
+					{
+						"@type": "Recipe",
+						"name": "Recettes Rapides",
+						"description": "Des centaines de recettes faciles et rapides à préparer"
+					}
+				]
+			},
+			"breadcrumb": {
+				"@type": "BreadcrumbList",
+				"itemListElement": {% block breadcrumb_json %}[
+					{
+						"@type": "ListItem",
+						"position": 1,
+						"name": "Accueil",
+						"item": "{{ app.request.schemeAndHttpHost }}{{ path('app_home') }}"
+					}
+				]{% endblock %}
+			}
+		}
+		</script>
+		
+		{% block additional_schema %}{% endblock %}
+		
+		<!-- Performance and Core Web Vitals -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+		<link rel="dns-prefetch" href="//fonts.googleapis.com">
+		<link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+		<link rel="dns-prefetch" href="//cdn.jsdelivr.net">
 		
 		<!-- Styles personnalisés pour le chatbot avec effet néon -->
 		<style>
