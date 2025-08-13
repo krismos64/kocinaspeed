@@ -8,6 +8,8 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
@@ -29,24 +31,71 @@ class CreateAdminUserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // Créer un nouvel utilisateur
-        $user = new User();
-        $user->setEmail('c.mostefaoui@yahoo.fr');
-        $user->setName('Administrateur');
+        $io = new SymfonyStyle($input, $output);
+        $helper = $this->getHelper('question');
 
-        // Définir le rôle administrateur
+        $io->title('🔐 Création d\'un utilisateur administrateur');
+
+        // Demander l'email de manière interactive
+        $emailQuestion = new Question('📧 Email de l\'administrateur: ');
+        $emailQuestion->setValidator(function ($value) {
+            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                throw new \RuntimeException('Veuillez entrer un email valide.');
+            }
+            return $value;
+        });
+        $email = $helper->ask($input, $output, $emailQuestion);
+
+        // Vérifier si l'utilisateur existe déjà
+        $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+        if ($existingUser) {
+            $io->error('Un utilisateur avec cet email existe déjà !');
+            return Command::FAILURE;
+        }
+
+        // Demander le nom
+        $nameQuestion = new Question('👤 Nom de l\'administrateur: ', 'Administrateur');
+        $name = $helper->ask($input, $output, $nameQuestion);
+
+        // Demander le mot de passe de manière sécurisée
+        $passwordQuestion = new Question('🔑 Mot de passe (min 8 caractères): ');
+        $passwordQuestion->setHidden(true);
+        $passwordQuestion->setHiddenFallback(false);
+        $passwordQuestion->setValidator(function ($value) {
+            if (strlen($value) < 8) {
+                throw new \RuntimeException('Le mot de passe doit contenir au moins 8 caractères.');
+            }
+            return $value;
+        });
+        $plainPassword = $helper->ask($input, $output, $passwordQuestion);
+
+        // Confirmer le mot de passe
+        $confirmPasswordQuestion = new Question('🔑 Confirmer le mot de passe: ');
+        $confirmPasswordQuestion->setHidden(true);
+        $confirmPasswordQuestion->setHiddenFallback(false);
+        $confirmPassword = $helper->ask($input, $output, $confirmPasswordQuestion);
+
+        if ($plainPassword !== $confirmPassword) {
+            $io->error('Les mots de passe ne correspondent pas !');
+            return Command::FAILURE;
+        }
+
+        // Créer l'utilisateur
+        $user = new User();
+        $user->setEmail($email);
+        $user->setName($name);
         $user->setRoles(['ROLE_ADMIN']);
 
-        // Définir le mot de passe
-        $plainPassword = 'Mostefaoui1';
+        // Hasher le mot de passe
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
         $user->setPassword($hashedPassword);
 
-        // Enregistrer l'utilisateur en base de données
+        // Enregistrer en base
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $output->writeln('Utilisateur administrateur créé avec succès !');
+        $io->success('✅ Utilisateur administrateur créé avec succès !');
+        $io->table(['Email', 'Nom', 'Rôles'], [[$email, $name, 'ROLE_ADMIN']]);
 
         return Command::SUCCESS;
     }

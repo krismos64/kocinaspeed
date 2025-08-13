@@ -11,6 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(name: 'idx_review_approved', columns: ['approved'])]
+#[ORM\Index(name: 'idx_review_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_review_recipe', columns: ['recipe_id'])]
 class Review
 {
     #[ORM\Id]

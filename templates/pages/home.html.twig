@@ -124,9 +124,19 @@
 								<div class="uk-card uk-card-default uk-card-hover uk-card-body fixed-card-height uk-border-rounded" style="background: linear-gradient(135deg, rgba(255, 245, 238, 0.9), rgba(232, 245, 233, 0.9));">
 									<div class="uk-card-media-top uk-cover-container fixed-image-container">
 										{% if recipe.images|length > 0 %}
-											<img class="uk-cover" src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" alt="{{ recipe.name }}" data-uk-cover>
+											<img class="uk-cover lazy-load" 
+												 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
+												 data-src="{{ asset('uploads/recipes/' ~ recipe.images|first.imagePath) }}" 
+												 alt="{{ recipe.name }}" 
+												 data-uk-cover
+												 loading="lazy">
 										{% else %}
-											<img class="uk-cover" src="{{ asset('img/default-image.jpg') }}" alt="{{ recipe.name }}" data-uk-cover>
+											<img class="uk-cover lazy-load" 
+												 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
+												 data-src="{{ asset('img/default-image.jpg') }}" 
+												 alt="{{ recipe.name }}" 
+												 data-uk-cover
+												 loading="lazy">
 										{% endif %}
 										<canvas width="300" height="200"></canvas>
 									</div>

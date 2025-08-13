@@ -1,19 +1,29 @@
 framework:
     cache:
         # Unique name of your app: used to compute stable namespaces for cache keys.
-        #prefix_seed: your_vendor_name/app_name
+        prefix_seed: 'kocinaspeed_cache'
 
-        # The "app" cache stores to the filesystem by default.
-        # The data in this cache should persist between deploys.
-        # Other options include:
-
-        # Redis
-        #app: cache.adapter.redis
-        #default_redis_provider: redis://localhost
-
-        # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
-        #app: cache.adapter.apcu
-
-        # Namespaced pools use the above "app" backend by default
-        #pools:
-            #my.dedicated.cache: null
+        # Configuration pour l'environnement de développement
+        app: cache.adapter.filesystem
+        
+        # Pools de cache spécialisés
+        pools:
+            # Cache pour les données de recettes (TTL court)
+            recipes.cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 1800  # 30 minutes
+                
+            # Cache pour les données de recherche (TTL très court)
+            search.cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 900   # 15 minutes
+                
+            # Cache pour les données statiques (TTL long)
+            static.cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 3600  # 1 heure
+                
+            # Cache pour les images optimisées (TTL très long)
+            images.cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 86400 # 24 heures

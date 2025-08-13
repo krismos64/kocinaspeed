@@ -9,6 +9,7 @@ use App\Entity\ReviewImage;
 use App\Form\RecipeType;
 use App\Form\ReviewType;
 use App\Repository\RecipeRepository;
+use App\Service\CacheService;
 use Doctrine\ORM\EntityManagerInterface;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
@@ -24,14 +25,19 @@ use Symfony\Component\Mime\Email;
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(RecipeRepository $recipeRepository): Response
+    public function index(RecipeRepository $recipeRepository, CacheService $cacheService): Response
     {
-        $latestRecipes = $recipeRepository->findBy([], ['createdAt' => 'DESC'], 6);
-        $allRecipes = $recipeRepository->findBy([], ['name' => 'ASC']);
+        // Utilisation du cache pour optimiser les performances
+        $homeData = $cacheService->getHomeData(function() use ($recipeRepository) {
+            return [
+                'latestRecipes' => $recipeRepository->findLatestWithImages(6),
+                'allRecipes' => $recipeRepository->findAllWithImages()
+            ];
+        });
 
         return $this->render('pages/home.html.twig', [
-            'recipes' => $latestRecipes,
-            'allRecipes' => $allRecipes,
+            'recipes' => $homeData['latestRecipes'],
+            'allRecipes' => $homeData['allRecipes'],
         ]);
     }
 
@@ -40,26 +46,18 @@ class RecipeController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
 
-        // Récupère toutes les recettes de la catégorie pour le menu de navigation
-        $allRecipesQueryBuilder = $recipeRepository->createQueryBuilder('r')
-            ->orderBy('r.name', 'ASC');
-
+        // Récupère toutes les recettes avec images pour le menu de navigation
+        $allRecipes = $recipeRepository->findAllWithImages();
+        
+        // Si on filtre par catégorie, on filtre les résultats
         if ($category !== 'all') {
-            $allRecipesQueryBuilder->andWhere('r.category = :category')
-                ->setParameter('category', $category);
+            $allRecipes = array_filter($allRecipes, function($recipe) use ($category) {
+                return $recipe->getCategory() === $category;
+            });
         }
 
-        $allRecipes = $allRecipesQueryBuilder->getQuery()->getResult();
-
-        // Pagination pour les recettes à afficher sur la page
-        $queryBuilder = $recipeRepository->createQueryBuilder('r')
-            ->orderBy('r.name', 'ASC');
-
-        if ($category !== 'all') {
-            $queryBuilder->andWhere('r.category = :category')
-                ->setParameter('category', $category);
-        }
-
+        // Pagination optimisée avec les relations
+        $queryBuilder = $recipeRepository->createOptimizedQueryBuilder($category);
         $adapter = new QueryAdapter($queryBuilder);
         $pagerfanta = new Pagerfanta($adapter);
         $pagerfanta->setMaxPerPage(9);
@@ -74,9 +72,12 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recette/{slug}', name: 'app_recipe_details')]
-    public function show(RecipeRepository $recipeRepository, string $slug): Response
+    public function show(RecipeRepository $recipeRepository, string $slug, CacheService $cacheService): Response
     {
-        $recipe = $recipeRepository->findOneBy(['slug' => $slug]);
+        // Utilisation du cache pour les détails de la recette
+        $recipe = $cacheService->getRecipeData($slug, function() use ($recipeRepository, $slug) {
+            return $recipeRepository->findOneBySlugWithRelations($slug);
+        });
 
         if (!$recipe) {
             throw $this->createNotFoundException('Aucune recette trouvée pour le slug ' . $slug);
@@ -97,7 +98,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recette/ajouter', name: 'app_recipe_new')]
-    public function addRecipe(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function addRecipe(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, CacheService $cacheService): Response
     {
         $recipe = new Recipe();
         $form = $this->createForm(RecipeType::class, $recipe);
@@ -134,6 +135,9 @@ class RecipeController extends AbstractController
 
             $entityManager->persist($recipe);
             $entityManager->flush();
+            
+            // Invalider le cache après ajout d'une nouvelle recette
+            $cacheService->invalidateAllRecipes();
 
             $this->addFlash('success', 'La recette a bien été ajoutée.');
 
@@ -218,15 +222,14 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recherche', name: 'app_recipe_search')]
-    public function search(RecipeRepository $recipeRepository, Request $request): Response
+    public function search(RecipeRepository $recipeRepository, Request $request, CacheService $cacheService): Response
     {
         $query = $request->query->get('query');
         if ($query) {
-            $recipes = $recipeRepository->createQueryBuilder('r')
-                ->where('r.name LIKE :query')
-                ->setParameter('query', '%' . $query . '%')
-                ->getQuery()
-                ->getResult();
+            // Utilisation du cache pour les résultats de recherche
+            $recipes = $cacheService->getSearchResults($query, function() use ($recipeRepository, $query) {
+                return $recipeRepository->findBySearchQuery($query);
+            });
         } else {
             $recipes = [];
         }

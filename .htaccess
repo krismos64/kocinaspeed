@@ -1,3 +1,39 @@
+# =======================================================
+# SÉCURITÉ - En-têtes HTTP de protection
+# =======================================================
+<IfModule mod_headers.c>
+    # Protection XSS et injections
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN" 
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Politique de sécurité du contenu (CSP) - Ajustée pour KocinaSpeed
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; media-src 'self'; connect-src 'self'"
+    
+    # HTTPS strict (si HTTPS activé)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+    
+    # Politique de référent
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Permissions restreintes
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+</IfModule>
+
+# =======================================================
+# PROTECTION DES FICHIERS SENSIBLES
+# =======================================================
+<Files ~ "^\.env">
+    Require all denied
+</Files>
+
+<FilesMatch "\.(yml|yaml|json|lock|md)$">
+    Require all denied
+</FilesMatch>
+
+# =======================================================
+# RÉÉCRITURE D'URL ET REDIRECTIONS
+# =======================================================
 <IfModule mod_rewrite.c >
     RewriteEngine on
     RewriteOptions inherit

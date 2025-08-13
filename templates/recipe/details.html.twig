@@ -29,7 +29,12 @@
 			<ul class="uk-slideshow-items">
 				{% for image in recipe.images %}
 					<li>
-						<img src="{{ asset('uploads/recipes/' ~ image.imagePath) }}" alt="{{ recipe.name }}" uk-cover>
+						<img class="lazy-load" 
+							 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
+							 data-src="{{ asset('uploads/recipes/' ~ image.imagePath) }}" 
+							 alt="{{ recipe.name }}" 
+							 uk-cover
+							 loading="lazy">
 					</li>
 				{% endfor %}
 			</ul>
@@ -129,7 +134,12 @@
 										{% for image in review.images %}
 											<div class="uk-cover-container uk-margin-right" style="width: 150px; height: 100px;">
 												<a href="{{ asset('uploads/reviews/' ~ image.imagePath) }}" data-caption="Image d'avis">
-													<img src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" alt="Image d'avis" uk-cover>
+													<img class="lazy-load" 
+														 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
+														 data-src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" 
+														 alt="Image d'avis" 
+														 uk-cover
+														 loading="lazy">
 													<canvas width="150" height="100"></canvas>
 												</a>
 											</div>
@@ -169,7 +179,12 @@
 													{% for image in review.images %}
 														<div class="uk-cover-container uk-margin-right" style="width: 150px; height: 100px;">
 															<a href="{{ asset('uploads/reviews/' ~ image.imagePath) }}" data-caption="Image d'avis">
-																<img src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" alt="Image d'avis" uk-cover>
+																<img class="lazy-load" 
+																	 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
+																	 data-src="{{ asset('uploads/reviews/' ~ image.imagePath) }}" 
+																	 alt="Image d'avis" 
+																	 uk-cover
+																	 loading="lazy">
 																<canvas width="150" height="100"></canvas>
 															</a>
 														</div>

@@ -1,6 +1,9 @@
 security:
   password_hashers:
-    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 
+      algorithm: auto
+      # Coût plus élevé pour plus de sécurité
+      cost: 15
 
   providers:
     app_user_provider:
@@ -17,15 +20,42 @@ security:
       lazy: true
       pattern: ^/
       provider: app_user_provider
+      # Configuration renforcée
+      remember_me:
+        secret: '%kernel.secret%'
+        lifetime: 604800 # 1 semaine
+        path: /
+        secure: true # HTTPS uniquement
+        httponly: true # Protection XSS
+        samesite: strict # Protection CSRF
       form_login:
         login_path: app_login
         check_path: app_login
         default_target_path: app_admin
         always_use_default_target_path: true
         failure_path: app_login
+        # Protection CSRF activée par défaut
+        enable_csrf: true
       logout:
         path: app_logout
         target: app_home
+        # Invalidation sécurisée des sessions
+        invalidate_session: true
+        delete_cookies:
+          PHPSESSID: { path: /, domain: ~ }
 
+  # Contrôle d'accès renforcé
   access_control:
+    - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/contact, roles: PUBLIC_ACCESS }
+    - { path: ^/recette, roles: PUBLIC_ACCESS }
+    - { path: ^/recettes, roles: PUBLIC_ACCESS }
+    - { path: ^/recherche, roles: PUBLIC_ACCESS }
+    - { path: ^/mentions-legales, roles: PUBLIC_ACCESS }
+    - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
+    - { path: ^/reset-password, roles: PUBLIC_ACCESS }
     - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/recette/.*/laisser-un-avis, roles: ROLE_USER }
+
+  # Protection contre la fixation de session
+  session_fixation_strategy: migrate

@@ -1,0 +1,30 @@
+framework:
+    cache:
+        # Configuration optimisée pour la production
+        prefix_seed: 'kocinaspeed_prod'
+        
+        # APCu pour les performances maximales
+        app: cache.adapter.apcu
+        system: cache.adapter.apcu
+        
+        # Pools optimisés pour la production
+        pools:
+            # Cache pour les données de recettes avec APCu
+            recipes.cache:
+                adapter: cache.adapter.apcu
+                default_lifetime: 3600  # 1 heure en prod
+                
+            # Cache pour les données de recherche avec APCu
+            search.cache:
+                adapter: cache.adapter.apcu
+                default_lifetime: 1800  # 30 minutes en prod
+                
+            # Cache pour les données statiques avec APCu
+            static.cache:
+                adapter: cache.adapter.apcu
+                default_lifetime: 7200  # 2 heures en prod
+                
+            # Cache pour les images avec filesystem (persiste)
+            images.cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 604800 # 7 jours en prod

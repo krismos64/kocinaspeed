@@ -10,6 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(name: 'idx_recipe_slug', columns: ['slug'])]
+#[ORM\Index(name: 'idx_recipe_category', columns: ['category'])]
+#[ORM\Index(name: 'idx_recipe_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_recipe_name', columns: ['name'])]
+#[ORM\Index(name: 'idx_recipe_search', columns: ['name', 'category'])]
 class Recipe
 {
     #[ORM\Id]
@@ -20,7 +25,7 @@ class Recipe
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -50,7 +55,7 @@ class Recipe
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, options: ['default' => 'PLATS'])]
     private ?string $category = null;
 
     const CATEGORIES = [
