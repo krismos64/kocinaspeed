@@ -4,10 +4,6 @@ framework:
         system: cache.adapter.filesystem
         
         pools:
-            cache.app:
-                adapter: cache.adapter.filesystem
-            cache.system:
-                adapter: cache.adapter.filesystem
             cache.validator:
                 adapter: cache.adapter.filesystem
             cache.serializer:
