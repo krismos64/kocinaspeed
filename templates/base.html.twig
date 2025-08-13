@@ -15,6 +15,185 @@
 		<link href="https://fonts.googleapis.com/css?family=Leckerli+One&display=swap" rel="stylesheet">
 		<script src="{{ asset('js/uikit.js') }}" defer></script>
 		<script src="{{ asset('js/lazy-loading.js') }}" defer></script>
+		
+		<!-- Styles personnalisés pour le chatbot avec effet néon -->
+		<style>
+			/* Styles pour le bouton du chatbot */
+			iframe[src*="chatbase.co"] {
+				transition: all 0.3s ease !important;
+			}
+			
+			/* Animation d'entrée pour le chatbot */
+			@keyframes neonGlow {
+				0%, 100% { 
+					box-shadow: 0 0 5px #ff7043, 0 0 10px #ff7043, 0 0 15px #ff7043, 0 0 20px #ff7043;
+				}
+				50% { 
+					box-shadow: 0 0 10px #ff7043, 0 0 20px #ff7043, 0 0 30px #ff7043, 0 0 40px #ff7043;
+				}
+			}
+			
+			@keyframes pulse {
+				0% { transform: scale(1); }
+				50% { transform: scale(1.05); }
+				100% { transform: scale(1); }
+			}
+			
+			/* Styles pour personnaliser le widget chatbase */
+			div[id*="chatbase-bubble"], 
+			div[class*="chatbase"], 
+			button[class*="chatbase"],
+			.chatbase-chat-bubble {
+				border-radius: 25px !important;
+				background: linear-gradient(145deg, #ff7043, #ff5722) !important;
+				box-shadow: 0 0 20px rgba(255, 112, 67, 0.6) !important;
+				animation: neonGlow 2s ease-in-out infinite alternate, pulse 3s ease-in-out infinite !important;
+				border: 2px solid rgba(255, 112, 67, 0.8) !important;
+				transition: all 0.3s ease !important;
+			}
+			
+			/* Hover effect pour le bouton du chatbot */
+			div[id*="chatbase-bubble"]:hover, 
+			div[class*="chatbase"]:hover,
+			button[class*="chatbase"]:hover,
+			.chatbase-chat-bubble:hover {
+				transform: scale(1.1) !important;
+				box-shadow: 0 0 30px rgba(255, 112, 67, 0.9) !important;
+				animation: neonGlow 1s ease-in-out infinite alternate !important;
+			}
+			
+			/* Styles pour la fenêtre de chat */
+			div[id*="chatbase-chat"], 
+			.chatbase-chat-window {
+				border-radius: 20px !important;
+				box-shadow: 0 0 40px rgba(255, 112, 67, 0.4) !important;
+				border: 2px solid rgba(255, 112, 67, 0.3) !important;
+				background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95)) !important;
+				backdrop-filter: blur(10px) !important;
+			}
+			
+			/* Header de la fenêtre de chat */
+			div[id*="chatbase-chat"] header,
+			.chatbase-chat-header {
+				background: linear-gradient(145deg, #ff7043, #ff5722) !important;
+				border-radius: 18px 18px 0 0 !important;
+				box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.2) !important;
+			}
+			
+			/* Effets pour les messages */
+			div[id*="chatbase-chat"] .message,
+			.chatbase-message {
+				border-radius: 15px !important;
+				margin: 8px 0 !important;
+				transition: all 0.3s ease !important;
+			}
+			
+			/* Messages de l'utilisateur */
+			div[id*="chatbase-chat"] .message.user,
+			.chatbase-message.user {
+				background: linear-gradient(145deg, #ff7043, #ff5722) !important;
+				color: white !important;
+				box-shadow: 0 2px 10px rgba(255, 112, 67, 0.3) !important;
+			}
+			
+			/* Messages du bot */
+			div[id*="chatbase-chat"] .message.bot,
+			.chatbase-message.bot {
+				background: linear-gradient(145deg, #f8f9fa, #e9ecef) !important;
+				border: 1px solid rgba(255, 112, 67, 0.2) !important;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+			}
+			
+			/* Input du chat */
+			div[id*="chatbase-chat"] input,
+			div[id*="chatbase-chat"] textarea,
+			.chatbase-input {
+				border-radius: 20px !important;
+				border: 2px solid rgba(255, 112, 67, 0.3) !important;
+				transition: all 0.3s ease !important;
+			}
+			
+			div[id*="chatbase-chat"] input:focus,
+			div[id*="chatbase-chat"] textarea:focus,
+			.chatbase-input:focus {
+				border-color: #ff7043 !important;
+				box-shadow: 0 0 15px rgba(255, 112, 67, 0.3) !important;
+			}
+			
+			/* Bouton d'envoi */
+			div[id*="chatbase-chat"] button[type="submit"],
+			.chatbase-send-button {
+				background: linear-gradient(145deg, #ff7043, #ff5722) !important;
+				border: none !important;
+				border-radius: 20px !important;
+				box-shadow: 0 4px 15px rgba(255, 112, 67, 0.4) !important;
+				transition: all 0.3s ease !important;
+			}
+			
+			div[id*="chatbase-chat"] button[type="submit"]:hover,
+			.chatbase-send-button:hover {
+				transform: translateY(-2px) !important;
+				box-shadow: 0 6px 20px rgba(255, 112, 67, 0.6) !important;
+			}
+			
+			/* Animation de typing */
+			.chatbase-typing-indicator {
+				background: linear-gradient(145deg, #ff7043, #ff5722) !important;
+				border-radius: 15px !important;
+				box-shadow: 0 0 15px rgba(255, 112, 67, 0.3) !important;
+			}
+			
+			/* Masquer le branding Chatbase */
+			div[id*="chatbase"] a[href*="chatbase.co"],
+			div[class*="chatbase"] a[href*="chatbase.co"],
+			.chatbase-powered-by,
+			div[id*="chatbase-chat"] footer,
+			div[id*="chatbase-chat"] .footer,
+			div[id*="chatbase-chat"] [class*="powered"],
+			div[id*="chatbase-chat"] [id*="powered"],
+			div[class*="chatbase"] footer,
+			div[class*="chatbase"] .footer,
+			div[class*="chatbase"] [class*="powered"],
+			div[class*="chatbase"] [id*="powered"],
+			a[href*="chatbase.co"]:not(.kocinaspeed-keep) {
+				display: none !important;
+				opacity: 0 !important;
+				visibility: hidden !important;
+				height: 0 !important;
+				overflow: hidden !important;
+			}
+			
+			/* Masquer spécifiquement le texte "Powered by" */
+			div[id*="chatbase-chat"] *:contains("Powered by"),
+			div[class*="chatbase"] *:contains("Powered by"),
+			div[id*="chatbase-chat"] *:contains("chatbase"),
+			div[class*="chatbase"] *:contains("chatbase") {
+				display: none !important;
+			}
+			
+			/* Style pour masquer le footer du chat */
+			div[id*="chatbase-chat"] > div:last-child,
+			div[class*="chatbase-chat-window"] > div:last-child {
+				border-bottom: none !important;
+			}
+			
+			/* Responsive design */
+			@media (max-width: 768px) {
+				div[id*="chatbase-bubble"], 
+				div[class*="chatbase"], 
+				button[class*="chatbase"] {
+					bottom: 20px !important;
+					right: 20px !important;
+				}
+				
+				div[id*="chatbase-chat"] {
+					width: 90vw !important;
+					height: 70vh !important;
+					bottom: 100px !important;
+					right: 5vw !important;
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<!-- Section Navbar -->
@@ -59,35 +238,34 @@
 				</div>
 			</div>
 		</nav>
-		<!-- Section Podcast avec micro animé -->
-		<div class="uk-section uk-section-default">
-			<div class="uk-container uk-text-center">
-				<div
-					class="uk-card uk-card-default uk-card-body uk-border-rounded uk-box-shadow-large uk-padding-large" style="background: linear-gradient(135deg, rgba(255, 245, 238, 0.9), rgba(232, 245, 233, 0.9));">
-					<!-- Titre du podcast -->
-					<h2 class="uk-heading-line uk-text-bold uk-animation-slide-top-small" style="font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: #ff7043;">
-						<span>On parle de kocinaspeed en podcast!</span>
-					</h2>
-
-					<!-- Micro animé -->
-					<div class="uk-margin-medium-top uk-animation-scale-up">
-						<div class="uk-inline-clip uk-transition-toggle" tabindex="0">
-							<div class="uk-animation-shake uk-animation-reverse uk-animation-toggle uk-transform-origin-top-center" style="animation-duration: 2s; animation-iteration-count: infinite;">
-								<svg width="100" height="100" viewbox="0 0 100 100" style="color: #470A1B;">
-									<circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2" class="uk-animation-stroke" style="animation-duration: 3s;"/>
-									<path d="M50,20 L50,60 M40,60 L60,60 M50,60 C40,60 35,65 35,70 C35,75 40,80 50,80 C60,80 65,75 65,70 C65,65 60,60 50,60" stroke="currentColor" fill="none" stroke-width="3"/>
-									<circle cx="50" cy="35" r="15" fill="currentColor"/>
-								</svg>
-							</div>
+		<!-- Section Podcast compacte -->
+		<div class="uk-section uk-section-xsmall uk-padding-small">
+			<div class="uk-container">
+				<div class="uk-card uk-card-small uk-card-hover uk-border-rounded uk-padding-small uk-flex uk-flex-middle uk-flex-center@s uk-flex-wrap uk-flex-nowrap@m" 
+					 style="background: linear-gradient(45deg, rgba(255, 112, 67, 0.1), rgba(232, 245, 233, 0.1)); border: 1px solid rgba(255, 112, 67, 0.2);">
+					
+					<!-- Micro animé compact -->
+					<div class="uk-flex uk-flex-middle uk-margin-small-right">
+						<div class="uk-animation-fade uk-transition-toggle" tabindex="0">
+							<svg width="40" height="40" viewbox="0 0 100 100" style="color: #ff7043;" class="uk-animation-stroke">
+								<circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3" opacity="0.3"/>
+								<path d="M50,25 L50,55 M45,55 L55,55 M50,55 C45,55 42,58 42,62 C42,66 45,70 50,70 C55,70 58,66 58,62 C58,58 55,55 50,55" stroke="currentColor" fill="none" stroke-width="2.5"/>
+								<circle cx="50" cy="37" r="10" fill="currentColor"/>
+							</svg>
 						</div>
 					</div>
 
-					<!-- Lecteur audio -->
-					<div class="uk-margin-medium-top">
-						<audio controls class="uk-width-1-2@m uk-width-1-1" style="background: rgba(71, 10, 27, 0.1); border-radius: 15px;">
-							<source src="{{ asset('audio/kocinaspeed-podcast.mp3') }}" type="audio/mpeg">
-							Votre navigateur ne supporte pas l'élément audio.
-						</audio>
+					<!-- Contenu compact -->
+					<div class="uk-flex uk-flex-column uk-flex-middle uk-text-center uk-text-left@m uk-flex-1">
+						<h3 class="uk-text-bold uk-margin-remove uk-text-small uk-animation-slide-left" style="font-family: 'Poppins', sans-serif; color: #ff7043; font-size: 0.9rem;">
+							🎙️ Découvrez KocinaSpeed en podcast !
+						</h3>
+						<div class="uk-margin-xsmall-top">
+							<audio controls preload="none" class="uk-width-small uk-border-rounded" style="height: 30px; background: rgba(255, 112, 67, 0.05);">
+								<source src="{{ asset('audio/kocinaspeed-podcast.mp3') }}" type="audio/mpeg">
+								Votre navigateur ne supporte pas l'audio.
+							</audio>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -220,12 +398,172 @@
 		<script src="{{ asset('js/uikit.js') }}" defer></script>
 		{% block javascripts %}{% endblock %}
 
-		<!-- Script pour la bulle de chat Chatbase -->
+		<!-- Script pour la bulle de chat Chatbase avec améliorations -->
 		<script>
 			window.embeddedChatbotConfig = {
-chatbotId: "h7h4r15Lk4FkE9FhbINev",
-domain: "www.chatbase.co"
-}
+				chatbotId: "h7h4r15Lk4FkE9FhbINev",
+				domain: "www.chatbase.co"
+			}
+			
+			// Amélioration du chatbot avec animations et personnalisations
+			document.addEventListener('DOMContentLoaded', function() {
+				// Fonction pour supprimer le branding Chatbase
+				function removeChatbaseBranding() {
+					try {
+						// Supprimer les liens vers chatbase.co
+						const chatbaseLinks = document.querySelectorAll('a[href*="chatbase.co"]');
+						chatbaseLinks.forEach(link => {
+							if (!link.classList.contains('kocinaspeed-keep')) {
+								link.style.display = 'none';
+								try {
+									if (link.parentNode) {
+										link.parentNode.removeChild(link);
+									}
+								} catch (e) {
+									// Élément déjà supprimé
+								}
+							}
+						});
+						
+						// Supprimer les éléments contenant "Powered by" de manière plus sécurisée
+						const elementsToRemove = [];
+						const allElements = document.querySelectorAll('div, span, p, a');
+						
+						allElements.forEach(element => {
+							if (element.textContent && element.textContent.trim().includes('Powered by')) {
+								elementsToRemove.push(element);
+							}
+							if (element.textContent && element.textContent.toLowerCase().trim().includes('chatbase')) {
+								const parent = element.parentNode;
+								if (parent && parent.tagName === 'A' && parent.href && parent.href.includes('chatbase.co')) {
+									elementsToRemove.push(parent);
+								}
+							}
+						});
+						
+						// Supprimer les éléments collectés
+						elementsToRemove.forEach(element => {
+							try {
+								element.style.display = 'none';
+								if (element.parentNode) {
+									element.parentNode.removeChild(element);
+								}
+							} catch (e) {
+								// Élément déjà supprimé ou inaccessible
+							}
+						});
+						
+					} catch (error) {
+						// Erreur silencieuse pour éviter de casser l'interface
+						console.log('Erreur lors de la suppression du branding:', error);
+					}
+				}
+				
+				// Attendre que le chatbot soit chargé
+				setTimeout(function() {
+					// Supprimer le branding immédiatement
+					removeChatbaseBranding();
+					
+					// Répéter la suppression toutes les secondes pendant les 10 premières secondes
+					let attempts = 0;
+					const brandingInterval = setInterval(function() {
+						removeChatbaseBranding();
+						attempts++;
+						if (attempts >= 10) {
+							clearInterval(brandingInterval);
+						}
+					}, 1000);
+					
+					// Observer les changements dans le DOM pour supprimer le branding dynamiquement
+					if (typeof MutationObserver !== 'undefined') {
+						const observer = new MutationObserver(function(mutations) {
+							mutations.forEach(function(mutation) {
+								if (mutation.addedNodes.length) {
+									setTimeout(removeChatbaseBranding, 100);
+								}
+							});
+						});
+						
+						// Vérifier que l'élément existe avant d'observer
+						const targetNode = document.body || document.documentElement;
+						if (targetNode && typeof targetNode.nodeType !== 'undefined') {
+							try {
+								observer.observe(targetNode, {
+									childList: true,
+									subtree: true
+								});
+							} catch (error) {
+								console.log('Observer non disponible:', error);
+							}
+						}
+					}
+					
+					// Rechercher et personnaliser le bouton du chatbot
+					const chatbotElements = document.querySelectorAll('[id*="chatbase"], [class*="chatbase"]');
+					chatbotElements.forEach(function(element) {
+						// Ajouter une classe personnalisée
+						element.classList.add('kocinaspeed-chatbot');
+						
+						// Effet de scintillement au survol
+						element.addEventListener('mouseenter', function() {
+							element.style.animation = 'neonGlow 0.5s ease-in-out infinite alternate, pulse 1s ease-in-out infinite';
+						});
+						
+						element.addEventListener('mouseleave', function() {
+							element.style.animation = 'neonGlow 2s ease-in-out infinite alternate, pulse 3s ease-in-out infinite';
+						});
+					});
+					
+					// Ajouter un effet de particules autour du bouton (optionnel)
+					const chatButton = document.querySelector('[id*="chatbase-bubble"]');
+					if (chatButton) {
+						// Animation d'introduction
+						chatButton.style.opacity = '0';
+						chatButton.style.transform = 'scale(0.5)';
+						
+						setTimeout(function() {
+							chatButton.style.transition = 'all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+							chatButton.style.opacity = '1';
+							chatButton.style.transform = 'scale(1)';
+						}, 1000);
+						
+						// Ajouter un tooltip personnalisé
+						const tooltip = document.createElement('div');
+						tooltip.innerHTML = '💬 Posez-moi une question !';
+						tooltip.style.cssText = `
+							position: absolute;
+							bottom: 70px;
+							right: -10px;
+							background: linear-gradient(145deg, #ff7043, #ff5722);
+							color: white;
+							padding: 8px 15px;
+							border-radius: 20px;
+							font-size: 12px;
+							font-family: 'Poppins', sans-serif;
+							box-shadow: 0 4px 15px rgba(255, 112, 67, 0.4);
+							opacity: 0;
+							transform: translateY(10px);
+							transition: all 0.3s ease;
+							pointer-events: none;
+							z-index: 10000;
+							white-space: nowrap;
+						`;
+						
+						chatButton.appendChild(tooltip);
+						
+						// Animation du tooltip
+						setTimeout(function() {
+							tooltip.style.opacity = '1';
+							tooltip.style.transform = 'translateY(0)';
+							
+							setTimeout(function() {
+								tooltip.style.opacity = '0';
+								tooltip.style.transform = 'translateY(-10px)';
+							}, 3000);
+						}, 2000);
+					}
+				}, 2000);
+			});
 		</script>
 		<script src="https://www.chatbase.co/embed.min.js" chatbotid="h7h4r15Lk4FkE9FhbINev" domain="www.chatbase.co" defer></script>
 	</body>

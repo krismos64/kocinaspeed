@@ -11,6 +11,6 @@ class DefaultController extends AbstractController
     #[Route('/mentions-legales', name: 'app_mentions_legales')]
     public function mentionsLegales(): Response
     {
-        return $this->render('mentions_legales.html.twig');
+        return $this->render('pages/mentions_legales.html.twig');
     }
 }
