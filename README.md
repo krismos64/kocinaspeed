@@ -3,8 +3,9 @@
 [![Symfony](https://img.shields.io/badge/Symfony-7.1-black.svg)](https://symfony.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4.svg)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1.svg)](https://mysql.com)
+[![SEO](https://img.shields.io/badge/SEO-Optimized-green.svg)](https://kocinaspeed.fr)
 
-**KocinaSpeed** est une plateforme moderne de recettes de cuisine rapides développée avec Symfony 7.1. Elle permet aux utilisateurs de découvrir des recettes simples et savoureuses, avec un système complet d'avis et de notation.
+**KocinaSpeed** est une plateforme moderne de recettes de cuisine française rapides et délicieuses. Développée avec Symfony 7.1, elle offre une expérience utilisateur exceptionnelle avec un design moderne, des fonctionnalités avancées et une optimisation SEO complète pour Google et les IA.
 
 ## 📋 Table des matières
 
@@ -13,13 +14,17 @@
 - [Installation](#-installation)
 - [Configuration](#-configuration)
 - [Technologies utilisées](#-technologies-utilisées)
+- [Optimisations SEO](#-optimisations-seo)
 - [Structure du projet](#-structure-du-projet)
+- [Commandes personnalisées](#-commandes-personnalisées)
 - [API et Endpoints](#-api-et-endpoints)
+- [Support](#-support)
 - [Contributeurs](#-contributeurs)
 
 ## ✨ Fonctionnalités
 
 ### 👥 **Côté utilisateur**
+
 - **Navigation par catégories** : Desserts, Plats, Apéritifs
 - **Recherche avancée** : Recherche par nom de recette en temps réel
 - **Système de notation** : Notes de 1 à 5 étoiles avec commentaires
@@ -27,6 +32,7 @@
 - **Interface responsive** : Design moderne avec UIkit et dégradés subtils
 
 ### 🛠️ **Administration (EasyAdmin)**
+
 - **Gestion complète des recettes** : CRUD avec gestion des images multiples
 - **Modération des avis** : Système d'approbation des commentaires
 - **Gestion des utilisateurs** : Rôles et permissions
@@ -34,11 +40,16 @@
 - **Dashboard moderne** : Interface intuitive et statistiques
 
 ### 🎥 **Fonctionnalités avancées**
+
 - **Intégration YouTube** : Vidéos de démonstration pour les recettes
-- **Système de slugs** : URLs SEO-friendly
+- **Chatbot IA intégré** : Assistant culinaire avec design néon moderne
+- **Podcast intégré** : Présentation audio de KocinaSpeed
+- **Système de slugs** : URLs SEO-friendly optimisées
 - **Pagination intelligente** : Avec Pagerfanta
 - **Emails automatiques** : Notifications pour les nouveaux avis
 - **Reset de mot de passe** : Système sécurisé de récupération
+- **Optimisation images** : Compression et lazy loading automatiques
+- **PWA Ready** : Installation possible comme application native
 
 ## 🏗️ Architecture
 
@@ -78,44 +89,52 @@ public/
 ### Étapes d'installation
 
 1. **Cloner le projet**
+
 ```bash
 git clone https://github.com/krismos64/kocinaspeed.git
 cd kocinaspeed
 ```
 
 2. **Installer les dépendances PHP**
+
 ```bash
 composer install
 ```
 
 3. **Configuration de l'environnement**
+
 ```bash
 cp .env .env.local
 # Éditer .env.local avec vos paramètres
 ```
 
 4. **Configuration de la base de données**
+
 ```env
 DATABASE_URL="mysql://username:password@127.0.0.1:3306/kocinaspeed?serverVersion=8.0"
 ```
 
 5. **Créer la base de données**
+
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
 6. **Créer un utilisateur administrateur**
+
 ```bash
 php bin/console app:create-admin-user
 ```
 
 7. **Installer les assets**
+
 ```bash
 php bin/console importmap:install
 ```
 
 8. **Démarrer le serveur de développement**
+
 ```bash
 symfony server:start
 # ou
@@ -123,6 +142,7 @@ php -S localhost:8000 -t public
 ```
 
 9. **Accéder à l'application**
+
 - **Site public** : http://localhost:8000
 - **Administration** : http://localhost:8000/admin
 
@@ -165,6 +185,7 @@ Le projet utilise **Symfony Messenger** pour l'envoi d'emails asynchrones. Confi
 ## 🛠️ Technologies utilisées
 
 ### Backend
+
 - **Symfony 7.1** - Framework PHP moderne
 - **PHP 8.2+** - Langage backend avec les dernières fonctionnalités
 - **Doctrine ORM** - Mapping objet-relationnel
@@ -173,17 +194,39 @@ Le projet utilise **Symfony Messenger** pour l'envoi d'emails asynchrones. Confi
 - **Symfony Messenger** - Gestion des tâches asynchrones
 
 ### Frontend
+
 - **UIkit 3** - Framework CSS moderne et responsive
 - **Twig** - Moteur de templates
 - **Stimulus** - Framework JavaScript léger
 - **AssetMapper** - Gestion des assets Symfony
 
 ### Fonctionnalités
+
 - **Symfony Security** - Authentification et autorisation
 - **Symfony Mailer** - Envoi d'emails avec support SMTP
 - **Pagerfanta** - Pagination avancée
 - **Symfony Form** - Gestion des formulaires
 - **Doctrine Migrations** - Gestion des évolutions de BDD
+
+## 🚀 Optimisations SEO
+
+### Référencement Google & IA
+
+- **Métadonnées complètes** : Title, description, keywords optimisés
+- **Open Graph & Twitter Cards** : Partage social optimisé
+- **Données structurées JSON-LD** : Schema.org Recipe, Organization, FAQPage
+- **Sitemap XML dynamique** : URLs, images et vidéos indexées
+- **Robots.txt intelligent** : Optimisé pour IA (GPTBot, Claude, ChatGPT)
+- **Canonical URLs** : Éviter le contenu dupliqué
+- **Hreflang** : Support international (fr, fr-FR)
+- **Core Web Vitals** : Performance et UX optimisées
+
+### Spécificités IA/LLM
+
+- **Balises méta IA** : content-type, schema-context
+- **Descriptions enrichies** : Contexte complet pour compréhension IA
+- **Alt text automatique** : Images avec descriptions contextuelles
+- **Service SEO** : Génération automatique de métadonnées
 
 ## 📁 Structure du projet
 
@@ -191,7 +234,7 @@ Le projet utilise **Symfony Messenger** pour l'envoi d'emails asynchrones. Confi
 
 ```php
 Recipe {
-    id, name, slug, description, 
+    id, name, slug, description,
     ingredients (JSON), cookingTime,
     category, rating, video (YouTube),
     images (OneToMany), reviews (OneToMany)
@@ -213,24 +256,60 @@ Review {
 
 ### Routes principales
 
-| Route | Contrôleur | Description |
-|-------|------------|-------------|
-| `/` | `HomeController::index` | Page d'accueil |
-| `/recettes/{category}` | `RecipeController::recipeList` | Liste des recettes |
-| `/recette/{slug}` | `RecipeController::show` | Détail d'une recette |
-| `/recherche` | `RecipeController::search` | Recherche de recettes |
-| `/admin` | EasyAdmin | Interface d'administration |
+| Route                  | Contrôleur                           | Description                   |
+| ---------------------- | ------------------------------------ | ----------------------------- |
+| `/`                    | `RecipeController::index`            | Page d'accueil                |
+| `/recettes/{category}` | `RecipeController::recipeList`       | Liste des recettes            |
+| `/recette/{slug}`      | `RecipeController::show`             | Détail d'une recette          |
+| `/recherche`           | `RecipeController::search`           | Recherche de recettes         |
+| `/contact`             | `ContactController::contact`         | Formulaire de contact moderne |
+| `/mentions-legales`    | `DefaultController::mentionsLegales` | Mentions légales              |
+| `/admin`               | EasyAdmin                            | Interface d'administration    |
+| `/sitemap.xml`         | `SitemapController::index`           | Sitemap XML dynamique         |
+| `/robots.txt`          | `SitemapController::robots`          | Robots.txt optimisé           |
+
+## 🔧 Commandes personnalisées
+
+### Commandes d'administration
+
+```bash
+# Créer un utilisateur administrateur
+php bin/console app:create-admin-user
+
+# Optimiser toutes les images du projet
+php bin/console app:optimize-images
+
+# Réchauffer le cache avec les données critiques
+php bin/console app:cache:warmup
+```
+
+### Script de configuration
+
+```bash
+# Configuration complète de l'environnement de développement
+./scripts/setup-dev-environment.sh
+```
 
 ## 🔧 API et Endpoints
 
 ### Recherche
+
 - **GET** `/recherche?query={term}` - Recherche de recettes par nom
 
 ### Administration (EasyAdmin)
+
 - **GET** `/admin` - Dashboard administrateur
 - **CRUD** `/admin/recipe` - Gestion des recettes
 - **CRUD** `/admin/review` - Modération des avis
 - **CRUD** `/admin/user` - Gestion des utilisateurs
+- **CRUD** `/admin/contact` - Messages de contact
+
+### SEO et Outils
+
+- **GET** `/sitemap.xml` - Plan du site XML automatique
+- **GET** `/sitemap-images.xml` - Sitemap des images
+- **GET** `/robots.txt` - Directives pour robots et IA
+- **GET** `/manifest.json` - Manifest PWA
 
 ## 🧪 Tests et développement
 
@@ -254,36 +333,38 @@ php bin/phpunit
 ### Développement
 
 Pour contribuer au projet :
+
 1. Forkez le repository
 2. Créez une branche feature (`git checkout -b feature/nouvelle-fonctionnalite`)
 3. Committez vos changements (`git commit -am 'Ajout nouvelle fonctionnalité'`)
 4. Pushez sur la branche (`git push origin feature/nouvelle-fonctionnalite`)
 5. Créez une Pull Request
 
-## 📊 Fonctionnalités à venir
+### Design et UX
 
-- [ ] API REST complète
-- [ ] Système de favoris
-- [ ] Export PDF des recettes
-- [ ] Notifications push
-- [ ] Mode sombre
-- [ ] Suggestions de recettes par IA
-- [ ] Application mobile
+- **Design moderne** : Dégradés subtils et animations fluides
+- **Interface responsive** : Optimisée mobile-first avec UIkit
+- **Formulaire de contact** : Design glassmorphism avec effets visuels
+- **Chatbot stylisé** : Interface néon avec animations interactives
+- **Lazy loading** : Optimisation des performances images
 
-## 🐛 Support et problèmes
+## 🐛 Support
 
-Si vous rencontrez des problèmes :
-1. Vérifiez les logs dans `var/log/`
-2. Consultez la documentation Symfony
-3. Ouvrez une issue sur GitHub
+### Résolution de problèmes
 
-## 📄 Licence
+1. Vérifiez les logs dans `var/log/dev.log` ou `var/log/prod.log`
+2. Consultez la documentation Symfony officielle
+3. Utilisez les commandes de débogage Symfony
+4. Vérifiez les permissions des répertoires `var/` et `public/uploads/`
 
-Ce projet est sous licence propriétaire. Tous droits réservés.
+### Contact
+
+- **Email** : support@kocinaspeed.fr
+- **GitHub Issues** : Pour les bugs et améliorations
 
 ## 👥 Contributeurs
 
-- **Christophe Mostefaoui** - *Développeur principal* - [GitHub](https://github.com/krismos64)
+- **Christophe Mostefaoui** - _Développeur_ - [GitHub](https://github.com/krismos64)
 
 ## 🙏 Remerciements
 
@@ -293,4 +374,4 @@ Ce projet est sous licence propriétaire. Tous droits réservés.
 
 ---
 
-**KocinaSpeed** - *Cuisinez vite, cuisinez bien !* 🍽️✨
+**KocinaSpeed** - _Cuisinez vite, cuisinez bien !_ 🍽️✨
